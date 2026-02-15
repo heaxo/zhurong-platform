@@ -4,8 +4,14 @@ plugins {
     id 'pl.allegro.tech.build.axion-release' version '1.13.3'
 }
 
+scmVersion {
+    tag {
+        prefix = 'v'
+    }
+}
+
 group = 'com.ao'
-version = '0.0.1'
+version = scmVersion.version
 
 java {
     toolchain {
