@@ -1,17 +1,10 @@
 plugins {
     id 'java'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'pl.allegro.tech.build.axion-release' version '1.13.3'
-}
-
-scmVersion {
-    tag {
-        prefix = 'v'
-    }
 }
 
 group = 'com.ao'
-version = scmVersion.version
+version = '0.0.1'
 
 java {
     toolchain {
