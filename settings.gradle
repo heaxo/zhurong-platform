@@ -1,0 +1,5 @@
+rootProject.name = 'ao-platform'
+
+include 'ao-platform-gateway'
+include 'ao-platform-auth'
+include 'ao-platform-core'
