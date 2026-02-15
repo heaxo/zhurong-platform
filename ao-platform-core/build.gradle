@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.10'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'pl.allegro.tech.build.axion-release' version '1.13.3'
 }
 
 group = 'com.ao'
-version = '0.0.1'
+version = project.hasProperty('version') ? project.version : '0.0.1'
 description = 'ao-platform-core'
 
 java {
@@ -19,11 +20,6 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-
-repositories {
-    mavenCentral()
-}
-
 ext {
 }
 
@@ -52,4 +48,9 @@ dependencyManagement {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+tasks.register('printVersion') {
+    doLast {
+        println "Current version: ${project.version}"
+    }
 }
