@@ -28,7 +28,7 @@ services:
       - DB_URL_0=jdbc:postgresql://ao-postgres:5432/nacos
       - DB_USER=postgres
       - DB_PASSWORD=123456
-      - DB_POOL_CONFIG_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - DB_DRIVER_CLASS_NAME=org.postgresql.Driver
       - NACOS_AUTH_ENABLE=true
       - NACOS_AUTH_TOKEN=ao-platform-token
       - NACOS_AUTH_IDENTITY_KEY=nacos
