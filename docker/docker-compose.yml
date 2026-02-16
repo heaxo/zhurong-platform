@@ -12,3 +12,32 @@ services:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - ao-network
+
+  nacos:
+    image: nacos/nacos-server:v3.1.1
+    container_name: ao-nacos
+    restart: always
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=postgresql
+      - DB_NUM=1
+      - DB_URL_0=jdbc:postgresql://postgres:5432/nacos
+      - DB_USER=postgres
+      - DB_PASSWORD=123456
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_TOKEN=ao-platform-token
+      - NACOS_AUTH_IDENTITY_KEY=nacos
+      - NACOS_AUTH_IDENTITY_VALUE=nacos
+    ports:
+      - "8848:8848"
+    depends_on:
+      - postgres
+    networks:
+      - ao-network
+
+
+networks:
+  ao-network:
+    driver: bridge
