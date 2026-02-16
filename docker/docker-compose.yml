@@ -20,6 +20,7 @@ services:
     container_name: ao-nacos
     restart: always
     environment:
+      - PREFER_HOST_MODE=hostname
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=postgresql
       - NACOS_AUTH_ENABLE=true
@@ -27,10 +28,11 @@ services:
       - NACOS_AUTH_IDENTITY_KEY=nacos
       - NACOS_AUTH_IDENTITY_VALUE=nacos
     ports:
+      - "8080:8080"
       - "8848:8848"
+      - "9848:9848"
     volumes:
       - ./data/nacos/logs:/home/nacos/logs
-      - ./data/nacos/conf:/home/nacos/conf
     networks:
       - ao-network
 
