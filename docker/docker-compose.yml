@@ -23,7 +23,7 @@ services:
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=postgresql
       - DB_NUM=1
-      - DB_URL_0=jdbc:postgresql://postgres:5432/nacos
+      - DB_URL_0=jdbc:postgresql://ao-postgres:5432/nacos
       - DB_USER=postgres
       - DB_PASSWORD=123456
       - NACOS_AUTH_ENABLE=true
