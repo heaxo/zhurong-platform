@@ -13,16 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-DROP DATABASE IF EXISTS nacos_config;
-
--- 重新创建
-CREATE DATABASE nacos_config
-WITH
-    OWNER = postgres
-    ENCODING = 'UTF8'
-    LC_COLLATE = 'en_US.utf8'
-    LC_CTYPE = 'en_US.utf8'
-    TEMPLATE = template0;
 
 -- ----------------------------
 -- Table structure for config_info
