@@ -22,38 +22,8 @@ services:
     networks:
       - ao-network
 
-  nacos:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: ao/nacos-server:v2.4.2
-    container_name: ao-nacos
-    restart: always
-    depends_on:
-      ao-postgres:
-        condition: service_healthy
-    environment:
-      - PREFER_HOST_MODE=hostname
-      - MODE=standalone
-      - SPRING_SQL_INIT_PLATFORM=postgresql
-      - SPRING_DATASOURCE_PLATFORM=postgresql
-      - DB_NUM=1
-      - DB_URL_0=jdbc:postgresql://ao-postgres:5432/nacos_config
-      - DB_USER=postgres
-      - DB_PASSWORD=123456
-      - DB_DRIVER_CLASS_NAME=org.postgresql.Driver
-      - DB_POOL_CONFIG_DRIVERCLASSNAME=org.postgresql.Driver
-      - NACOS_AUTH_TOKEN=ao-platform-token
-      - NACOS_AUTH_IDENTITY_KEY=VGhpc0lzTXlDdXN0b21TZWNyZXRLZXkwMTIzNDU2Nzg
-      - NACOS_AUTH_IDENTITY_VALUE=nacos
-    ports:
-      - "8080:8080"
-      - "8848:8848"
-      - "9848:9848"
-    volumes:
-      - ./data/nacos/logs:/home/nacos/logs
-    networks:
-      - ao-network
+include:
+  - standalone-mysql.yaml
 
 
 networks:
