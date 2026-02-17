@@ -1,7 +1,7 @@
 version: '3.9'
 
 services:
-  postgres:
+  ao-postgres:
     image: postgres:16
     container_name: ao-postgres
     restart: always
@@ -12,20 +12,26 @@ services:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
     networks:
       - ao-network
 
   nacos:
-    image: nacos/nacos-server:v2.4.3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ao/nacos-server:v2.4.3
     container_name: ao-nacos
     restart: always
+    depends_on:
+      - ao-postgres
     environment:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
       - SPRING_SQL_INIT_PLATFORM=postgresql
       - SPRING_DATASOURCE_PLATFORM=postgresql
       - DB_NUM=1
-      - DB_URL_0=jdbc:postgresql://ao-postgres:5432/nacos
+      - DB_URL_0=jdbc:postgresql://ao-postgres:5432/nacos_config
       - DB_USER=postgres
       - DB_PASSWORD=123456
       - DB_DRIVER_CLASS_NAME=org.postgresql.Driver
