@@ -1,12 +1,17 @@
 logging:
   level:
     root: debug
+  reactor.netty.http.client: DEBUG
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 spring:
+  datasource:
+    url: jdbc:postgresql://lantekha:5432/ao_platform_core
+    username: postgres
+    password: 123456
   cloud:
     nacos:
       discovery:

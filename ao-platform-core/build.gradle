@@ -23,6 +23,10 @@ ext {
 }
 
 dependencies {
+
+    implementation project(':ao-platform-base')
+    implementation project(':ao-platform-core-api')
+
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -32,7 +36,17 @@ dependencies {
 
     implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+
     compileOnly 'org.projectlombok:lombok'
+    // PostgreSQL
+    runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+
+    // Flyway
+    implementation "org.flywaydb:flyway-core:${flywayVersion}"
+    implementation "org.flywaydb:flyway-database-postgresql:${flywayVersion}"
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

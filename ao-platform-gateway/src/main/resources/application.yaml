@@ -1,6 +1,14 @@
 server:
   port: 9000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
+  endpoint:
+    gateway:
+      enabled: true
 spring:
   profiles:
     active: dev
@@ -9,9 +17,32 @@ spring:
 
   cloud:
     nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
       config:
         server-addr: 127.0.0.1:8848
         file-extension: yaml
         group: DEFAULT_GROUP
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: auth-service
+          uri: lb://ao-platform-auth
+          predicates:
+            - Path=/api/auth/**,/api/user/**
+          filters:
+            - StripPrefix=2
+
+        - id: core-service
+          uri: lb://ao-platform-core
+          predicates:
+            - Path=/api/system/**,/api/core/**
+          filters:
+            - StripPrefix=2
   config:
     import: nacos:ao-platform-gateway

@@ -11,6 +11,7 @@ ext {
     springCloudVersion = "2024.0.2"
     springCloudAlibabaVersion = "2023.0.3.4"
     mybatisVersion = "3.0.5"
+    mybatisPlusVersion= "3.5.16"
     lombokVersion = "1.18.42"
     flywayVersion = '9.22.3'
     postgresqlVersion = '42.7.3'

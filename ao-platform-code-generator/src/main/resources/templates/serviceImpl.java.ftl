@@ -1,0 +1,47 @@
+package ${package.ServiceImpl};
+
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${package.Parent}.convert.${entity}Convert;
+import ${package.Parent}.dto.${entity}DTO;
+import ${package.Parent}.vo.${entity}VO;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+
+/**
+* ${table.comment!} 服务实现类
+*/
+@Service
+public class ${table.serviceImplName}
+extends ServiceImpl<${table.mapperName}, ${entity}>
+implements ${table.serviceName} {
+
+    private final ${entity}Convert convert;
+
+    public ${table.serviceImplName}(${entity}Convert convert) {
+    this.convert = convert;
+    }
+
+    @Override
+    public ${entity}VO getVOById(Serializable id) {
+    ${entity} entity = this.getById(id);
+    return convert.toVO(entity);
+    }
+
+    @Override
+    public void saveFromDTO(${entity}DTO dto) {
+    ${entity} entity = convert.toEntity(dto);
+    this.save(entity);
+    }
+
+    @Override
+    public void updateFromDTO(Serializable id, ${entity}DTO dto) {
+    ${entity} entity = this.getById(id);
+    convert.updateFromDTO(dto, entity);
+    this.updateById(entity);
+    }
+}

@@ -15,3 +15,8 @@ rootProject.name = 'ao-platform'
 include 'ao-platform-gateway'
 include 'ao-platform-auth'
 include 'ao-platform-core'
+include 'ao-platform-code-generator'
+
+include 'ao-platform-base'
+include 'ao-platform-core-api'
+include 'ao-platform-auth-api'

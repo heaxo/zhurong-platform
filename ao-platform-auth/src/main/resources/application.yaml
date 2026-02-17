@@ -1,12 +1,12 @@
 server:
   port: 9100
+  address: 0.0.0.0
 
 spring:
-  application:
-    name: ao-platform-auth
-
   profiles:
     active: dev
+  application:
+    name: ao-platform-auth
 
   flyway:
     enabled: true
@@ -19,11 +19,13 @@ spring:
 
   cloud:
     nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
       config:
         server-addr: 127.0.0.1:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
     import:
-      - nacos:ao-platform-auth.yaml
-      - nacos:ao-platform-auth-${spring.profiles.active}.yaml
+      - nacos:ao-platform-auth
+      - nacos:ao-platform-auth-${spring.profiles.active}

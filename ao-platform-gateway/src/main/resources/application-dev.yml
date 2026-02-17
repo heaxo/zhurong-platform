@@ -5,5 +5,7 @@ logging:
 spring:
   cloud:
     nacos:
+      discovery:
+        server-addr: lantekha:8848
       config:
         server-addr: lantekha:8848
