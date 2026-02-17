@@ -1,0 +1,17 @@
+logging:
+  level:
+    root: debug
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+spring:
+  datasource:
+    url: jdbc:postgresql://lantekha:5432/ao_platform_auth
+    username: postgres
+    password: 123456
+  cloud:
+    nacos:
+      config:
+        server-addr: lantekha:8848

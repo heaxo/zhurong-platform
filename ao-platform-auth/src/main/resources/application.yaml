@@ -1,9 +1,22 @@
 server:
-  port: 11000
+  port: 9100
 
 spring:
   application:
     name: ao-platform-auth
+
+  profiles:
+    active: dev
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  mybatis-plus:
+    configuration:
+      map-underscore-to-camel-case: true
+
   cloud:
     nacos:
       config:
@@ -11,4 +24,6 @@ spring:
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
-    import: nacos:ao-platform-auth
+    import:
+      - nacos:ao-platform-auth.yaml
+      - nacos:ao-platform-auth-${spring.profiles.active}.yaml

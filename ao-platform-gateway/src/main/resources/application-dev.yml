@@ -1,0 +1,9 @@
+logging:
+  level:
+    root: debug
+
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: lantekha:8848
