@@ -10,8 +10,5 @@ RUN mkdir -p /home/nacos/plugins
 COPY nacos-plugins/nacos-postgresql-datasource-plugin-ext-1.0.0-SNAPSHOT.jar \
      /home/nacos/plugins/
 
-# 修正权限
-RUN chown -R nacos:nacos /home/nacos/plugins
-
 # 切回 nacos 用户
 USER nacos
