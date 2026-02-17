@@ -16,7 +16,7 @@ services:
       - ao-network
 
   nacos:
-    image: nacos/nacos-server:v3.1.1
+    image: nacos/nacos-server:v2.4.3
     container_name: ao-nacos
     restart: always
     environment:
