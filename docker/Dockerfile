@@ -1,4 +1,4 @@
-FROM nacos/nacos-server:v2.4.3
+FROM nacos/nacos-server:v2.4.2
 
 # 创建 plugins 目录
 RUN mkdir -p /home/nacos/plugins
