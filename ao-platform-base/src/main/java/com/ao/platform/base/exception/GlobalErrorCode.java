@@ -17,8 +17,12 @@ public enum GlobalErrorCode implements IErrorCode {
     }
 
     @Override
-    public int getCode() { return code; }
+    public int getCode() {
+        return code;
+    }
 
     @Override
-    public String getMessage() { return message; }
+    public String getMessage() {
+        return message;
+    }
 }

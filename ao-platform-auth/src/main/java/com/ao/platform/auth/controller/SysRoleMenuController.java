@@ -1,16 +1,15 @@
 package com.ao.platform.auth.controller;
 
-import com.ao.platform.auth.service.ISysRoleMenuService;
-import com.ao.platform.auth.dto.SysRoleMenuDTO;
-import com.ao.platform.auth.vo.SysRoleMenuVO;
-import com.ao.platform.auth.entity.SysRoleMenu;
 import com.ao.platform.auth.api.ISysRoleMenuApi;
-
+import com.ao.platform.auth.convert.SysRoleMenuConvert;
+import com.ao.platform.auth.dto.SysRoleMenuDTO;
+import com.ao.platform.auth.dto.SysRoleMenuPageQuery;
+import com.ao.platform.auth.entity.SysRoleMenu;
+import com.ao.platform.auth.service.ISysRoleMenuService;
+import com.ao.platform.auth.vo.SysRoleMenuVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,16 +24,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysRoleMenuController implements ISysRoleMenuApi {
 
+    private final SysRoleMenuConvert convert;
     private final ISysRoleMenuService service;
 
     @Override
-    public ApiResponse<PageResponse<SysRoleMenuVO>> page(long current, long size) {
+    public ApiResponse<PageResponse<SysRoleMenuVO>> page(SysRoleMenuPageQuery pageQuery) {
 
-        Page<SysRoleMenu> page = service.page(new Page<>(current, size));
+        Page<SysRoleMenu> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
+                service.lambdaQuery(
+                        convert.toEntity(pageQuery)
+                ));
 
         List<SysRoleMenuVO> voList = page.getRecords()
                 .stream()
-                .map(service::convertToVO)
+                .map(convert::toVO)
                 .toList();
 
         PageResponse<SysRoleMenuVO> response = new PageResponse<>(
@@ -53,26 +56,26 @@ public class SysRoleMenuController implements ISysRoleMenuApi {
     }
 
     @Override
-    public ApiResponse<Void> save(@Valid SysRoleMenuDTO dto) {
-        service.saveFromDTO(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> save(@Valid SysRoleMenuDTO dto) {
+        Long id = service.saveFromDTO(dto);
+        return ApiResponse.success(id);
     }
 
     @Override
-    public ApiResponse<Void> update(Serializable id, @Valid SysRoleMenuDTO dto) {
-        service.updateFromDTO(id, dto);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> update(Serializable id, @Valid SysRoleMenuDTO dto) {
+        boolean update = service.updateFromDTO(id, dto);
+        return ApiResponse.success(update);
     }
 
     @Override
-    public ApiResponse<Void> remove(Serializable id) {
-        service.removeById(id);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> remove(Serializable id) {
+        boolean remove = service.removeById(id);
+        return ApiResponse.success(remove);
     }
 
     @Override
-    public ApiResponse<Void> batchRemove(List<Serializable> ids) {
-        service.removeByIds(ids);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> batchRemove(List<Serializable> ids) {
+        boolean remove = service.removeByIds(ids);
+        return ApiResponse.success(remove);
     }
 }

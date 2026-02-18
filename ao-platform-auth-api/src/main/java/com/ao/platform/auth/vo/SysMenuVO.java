@@ -1,17 +1,25 @@
 package com.ao.platform.auth.vo;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-*  VO
-*/
+ * VO
+ */
 @Data
 public class SysMenuVO implements Serializable {
 
-    private Integer id;
-    private Integer pid;
+    private Long id;
+    private Long tenantId;
+    private Boolean deleted;
+    private Long createBy;
+    private LocalDateTime createTime;
+    private Long updateBy;
+    private LocalDateTime updateTime;
+    private Integer version;
+    private Long pid;
     private String name;
     private String type;
     private String path;
@@ -19,10 +27,10 @@ public class SysMenuVO implements Serializable {
     private String component;
     private String authCode;
     private Integer status;
+    private Integer sortOrder;
     private String metaTitle;
     private String metaIcon;
     private String metaActiveIcon;
-    private Integer metaOrder;
     private String metaBadgeType;
     private String metaBadge;
     private String metaBadgeVariants;
@@ -34,6 +42,6 @@ public class SysMenuVO implements Serializable {
     private Boolean metaHideChildrenInMenu;
     private Boolean metaHideInBreadcrumb;
     private Boolean metaHideInTab;
-    private LocalDateTime createTime;
+    private String remark;
 
 }

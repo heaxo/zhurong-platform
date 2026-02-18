@@ -1,20 +1,28 @@
 package com.ao.platform.auth.dto;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-*  DTO
-*/
+ * DTO
+ */
 @Data
 public class SysDeptDTO implements Serializable {
 
-    private Object id;
-    private Object pid;
+    private Long id;
+    private Long tenantId;
+    private Boolean deleted;
+    private Long createBy;
+    private LocalDateTime createTime;
+    private Long updateBy;
+    private LocalDateTime updateTime;
+    private Integer version;
+    private Long pid;
     private String name;
     private Integer status;
-    private LocalDateTime createTime;
+    private Integer sortOrder;
     private String remark;
 
 }

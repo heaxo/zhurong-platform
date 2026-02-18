@@ -4,4 +4,5 @@ public record GeneratorConfig(
         String basePackage,
         String moduleName,
         String[] excludeTables
-) {}
+) {
+}

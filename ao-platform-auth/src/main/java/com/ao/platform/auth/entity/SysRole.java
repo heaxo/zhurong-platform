@@ -1,12 +1,12 @@
 package com.ao.platform.auth.entity;
 
+import com.ao.platform.base.model.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  *
@@ -18,29 +18,40 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("sys_role")
-public class SysRole implements Serializable {
+public class SysRole extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
 
     /**
      *
      */
-    private Object id;
+    private Long tenantId;
+
 
     /**
      *
      */
     private String name;
 
+
+    /**
+     *
+     */
+    private String code;
+
+
     /**
      *
      */
     private Integer status;
 
+
     /**
      *
      */
-    private LocalDateTime createTime;
+    private Integer dataScope;
+
 
     /**
      *

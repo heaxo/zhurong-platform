@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import com.ao.platform.base.model.BaseEntity;
 
 /**
 * ${table.comment!}
@@ -17,15 +18,24 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("${table.name}")
-public class ${entity} implements Serializable {
+public class ${entity} extends BaseEntity implements Serializable {
 
 private static final long serialVersionUID = 1L;
 
 <#list table.fields as field>
-    /**
-    * ${field.comment!}
-    */
-    private ${field.propertyType} ${field.propertyName};
+    <#if field.propertyName != "id"
+    && field.propertyName != "deleted"
+    && field.propertyName != "version"
+    && field.propertyName != "createBy"
+    && field.propertyName != "createTime"
+    && field.propertyName != "updateBy"
+    && field.propertyName != "updateTime">
 
+        /**
+        * ${field.comment!}
+        */
+        private ${field.propertyType} ${field.propertyName};
+
+    </#if>
 </#list>
 }

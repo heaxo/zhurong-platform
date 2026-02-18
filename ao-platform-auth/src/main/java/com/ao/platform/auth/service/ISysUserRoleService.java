@@ -1,15 +1,19 @@
 package com.ao.platform.auth.service;
 
+import com.ao.platform.auth.dto.SysUserRoleDTO;
 import com.ao.platform.auth.entity.SysUserRole;
+import com.ao.platform.auth.vo.SysUserRoleVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.Serializable;
+
 /**
-*  服务接口
-*/
+ * 服务接口
+ */
 public interface ISysUserRoleService extends IService<SysUserRole> {
     SysUserRoleVO getVOById(Serializable id);
 
-    void saveFromDTO(SysUserRoleDTO dto);
+    Long saveFromDTO(SysUserRoleDTO dto);
 
-    void updateFromDTO(Serializable id, SysUserRoleDTO dto);
+    Boolean updateFromDTO(Serializable id, SysUserRoleDTO dto);
 }

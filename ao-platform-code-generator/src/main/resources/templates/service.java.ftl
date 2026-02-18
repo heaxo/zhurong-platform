@@ -1,15 +1,18 @@
 package ${package.Service};
 
 import ${package.Entity}.${entity};
+import ${package.Parent}.vo.${entity}VO;
+import ${package.Parent}.dto.${entity}DTO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import java.io.Serializable;
 
 /**
 * ${table.comment!} 服务接口
 */
 public interface ${table.serviceName} extends IService<${entity}> {
-    ${entity}VO getVOById(Serializable id);
+${entity}VO getVOById(Serializable id);
 
-    void saveFromDTO(${entity}DTO dto);
+Long saveFromDTO(${entity}DTO dto);
 
-    void updateFromDTO(Serializable id, ${entity}DTO dto);
+Boolean updateFromDTO(Serializable id, ${entity}DTO dto);
 }

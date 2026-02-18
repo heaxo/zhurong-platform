@@ -2,9 +2,11 @@ package ${package.Controller};
 
 import ${package.Service}.${table.serviceName};
 import ${package.Parent}.dto.${entity}DTO;
+import ${package.Parent}.dto.${entity}PageQuery;
 import ${package.Parent}.vo.${entity}VO;
 import ${package.Parent}.entity.${entity};
 import ${package.Parent}.api.I${entity}Api;
+import ${package.Parent}.convert.${entity}Convert;
 
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
@@ -13,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -25,19 +28,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ${table.controllerName} implements I${entity}Api {
 
+private final ${entity}Convert convert;
 private final ${table.serviceName} service;
 
 @Override
-public ApiResponse<PageResponse<${entity}VO>> page(long current, long size) {
+public ApiResponse
+<PageResponse
+<${entity}VO>> page(${entity}PageQuery pageQuery ) {
 
-    Page<${entity}> page = service.page(new Page<>(current, size));
+    Page<${entity}> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
+    service.lambdaQuery(
+    convert.toEntity(pageQuery)
+    ));
 
-    List<${entity}VO> voList = page.getRecords()
+    List
+    <${entity}VO> voList = page.getRecords()
         .stream()
-        .map(service::convertToVO)
+        .map(convert::toVO)
         .toList();
 
-        PageResponse<${entity}VO> response = new PageResponse<>(
+        PageResponse
+        <${entity}VO> response = new PageResponse<>(
             voList,
             page.getTotal(),
             page.getCurrent(),
@@ -48,31 +59,37 @@ public ApiResponse<PageResponse<${entity}VO>> page(long current, long size) {
             }
 
             @Override
-            public ApiResponse<${entity}VO> getById(Serializable id) {
+            public ApiResponse
+            <${entity}VO> getById(Serializable id) {
                 return ApiResponse.success(service.getVOById(id));
                 }
 
                 @Override
-                public ApiResponse<Void> save(@Valid ${entity}DTO dto) {
-                    service.saveFromDTO(dto);
-                    return ApiResponse.success();
+                public ApiResponse
+                <Long> save(@Valid ${entity}DTO dto) {
+                    Long id = service.saveFromDTO(dto);
+                    return ApiResponse.success(id);
                     }
 
                     @Override
-                    public ApiResponse<Void> update(Serializable id, @Valid ${entity}DTO dto) {
-                        service.updateFromDTO(id, dto);
-                        return ApiResponse.success();
+                    public ApiResponse
+                    <Boolean> update(Serializable id, @Valid ${entity}DTO dto) {
+                        boolean update = service.updateFromDTO(id, dto);
+                        return ApiResponse.success(update);
                         }
 
                         @Override
-                        public ApiResponse<Void> remove(Serializable id) {
-                            service.removeById(id);
-                            return ApiResponse.success();
+                        public ApiResponse
+                        <Boolean> remove(Serializable id) {
+                            boolean remove = service.removeById(id);
+                            return ApiResponse.success(remove);
                             }
 
                             @Override
-                            public ApiResponse<Void> batchRemove(List<Serializable> ids) {
-                                    service.removeByIds(ids);
-                                    return ApiResponse.success();
+                            public ApiResponse
+                            <Boolean> batchRemove(List
+                                <Serializable> ids) {
+                                    boolean remove = service.removeByIds(ids);
+                                    return ApiResponse.success(remove);
                                     }
                                     }

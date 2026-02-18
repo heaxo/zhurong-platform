@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.ao'
+version = '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    implementation "com.baomidou:mybatis-plus-boot-starter"
+    implementation "com.baomidou:mybatis-plus-jsqlparser"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+test {
+    useJUnitPlatform()
+}

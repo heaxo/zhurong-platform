@@ -1,40 +1,40 @@
 package ${package.Mapper};
 
 <#list importMapperFrameworkPackages as pkg>
-import ${pkg};
+    import ${pkg};
 </#list>
 <#if importMapperJavaPackages?size !=0>
 
-  <#list importMapperJavaPackages as pkg>
-import ${pkg};
-   </#list>
+    <#list importMapperJavaPackages as pkg>
+        import ${pkg};
+    </#list>
 </#if>
 
 /**
- * <p>
- * ${table.comment!} Mapper 接口
- * </p>
- *
- * @author ${author}
- * @since ${date}
- */
+* <p>
+    * ${table.comment!} Mapper 接口
+    * </p>
+*
+* @author ${author}
+* @since ${date}
+*/
 <#if mapperAnnotationClass??>
-@${mapperAnnotationClass.simpleName}
+    @${mapperAnnotationClass.simpleName}
 </#if>
 <#if kotlin>
-interface ${table.mapperName} : ${superMapperClass}<${entity}> {
+    interface ${table.mapperName} : ${superMapperClass}<${entity}> {
 <#else>
-public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
+    public interface ${table.mapperName} extends ${superMapperClass}<${entity}> {
 </#if>
 
 <#list mapperMethodList as m>
     /**
-     * generate by ${m.indexName}
-     *
+    * generate by ${m.indexName}
+    *
     <#list m.tableFieldList as f>
-     * @param ${f.propertyName} ${f.comment}
+        * @param ${f.propertyName} ${f.comment}
     </#list>
-     */
+    */
     ${m.method}
 </#list>
 }

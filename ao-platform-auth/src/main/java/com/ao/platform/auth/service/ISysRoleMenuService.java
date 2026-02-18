@@ -1,15 +1,19 @@
 package com.ao.platform.auth.service;
 
+import com.ao.platform.auth.dto.SysRoleMenuDTO;
 import com.ao.platform.auth.entity.SysRoleMenu;
+import com.ao.platform.auth.vo.SysRoleMenuVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.Serializable;
+
 /**
-*  服务接口
-*/
+ * 服务接口
+ */
 public interface ISysRoleMenuService extends IService<SysRoleMenu> {
     SysRoleMenuVO getVOById(Serializable id);
 
-    void saveFromDTO(SysRoleMenuDTO dto);
+    Long saveFromDTO(SysRoleMenuDTO dto);
 
-    void updateFromDTO(Serializable id, SysRoleMenuDTO dto);
+    Boolean updateFromDTO(Serializable id, SysRoleMenuDTO dto);
 }

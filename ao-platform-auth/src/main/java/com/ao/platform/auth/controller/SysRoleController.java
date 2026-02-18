@@ -1,16 +1,15 @@
 package com.ao.platform.auth.controller;
 
-import com.ao.platform.auth.service.ISysRoleService;
-import com.ao.platform.auth.dto.SysRoleDTO;
-import com.ao.platform.auth.vo.SysRoleVO;
-import com.ao.platform.auth.entity.SysRole;
 import com.ao.platform.auth.api.ISysRoleApi;
-
+import com.ao.platform.auth.convert.SysRoleConvert;
+import com.ao.platform.auth.dto.SysRoleDTO;
+import com.ao.platform.auth.dto.SysRolePageQuery;
+import com.ao.platform.auth.entity.SysRole;
+import com.ao.platform.auth.service.ISysRoleService;
+import com.ao.platform.auth.vo.SysRoleVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,16 +24,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysRoleController implements ISysRoleApi {
 
+    private final SysRoleConvert convert;
     private final ISysRoleService service;
 
     @Override
-    public ApiResponse<PageResponse<SysRoleVO>> page(long current, long size) {
+    public ApiResponse<PageResponse<SysRoleVO>> page(SysRolePageQuery pageQuery) {
 
-        Page<SysRole> page = service.page(new Page<>(current, size));
+        Page<SysRole> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
+                service.lambdaQuery(
+                        convert.toEntity(pageQuery)
+                ));
 
         List<SysRoleVO> voList = page.getRecords()
                 .stream()
-                .map(service::convertToVO)
+                .map(convert::toVO)
                 .toList();
 
         PageResponse<SysRoleVO> response = new PageResponse<>(
@@ -53,26 +56,26 @@ public class SysRoleController implements ISysRoleApi {
     }
 
     @Override
-    public ApiResponse<Void> save(@Valid SysRoleDTO dto) {
-        service.saveFromDTO(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> save(@Valid SysRoleDTO dto) {
+        Long id = service.saveFromDTO(dto);
+        return ApiResponse.success(id);
     }
 
     @Override
-    public ApiResponse<Void> update(Serializable id, @Valid SysRoleDTO dto) {
-        service.updateFromDTO(id, dto);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> update(Serializable id, @Valid SysRoleDTO dto) {
+        boolean update = service.updateFromDTO(id, dto);
+        return ApiResponse.success(update);
     }
 
     @Override
-    public ApiResponse<Void> remove(Serializable id) {
-        service.removeById(id);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> remove(Serializable id) {
+        boolean remove = service.removeById(id);
+        return ApiResponse.success(remove);
     }
 
     @Override
-    public ApiResponse<Void> batchRemove(List<Serializable> ids) {
-        service.removeByIds(ids);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> batchRemove(List<Serializable> ids) {
+        boolean remove = service.removeByIds(ids);
+        return ApiResponse.success(remove);
     }
 }

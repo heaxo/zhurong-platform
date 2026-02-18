@@ -10,12 +10,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 public class AoPlatformCoreApplication {
 
+    @Value("${test.value}")
+    private String value;
+
     public static void main(String[] args) {
         SpringApplication.run(AoPlatformCoreApplication.class, args);
     }
-
-    @Value("${test.value}")
-    private String value;
 
     @PostConstruct
     public void printValue() {

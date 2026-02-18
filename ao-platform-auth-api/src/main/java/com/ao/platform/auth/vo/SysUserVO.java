@@ -1,21 +1,31 @@
 package com.ao.platform.auth.vo;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-*  VO
-*/
+ * VO
+ */
 @Data
 public class SysUserVO implements Serializable {
 
     private Long id;
+    private Long tenantId;
+    private Boolean deleted;
+    private Long createBy;
+    private LocalDateTime createTime;
+    private Long updateBy;
+    private LocalDateTime updateTime;
+    private Integer version;
     private String username;
     private String password;
     private String realName;
-    private Object deptId;
+    private Long deptId;
     private Integer status;
-    private LocalDateTime createTime;
+    private LocalDateTime lastLoginTime;
+    private String lastLoginIp;
+    private String remark;
 
 }

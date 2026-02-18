@@ -1,23 +1,19 @@
 package com.ao.platform.codegenerator;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
-import com.baomidou.mybatisplus.generator.config.po.TableInfo;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import java.sql.Types;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class GeneratorExecutor {
 
     private static String resolveOutputDir(String moduleName) {
         String root = System.getProperty("user.dir");
-        return root.replace("\\","/") + "/" + moduleName;
+        return root.replace("\\", "/") + "/" + moduleName;
     }
 
     public static void execute(DatabaseConfig dbConfig, GeneratorConfig config) {
@@ -87,8 +83,13 @@ public class GeneratorExecutor {
                             .packageName("convert")
                             .enableFileOverride()
                             .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("PageQuery.java")
+                            .templatePath("/templates/pageQuery.java.ftl")
+                            .packageName("dto")
+                            .enableFileOverride()
+                            .build());
                 })
-
 
 
                 .templateEngine(new FreemarkerTemplateEngine())

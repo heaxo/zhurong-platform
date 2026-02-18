@@ -2,6 +2,7 @@ package ${package.Parent}.convert;
 
 import ${package.Entity}.${entity};
 import ${package.Parent}.dto.${entity}DTO;
+import ${package.Parent}.dto.${entity}PageQuery;
 import ${package.Parent}.vo.${entity}VO;
 
 import org.mapstruct.Mapper;
@@ -30,12 +31,14 @@ ${entity}VO toVO(${entity} entity);
 /**
 * Entity 列表 → VO 列表
 */
-List<${entity}VO> toVOList(List<${entity}> list);
+List
+<${entity}VO> toVOList(List<${entity}> list);
 
     /**
     * DTO → Entity
     */
     ${entity} toEntity(${entity}DTO dto);
+    ${entity} toEntity(${entity}PageQuery dto);
 
     /**
     * 更新时 DTO → Entity（忽略 null）

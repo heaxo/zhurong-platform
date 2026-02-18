@@ -1,16 +1,15 @@
 package com.ao.platform.auth.controller;
 
-import com.ao.platform.auth.service.ISysUserService;
-import com.ao.platform.auth.dto.SysUserDTO;
-import com.ao.platform.auth.vo.SysUserVO;
-import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.api.ISysUserApi;
-
+import com.ao.platform.auth.convert.SysUserConvert;
+import com.ao.platform.auth.dto.SysUserDTO;
+import com.ao.platform.auth.dto.SysUserPageQuery;
+import com.ao.platform.auth.entity.SysUser;
+import com.ao.platform.auth.service.ISysUserService;
+import com.ao.platform.auth.vo.SysUserVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
-
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,16 +24,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SysUserController implements ISysUserApi {
 
+    private final SysUserConvert convert;
     private final ISysUserService service;
 
     @Override
-    public ApiResponse<PageResponse<SysUserVO>> page(long current, long size) {
+    public ApiResponse<PageResponse<SysUserVO>> page(SysUserPageQuery pageQuery) {
 
-        Page<SysUser> page = service.page(new Page<>(current, size));
+        Page<SysUser> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
+                service.lambdaQuery(
+                        convert.toEntity(pageQuery)
+                ));
 
         List<SysUserVO> voList = page.getRecords()
                 .stream()
-                .map(service::convertToVO)
+                .map(convert::toVO)
                 .toList();
 
         PageResponse<SysUserVO> response = new PageResponse<>(
@@ -53,26 +56,26 @@ public class SysUserController implements ISysUserApi {
     }
 
     @Override
-    public ApiResponse<Void> save(@Valid SysUserDTO dto) {
-        service.saveFromDTO(dto);
-        return ApiResponse.success();
+    public ApiResponse<Long> save(@Valid SysUserDTO dto) {
+        Long id = service.saveFromDTO(dto);
+        return ApiResponse.success(id);
     }
 
     @Override
-    public ApiResponse<Void> update(Serializable id, @Valid SysUserDTO dto) {
-        service.updateFromDTO(id, dto);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> update(Serializable id, @Valid SysUserDTO dto) {
+        boolean update = service.updateFromDTO(id, dto);
+        return ApiResponse.success(update);
     }
 
     @Override
-    public ApiResponse<Void> remove(Serializable id) {
-        service.removeById(id);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> remove(Serializable id) {
+        boolean remove = service.removeById(id);
+        return ApiResponse.success(remove);
     }
 
     @Override
-    public ApiResponse<Void> batchRemove(List<Serializable> ids) {
-        service.removeByIds(ids);
-        return ApiResponse.success();
+    public ApiResponse<Boolean> batchRemove(List<Serializable> ids) {
+        boolean remove = service.removeByIds(ids);
+        return ApiResponse.success(remove);
     }
 }
