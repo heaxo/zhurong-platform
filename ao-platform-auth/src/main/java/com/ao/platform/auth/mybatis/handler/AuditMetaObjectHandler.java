@@ -16,11 +16,11 @@ public class AuditMetaObjectHandler implements MetaObjectHandler {
 
     private Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null){
+        if (authentication == null) {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        if (principal == null){
+        if (principal == null) {
             return null;
         }
         JwtUserDetails user = (JwtUserDetails) principal;

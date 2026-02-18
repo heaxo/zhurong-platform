@@ -22,6 +22,7 @@ public class JwtProvider {
     private SecretKey secretKey;
     @Value("${security.jwt.secret}")
     private String secret;
+
     @PostConstruct
     public void init() {
 

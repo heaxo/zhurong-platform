@@ -10,6 +10,8 @@ import com.ao.platform.auth.vo.SysDeptVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,13 @@ public class SysDeptController implements ISysDeptApi {
             <PageResponse
                     <SysDeptVO>> page(SysDeptPageQuery pageQuery) {
 
-        Page<SysDept> page = service.page(PageFactory.build(pageQuery), service.lambdaQuery(convert.toEntity(pageQuery)));
+        LambdaQueryWrapper<SysDept> wrapper =
+                Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+
+        Page<SysDept> page = service.page(
+                PageFactory.build(pageQuery),
+                wrapper
+        );
 
         List
                 <SysDeptVO> voList = page.getRecords()

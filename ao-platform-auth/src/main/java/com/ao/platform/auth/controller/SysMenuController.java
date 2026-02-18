@@ -10,6 +10,8 @@ import com.ao.platform.auth.vo.SysMenuVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,13 @@ public class SysMenuController implements ISysMenuApi {
             <PageResponse
                     <SysMenuVO>> page(SysMenuPageQuery pageQuery) {
 
-        Page<SysMenu> page = service.page(PageFactory.build(pageQuery), service.lambdaQuery(convert.toEntity(pageQuery)));
+        LambdaQueryWrapper<SysMenu> wrapper =
+                Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+
+        Page<SysMenu> page = service.page(
+                PageFactory.build(pageQuery),
+                wrapper
+        );
 
         List
                 <SysMenuVO> voList = page.getRecords()

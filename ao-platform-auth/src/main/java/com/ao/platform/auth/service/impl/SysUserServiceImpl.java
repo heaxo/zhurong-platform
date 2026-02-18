@@ -104,11 +104,11 @@ public class SysUserServiceImpl
 
     private Long getCurrentTenantId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null){
+        if (authentication == null) {
             return 0L;
         }
         Object principal = authentication.getPrincipal();
-        if (principal == null){
+        if (principal == null) {
             return 0L;
         }
         JwtUserDetails user = (JwtUserDetails) principal;

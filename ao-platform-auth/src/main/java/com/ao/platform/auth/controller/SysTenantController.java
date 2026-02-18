@@ -10,6 +10,8 @@ import com.ao.platform.auth.vo.SysTenantVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,13 @@ public class SysTenantController implements ISysTenantApi {
             <PageResponse
                     <SysTenantVO>> page(SysTenantPageQuery pageQuery) {
 
-        Page<SysTenant> page = service.page(PageFactory.build(pageQuery), service.lambdaQuery(convert.toEntity(pageQuery)));
+        LambdaQueryWrapper<SysTenant> wrapper =
+                Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+
+        Page<SysTenant> page = service.page(
+                PageFactory.build(pageQuery),
+                wrapper
+        );
 
         List
                 <SysTenantVO> voList = page.getRecords()
