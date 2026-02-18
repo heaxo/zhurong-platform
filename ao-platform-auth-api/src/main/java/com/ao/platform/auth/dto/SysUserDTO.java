@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO
@@ -27,5 +28,5 @@ public class SysUserDTO implements Serializable {
     private LocalDateTime lastLoginTime;
     private String lastLoginIp;
     private String remark;
-
+    private List<Long> roleIds;
 }

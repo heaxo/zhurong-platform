@@ -1,5 +1,6 @@
 package com.ao.platform.auth.convert;
 
+import com.ao.platform.auth.dto.CreateUserRequest;
 import com.ao.platform.auth.dto.SysUserDTO;
 import com.ao.platform.auth.dto.SysUserPageQuery;
 import com.ao.platform.auth.entity.SysUser;
@@ -39,6 +40,8 @@ public interface SysUserConvert {
     SysUser toEntity(SysUserDTO dto);
 
     SysUser toEntity(SysUserPageQuery dto);
+
+    SysUserDTO toDTO(CreateUserRequest request);
 
     /**
      * 更新时 DTO → Entity（忽略 null）

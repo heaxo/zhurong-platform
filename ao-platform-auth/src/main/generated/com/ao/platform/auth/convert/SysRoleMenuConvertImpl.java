@@ -1,0 +1,132 @@
+package com.ao.platform.auth.convert;
+
+import com.ao.platform.auth.dto.SysRoleMenuDTO;
+import com.ao.platform.auth.dto.SysRoleMenuPageQuery;
+import com.ao.platform.auth.entity.SysRoleMenu;
+import com.ao.platform.auth.vo.SysRoleMenuVO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2026-02-18T20:50:47+0800",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
+)
+@Component
+public class SysRoleMenuConvertImpl implements SysRoleMenuConvert {
+
+    @Override
+    public SysRoleMenuVO toVO(SysRoleMenu entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        SysRoleMenuVO sysRoleMenuVO = new SysRoleMenuVO();
+
+        sysRoleMenuVO.setId( entity.getId() );
+        sysRoleMenuVO.setTenantId( entity.getTenantId() );
+        sysRoleMenuVO.setDeleted( entity.getDeleted() );
+        sysRoleMenuVO.setCreateBy( entity.getCreateBy() );
+        sysRoleMenuVO.setCreateTime( entity.getCreateTime() );
+        sysRoleMenuVO.setUpdateBy( entity.getUpdateBy() );
+        sysRoleMenuVO.setUpdateTime( entity.getUpdateTime() );
+        sysRoleMenuVO.setVersion( entity.getVersion() );
+        sysRoleMenuVO.setRoleId( entity.getRoleId() );
+        sysRoleMenuVO.setMenuId( entity.getMenuId() );
+
+        return sysRoleMenuVO;
+    }
+
+    @Override
+    public List<SysRoleMenuVO> toVOList(List<SysRoleMenu> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<SysRoleMenuVO> list1 = new ArrayList<SysRoleMenuVO>( list.size() );
+        for ( SysRoleMenu sysRoleMenu : list ) {
+            list1.add( toVO( sysRoleMenu ) );
+        }
+
+        return list1;
+    }
+
+    @Override
+    public SysRoleMenu toEntity(SysRoleMenuDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        SysRoleMenu sysRoleMenu = new SysRoleMenu();
+
+        sysRoleMenu.setId( dto.getId() );
+        sysRoleMenu.setDeleted( dto.getDeleted() );
+        sysRoleMenu.setVersion( dto.getVersion() );
+        sysRoleMenu.setCreateBy( dto.getCreateBy() );
+        sysRoleMenu.setCreateTime( dto.getCreateTime() );
+        sysRoleMenu.setUpdateBy( dto.getUpdateBy() );
+        sysRoleMenu.setUpdateTime( dto.getUpdateTime() );
+        sysRoleMenu.setTenantId( dto.getTenantId() );
+        sysRoleMenu.setRoleId( dto.getRoleId() );
+        sysRoleMenu.setMenuId( dto.getMenuId() );
+
+        return sysRoleMenu;
+    }
+
+    @Override
+    public SysRoleMenu toEntity(SysRoleMenuPageQuery dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        SysRoleMenu sysRoleMenu = new SysRoleMenu();
+
+        sysRoleMenu.setVersion( dto.getVersion() );
+        sysRoleMenu.setCreateBy( dto.getCreateBy() );
+        sysRoleMenu.setUpdateBy( dto.getUpdateBy() );
+        sysRoleMenu.setRoleId( dto.getRoleId() );
+        sysRoleMenu.setMenuId( dto.getMenuId() );
+
+        return sysRoleMenu;
+    }
+
+    @Override
+    public void updateFromDTO(SysRoleMenuDTO dto, SysRoleMenu entity) {
+        if ( dto == null ) {
+            return;
+        }
+
+        if ( dto.getId() != null ) {
+            entity.setId( dto.getId() );
+        }
+        if ( dto.getDeleted() != null ) {
+            entity.setDeleted( dto.getDeleted() );
+        }
+        if ( dto.getVersion() != null ) {
+            entity.setVersion( dto.getVersion() );
+        }
+        if ( dto.getCreateBy() != null ) {
+            entity.setCreateBy( dto.getCreateBy() );
+        }
+        if ( dto.getCreateTime() != null ) {
+            entity.setCreateTime( dto.getCreateTime() );
+        }
+        if ( dto.getUpdateBy() != null ) {
+            entity.setUpdateBy( dto.getUpdateBy() );
+        }
+        if ( dto.getUpdateTime() != null ) {
+            entity.setUpdateTime( dto.getUpdateTime() );
+        }
+        if ( dto.getTenantId() != null ) {
+            entity.setTenantId( dto.getTenantId() );
+        }
+        if ( dto.getRoleId() != null ) {
+            entity.setRoleId( dto.getRoleId() );
+        }
+        if ( dto.getMenuId() != null ) {
+            entity.setMenuId( dto.getMenuId() );
+        }
+    }
+}

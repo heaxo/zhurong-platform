@@ -7,6 +7,7 @@ import com.ao.platform.auth.mapper.SysTenantMapper;
 import com.ao.platform.auth.service.ISysTenantService;
 import com.ao.platform.auth.vo.SysTenantVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -15,15 +16,13 @@ import java.io.Serializable;
  * 服务实现类
  */
 @Service
+@RequiredArgsConstructor
 public class SysTenantServiceImpl
         extends ServiceImpl<SysTenantMapper, SysTenant>
         implements ISysTenantService {
 
     private final SysTenantConvert convert;
 
-    public SysTenantServiceImpl(SysTenantConvert convert) {
-        this.convert = convert;
-    }
 
     @Override
     public SysTenantVO getVOById(Serializable id) {

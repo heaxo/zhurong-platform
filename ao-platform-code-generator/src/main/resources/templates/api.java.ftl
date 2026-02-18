@@ -19,7 +19,7 @@ import java.util.List;
 *
 * 说明：仅定义接口契约
 */
-@RequestMapping("/api/${package.ModuleName}/${table.entityPath}")
+@RequestMapping("/${table.entityPath}")
 public interface I${entity}Api {
 
 /**

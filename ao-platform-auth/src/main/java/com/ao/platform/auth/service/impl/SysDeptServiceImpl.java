@@ -7,6 +7,7 @@ import com.ao.platform.auth.mapper.SysDeptMapper;
 import com.ao.platform.auth.service.ISysDeptService;
 import com.ao.platform.auth.vo.SysDeptVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -15,15 +16,13 @@ import java.io.Serializable;
  * 服务实现类
  */
 @Service
+@RequiredArgsConstructor
 public class SysDeptServiceImpl
         extends ServiceImpl<SysDeptMapper, SysDept>
         implements ISysDeptService {
 
     private final SysDeptConvert convert;
 
-    public SysDeptServiceImpl(SysDeptConvert convert) {
-        this.convert = convert;
-    }
 
     @Override
     public SysDeptVO getVOById(Serializable id) {

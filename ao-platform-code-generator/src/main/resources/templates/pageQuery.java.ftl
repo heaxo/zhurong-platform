@@ -1,6 +1,6 @@
 package ${package.Parent}.dto;
 
-import com.ao.platform.base.api.BasePageQuery;
+import com.ao.platform.base.model.BasePageQuery;
 import lombok.Getter;
 import lombok.Setter;
 

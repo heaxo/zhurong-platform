@@ -7,6 +7,7 @@ import com.ao.platform.auth.mapper.SysMenuMapper;
 import com.ao.platform.auth.service.ISysMenuService;
 import com.ao.platform.auth.vo.SysMenuVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -15,15 +16,13 @@ import java.io.Serializable;
  * 服务实现类
  */
 @Service
+@RequiredArgsConstructor
 public class SysMenuServiceImpl
         extends ServiceImpl<SysMenuMapper, SysMenu>
         implements ISysMenuService {
 
     private final SysMenuConvert convert;
 
-    public SysMenuServiceImpl(SysMenuConvert convert) {
-        this.convert = convert;
-    }
 
     @Override
     public SysMenuVO getVOById(Serializable id) {

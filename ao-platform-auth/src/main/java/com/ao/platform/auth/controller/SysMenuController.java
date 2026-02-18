@@ -9,6 +9,7 @@ import com.ao.platform.auth.service.ISysMenuService;
 import com.ao.platform.auth.vo.SysMenuVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
+import com.ao.platform.base.model.PageFactory;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +29,20 @@ public class SysMenuController implements ISysMenuApi {
     private final ISysMenuService service;
 
     @Override
-    public ApiResponse<PageResponse<SysMenuVO>> page(SysMenuPageQuery pageQuery) {
+    public ApiResponse
+            <PageResponse
+                    <SysMenuVO>> page(SysMenuPageQuery pageQuery) {
 
-        Page<SysMenu> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
-                service.lambdaQuery(
-                        convert.toEntity(pageQuery)
-                ));
+        Page<SysMenu> page = service.page(PageFactory.build(pageQuery), service.lambdaQuery(convert.toEntity(pageQuery)));
 
-        List<SysMenuVO> voList = page.getRecords()
+        List
+                <SysMenuVO> voList = page.getRecords()
                 .stream()
                 .map(convert::toVO)
                 .toList();
 
-        PageResponse<SysMenuVO> response = new PageResponse<>(
+        PageResponse
+                <SysMenuVO> response = new PageResponse<>(
                 voList,
                 page.getTotal(),
                 page.getCurrent(),
@@ -51,30 +53,36 @@ public class SysMenuController implements ISysMenuApi {
     }
 
     @Override
-    public ApiResponse<SysMenuVO> getById(Serializable id) {
+    public ApiResponse
+            <SysMenuVO> getById(Serializable id) {
         return ApiResponse.success(service.getVOById(id));
     }
 
     @Override
-    public ApiResponse<Long> save(@Valid SysMenuDTO dto) {
+    public ApiResponse
+            <Long> save(@Valid SysMenuDTO dto) {
         Long id = service.saveFromDTO(dto);
         return ApiResponse.success(id);
     }
 
     @Override
-    public ApiResponse<Boolean> update(Serializable id, @Valid SysMenuDTO dto) {
+    public ApiResponse
+            <Boolean> update(Serializable id, @Valid SysMenuDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
     }
 
     @Override
-    public ApiResponse<Boolean> remove(Serializable id) {
+    public ApiResponse
+            <Boolean> remove(Serializable id) {
         boolean remove = service.removeById(id);
         return ApiResponse.success(remove);
     }
 
     @Override
-    public ApiResponse<Boolean> batchRemove(List<Serializable> ids) {
+    public ApiResponse
+            <Boolean> batchRemove(List
+                                          <Serializable> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }

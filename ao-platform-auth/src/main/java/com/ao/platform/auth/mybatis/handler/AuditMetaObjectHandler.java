@@ -1,13 +1,31 @@
-package com.ao.platform.base.mybatis.handler;
+package com.ao.platform.auth.mybatis.handler;
 
+import com.ao.platform.auth.security.model.JwtUserDetails;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Component
+@RequiredArgsConstructor
 public class AuditMetaObjectHandler implements MetaObjectHandler {
+
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null){
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal == null){
+            return null;
+        }
+        JwtUserDetails user = (JwtUserDetails) principal;
+        return user.getUserId();
+    }
 
     @Override
     public void insertFill(MetaObject metaObject) {
@@ -40,10 +58,5 @@ public class AuditMetaObjectHandler implements MetaObjectHandler {
 
         this.strictUpdateFill(metaObject, "updateBy",
                 Long.class, userId);
-    }
-
-    private Long getCurrentUserId() {
-        // 从上下文获取当前用户ID
-        return 1L;
     }
 }

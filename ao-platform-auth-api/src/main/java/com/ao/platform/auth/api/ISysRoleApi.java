@@ -17,7 +17,7 @@ import java.util.List;
  * <p>
  * 说明：仅定义接口契约
  */
-@RequestMapping("/api/auth/sysRole")
+@RequestMapping("/sysRole")
 public interface ISysRoleApi {
 
     /**

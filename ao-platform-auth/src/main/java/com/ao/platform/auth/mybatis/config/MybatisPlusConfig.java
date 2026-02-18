@@ -1,4 +1,4 @@
-package com.ao.platform.base.mybatis.config;
+package com.ao.platform.auth.mybatis.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;

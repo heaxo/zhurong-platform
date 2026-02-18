@@ -6,6 +6,7 @@ import com.ao.platform.auth.vo.SysDeptVO;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import jakarta.validation.Valid;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -16,7 +17,7 @@ import java.util.List;
  * <p>
  * 说明：仅定义接口契约
  */
-@RequestMapping("/api/auth/sysDept")
+@RequestMapping("/sysDept")
 public interface ISysDeptApi {
 
     /**

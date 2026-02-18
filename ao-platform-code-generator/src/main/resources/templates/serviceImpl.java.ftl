@@ -7,6 +7,8 @@ import ${package.Parent}.convert.${entity}Convert;
 import ${package.Parent}.dto.${entity}DTO;
 import ${package.Parent}.vo.${entity}VO;
 
+import lombok.RequiredArgsConstructor;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +18,13 @@ import java.io.Serializable;
 * ${table.comment!} 服务实现类
 */
 @Service
+@RequiredArgsConstructor
 public class ${table.serviceImplName}
 extends ServiceImpl<${table.mapperName}, ${entity}>
 implements ${table.serviceName} {
 
 private final ${entity}Convert convert;
 
-public ${table.serviceImplName}(${entity}Convert convert) {
-this.convert = convert;
-}
 
 @Override
 public ${entity}VO getVOById(Serializable id) {

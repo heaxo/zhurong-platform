@@ -42,9 +42,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+    implementation "com.baomidou:mybatis-plus-boot-starter"
+    implementation "com.baomidou:mybatis-plus-jsqlparser"
 
     compileOnly 'org.projectlombok:lombok'
     // PostgreSQL

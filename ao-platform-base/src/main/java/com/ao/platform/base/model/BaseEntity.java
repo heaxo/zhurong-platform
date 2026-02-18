@@ -12,7 +12,7 @@ public abstract class BaseEntity {
 
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
-    @TableLogic
+    @TableLogic(value = "false", delval = "true")
     private Boolean deleted;
     @Version
     private Integer version;

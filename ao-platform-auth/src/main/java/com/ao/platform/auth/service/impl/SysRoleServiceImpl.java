@@ -7,6 +7,7 @@ import com.ao.platform.auth.mapper.SysRoleMapper;
 import com.ao.platform.auth.service.ISysRoleService;
 import com.ao.platform.auth.vo.SysRoleVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -15,15 +16,13 @@ import java.io.Serializable;
  * 服务实现类
  */
 @Service
+@RequiredArgsConstructor
 public class SysRoleServiceImpl
         extends ServiceImpl<SysRoleMapper, SysRole>
         implements ISysRoleService {
 
     private final SysRoleConvert convert;
 
-    public SysRoleServiceImpl(SysRoleConvert convert) {
-        this.convert = convert;
-    }
 
     @Override
     public SysRoleVO getVOById(Serializable id) {

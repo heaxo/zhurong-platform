@@ -12,8 +12,6 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     implementation "com.baomidou:mybatis-plus-boot-starter"
-    implementation "com.baomidou:mybatis-plus-jsqlparser"
-    implementation 'org.springframework.boot:spring-boot-starter-web'
 }
 
 test {

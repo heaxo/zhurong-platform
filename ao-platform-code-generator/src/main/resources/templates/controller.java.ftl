@@ -10,12 +10,12 @@ import ${package.Parent}.convert.${entity}Convert;
 
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
+import com.ao.platform.base.model.PageFactory;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
@@ -36,10 +36,13 @@ public ApiResponse
 <PageResponse
 <${entity}VO>> page(${entity}PageQuery pageQuery ) {
 
-    Page<${entity}> page = service.page(new Page(pageQuery.getPage(), pageQuery.getPageSize()),
-    service.lambdaQuery(
-    convert.toEntity(pageQuery)
-    ));
+    LambdaQueryWrapper<${entity}> wrapper =
+        Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+
+    Page<${entity}> page = service.page(
+        PageFactory.build(pageQuery),
+        wrapper
+        );
 
     List
     <${entity}VO> voList = page.getRecords()

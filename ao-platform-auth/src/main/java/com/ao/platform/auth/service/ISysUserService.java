@@ -16,4 +16,6 @@ public interface ISysUserService extends IService<SysUser> {
     Long saveFromDTO(SysUserDTO dto);
 
     Boolean updateFromDTO(Serializable id, SysUserDTO dto);
+
+    boolean createUser(SysUserDTO request);
 }
