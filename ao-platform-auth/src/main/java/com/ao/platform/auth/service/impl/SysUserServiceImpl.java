@@ -2,14 +2,17 @@ package com.ao.platform.auth.service.impl;
 
 import com.ao.platform.auth.convert.SysUserConvert;
 import com.ao.platform.auth.dto.SysUserDTO;
+import com.ao.platform.auth.entity.SysRole;
 import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.entity.SysUserRole;
 import com.ao.platform.auth.mapper.SysUserMapper;
 import com.ao.platform.auth.security.model.JwtUserDetails;
+import com.ao.platform.auth.service.ISysRoleService;
 import com.ao.platform.auth.service.ISysUserRoleService;
 import com.ao.platform.auth.service.ISysUserService;
 import com.ao.platform.auth.vo.SysUserVO;
 import com.ao.platform.base.exception.BusinessException;
+import com.ao.platform.base.model.BaseEntity;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +35,19 @@ public class SysUserServiceImpl
         implements ISysUserService {
 
     private final ISysUserRoleService sysUserRoleService;
+    private final ISysRoleService sysRoleService;
     private final SysUserConvert convert;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public SysUserVO getVOById(Serializable id) {
         SysUser entity = this.getById(id);
-        return convert.toVO(entity);
+        SysUserVO vo = convert.toVO(entity);
+        List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserId, id));
+        List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+        List<SysRole> roles = sysRoleService.list(Wrappers.lambdaQuery(SysRole.class).in(BaseEntity::getId, roleIds));
+        vo.setRoles(roles.stream().map(SysRole::getCode).toList());
+        return vo;
     }
 
     @Override

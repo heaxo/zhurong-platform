@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-18T20:50:47+0800",
+    date = "2026-02-18T23:35:29+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -35,7 +35,6 @@ public class SysUserConvertImpl implements SysUserConvert {
         sysUserVO.setUpdateTime( entity.getUpdateTime() );
         sysUserVO.setVersion( entity.getVersion() );
         sysUserVO.setUsername( entity.getUsername() );
-        sysUserVO.setPassword( entity.getPassword() );
         sysUserVO.setRealName( entity.getRealName() );
         sysUserVO.setDeptId( entity.getDeptId() );
         sysUserVO.setStatus( entity.getStatus() );

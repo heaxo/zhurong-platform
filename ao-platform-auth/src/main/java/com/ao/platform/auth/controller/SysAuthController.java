@@ -4,6 +4,7 @@ import com.ao.platform.auth.api.ISysAuthApi;
 import com.ao.platform.auth.dto.LoginRequest;
 import com.ao.platform.auth.service.ISysAuthService;
 import com.ao.platform.auth.vo.LoginResponse;
+import com.ao.platform.auth.web.BaseController;
 import com.ao.platform.base.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class SysAuthController implements ISysAuthApi {
+public class SysAuthController extends BaseController implements ISysAuthApi {
 
     private final ISysAuthService authService;
 
@@ -21,5 +22,10 @@ public class SysAuthController implements ISysAuthApi {
         LoginResponse response = authService.login(request);
 
         return ApiResponse.success(response);
+    }
+
+    @Override
+    public ApiResponse<String> logout() {
+        return ApiResponse.success("");
     }
 }

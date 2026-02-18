@@ -11,6 +11,7 @@ import ${package.Parent}.convert.${entity}Convert;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
+import com.ao.platform.auth.web.BaseController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -28,7 +29,7 @@ import java.util.List;
 */
 @RestController
 @RequiredArgsConstructor
-public class ${table.controllerName} implements I${entity}Api {
+public class ${table.controllerName} extends BaseController implements I${entity}Api {
 
 private final ${entity}Convert convert;
 private final ${table.serviceName} service;

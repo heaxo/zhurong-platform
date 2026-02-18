@@ -8,6 +8,7 @@ import com.ao.platform.auth.dto.SysUserPageQuery;
 import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.service.ISysUserService;
 import com.ao.platform.auth.vo.SysUserVO;
+import com.ao.platform.auth.web.BaseController;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
@@ -16,6 +17,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-public class SysUserController implements ISysUserApi {
+public class SysUserController extends BaseController implements ISysUserApi {
 
     private final SysUserConvert convert;
     private final ISysUserService service;
@@ -103,5 +105,12 @@ public class SysUserController implements ISysUserApi {
         SysUserDTO sysUserDTO = convert.toDTO(request);
         boolean create = service.createUser(sysUserDTO);
         return ApiResponse.success(create);
+    }
+
+    @GetMapping("info")
+    public ApiResponse
+            <SysUserVO> info() {
+        Long userId = getCurrentUserId();
+        return ApiResponse.success(service.getVOById(userId));
     }
 }

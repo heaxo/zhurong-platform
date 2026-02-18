@@ -19,4 +19,6 @@ public interface ISysAuthApi {
      */
     @PostMapping("login")
     ApiResponse<LoginResponse> login(@RequestBody LoginRequest request);
+    @PostMapping("logout")
+    ApiResponse<String> logout();
 }
