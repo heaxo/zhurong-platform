@@ -1,0 +1,17 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
+    api "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
+
+
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+    compileOnly 'org.springframework.boot:spring-boot-starter-security'
+}

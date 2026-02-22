@@ -1,10 +1,10 @@
-package com.ao.platform.auth.security.filter;
+package com.ao.platform.security.filter;
 
-import com.ao.platform.auth.configuration.SecurityConfig;
-import com.ao.platform.auth.security.jwt.JwtAuthenticationToken;
-import com.ao.platform.auth.security.jwt.JwtProvider;
-import com.ao.platform.auth.security.model.JwtUserDetails;
-import io.jsonwebtoken.Claims;
+import com.ao.platform.security.constant.SecurityConstants;
+import com.ao.platform.security.jwt.JwtAuthenticationToken;
+import com.ao.platform.security.jwt.JwtProvider;
+import com.ao.platform.security.model.JwtUserDetails;
+import com.ao.platform.security.model.TokenUser;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,15 +12,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 
-@Component
+/*
+ * @Author a.he@lantek.com
+ * @Description ServletJwtAuthenticationFilter
+ * @Date 2026/2/22 15:07
+ **/
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class ServletJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String HEADER = "Authorization";
     private static final String PREFIX = "Bearer ";
@@ -51,13 +54,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
 
-            Claims claims = jwtProvider.parseToken(token);
+            TokenUser tokenUser = jwtProvider.parseToken(token);
 
-            Long userId = claims.get("id", Long.class);
-            String username = claims.get("username", String.class);
-            Long tenant = claims.get("tenant", Long.class);
-            List<String> roles = claims.get("roles", List.class);
+            Long userId = tokenUser.getId();
+            String username = tokenUser.getUsername();
+            Long tenant = tokenUser.getTenantId();
+            List<String> roles = tokenUser.getRoles();
 
+            // ====================== 权限构造说明 ======================
+            //
+            // 这里将 JWT 中的角色列表转换为 Spring Security 的 GrantedAuthority。
+            // 当前只存储角色（ROLE_XXX），用于基于角色的权限控制：
+            //
+            //     @PreAuthorize("hasRole('ADMIN')")
+            //
+            // 注意：
+            // 这里只处理“角色级权限”。
+            // 如果后续需要支持“接口级权限（role_api）”，
+            //    必须在 JWT 中增加 permissions 字段，例如：
+            //        "permissions": ["sys:user:add", "sys:user:delete"]
+            //
+            //    然后在这里同时将 permissions 转换为 SimpleGrantedAuthority：
+            //        authorities.addAll(
+            //            permissions.stream()
+            //                .map(SimpleGrantedAuthority::new)
+            //                .toList()
+            //        );
+            //
+            // Gateway 层通常只做认证，不做细粒度接口权限控制。
+            //    接口级权限建议在 Core/Auth 服务中使用 @PreAuthorize 进行判断。
+            //
+            // ==========================================================
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
@@ -82,6 +109,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isWhiteList(String path) {
-        return List.of(SecurityConfig.WHITE_LIST).stream().anyMatch(path::startsWith);
+        return List.of(SecurityConstants.WHITE_LIST).stream().anyMatch(path::startsWith);
     }
 }
