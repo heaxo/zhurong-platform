@@ -5,6 +5,7 @@ import com.ao.platform.auth.dto.SysUserDTO;
 import com.ao.platform.auth.dto.SysUserPageQuery;
 import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.vo.SysUserVO;
+import com.ao.platform.security.model.TokenUser;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -42,6 +43,10 @@ public interface SysUserConvert {
     SysUser toEntity(SysUserPageQuery dto);
 
     SysUserDTO toDTO(CreateUserRequest request);
+
+    SysUserDTO toDTO(SysUser entity);
+
+    TokenUser toTokenUser(SysUser entity);
 
     /**
      * 更新时 DTO → Entity（忽略 null）

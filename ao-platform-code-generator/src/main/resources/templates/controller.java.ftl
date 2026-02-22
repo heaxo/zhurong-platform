@@ -40,12 +40,12 @@ public ApiResponse
 <${entity}VO>> page(${entity}PageQuery pageQuery ) {
 
     LambdaQueryWrapper<${entity}> wrapper =
-        Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+    Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
     Page<${entity}> page = service.page(
-        PageFactory.build(pageQuery),
-        wrapper
-        );
+    PageFactory.build(pageQuery),
+    wrapper
+    );
 
     List
     <${entity}VO> voList = page.getRecords()

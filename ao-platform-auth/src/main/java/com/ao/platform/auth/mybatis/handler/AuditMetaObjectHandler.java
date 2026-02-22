@@ -1,6 +1,6 @@
 package com.ao.platform.auth.mybatis.handler;
 
-import com.ao.platform.auth.security.model.JwtUserDetails;
+import com.ao.platform.security.model.JwtUserDetails;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.reflection.MetaObject;

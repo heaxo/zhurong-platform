@@ -25,6 +25,7 @@ ext {
 dependencies {
 
     implementation project(':ao-platform-base')
+    implementation project(':ao-platform-security')
     implementation project(':ao-platform-core-api')
 
     implementation 'org.springframework.boot:spring-boot-starter'

@@ -31,3 +31,4 @@ spring:
     import:
       - nacos:ao-platform-auth
       - nacos:ao-platform-auth-${spring.profiles.active}
+      - nacos:ao-platform-security-${spring.profiles.active}

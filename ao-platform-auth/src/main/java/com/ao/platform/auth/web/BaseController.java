@@ -1,7 +1,7 @@
 package com.ao.platform.auth.web;
 
-import com.ao.platform.auth.security.model.JwtUserDetails;
 import com.ao.platform.base.exception.BusinessException;
+import com.ao.platform.security.model.JwtUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

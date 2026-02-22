@@ -11,10 +11,13 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: 127.0.0.1:8848
+        server-addr: lantekha:8848
       config:
-        server-addr: 127.0.0.1:8848
+        server-addr: lantekha:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
-    import: nacos:ao-platform-core
+    import:
+      - nacos:ao-platform-core
+      - nacos:ao-platform-core-${spring.profiles.active}
+      - nacos:ao-platform-security-${spring.profiles.active}

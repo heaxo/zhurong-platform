@@ -24,6 +24,15 @@ ext {
 }
 
 dependencies {
+    implementation project(':ao-platform-security')
+
+    implementation "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'

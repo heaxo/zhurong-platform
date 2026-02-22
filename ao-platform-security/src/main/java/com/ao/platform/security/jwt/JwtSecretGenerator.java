@@ -1,4 +1,4 @@
-package com.ao.platform.auth.security.jwt;
+package com.ao.platform.security.jwt;
 
 import java.security.SecureRandom;
 import java.util.Base64;

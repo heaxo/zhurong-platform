@@ -1,17 +1,19 @@
 package com.ao.platform.auth.service.impl;
 
+import com.ao.platform.auth.convert.SysUserConvert;
 import com.ao.platform.auth.dto.LoginRequest;
 import com.ao.platform.auth.entity.SysRole;
 import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.entity.SysUserRole;
 import com.ao.platform.auth.mapper.SysUserMapper;
-import com.ao.platform.auth.security.jwt.JwtProvider;
 import com.ao.platform.auth.service.ISysAuthService;
 import com.ao.platform.auth.service.ISysRoleService;
 import com.ao.platform.auth.service.ISysUserRoleService;
 import com.ao.platform.auth.vo.LoginResponse;
 import com.ao.platform.base.exception.BusinessException;
 import com.ao.platform.base.model.BaseEntity;
+import com.ao.platform.security.jwt.JwtProvider;
+import com.ao.platform.security.model.TokenUser;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,7 @@ public class SysAuthServiceImpl implements ISysAuthService {
     private final ISysUserRoleService sysUserRoleService;
     private final ISysRoleService sysRoleService;
     private final SysUserMapper userMapper;
+    private final SysUserConvert userConvert;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
@@ -50,8 +53,8 @@ public class SysAuthServiceImpl implements ISysAuthService {
         List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
         List<SysRole> roles = sysRoleService.list(Wrappers.lambdaQuery(SysRole.class).in(BaseEntity::getId, roleIds));
         List<String> codes = roles.stream().map(SysRole::getCode).toList();
-
-        String token = jwtProvider.generateToken(user, codes);
+        TokenUser tokenUser = userConvert.toTokenUser(user);
+        String token = jwtProvider.generateToken(tokenUser, codes);
 
         return LoginResponse.builder()
                 .id(user.getId())

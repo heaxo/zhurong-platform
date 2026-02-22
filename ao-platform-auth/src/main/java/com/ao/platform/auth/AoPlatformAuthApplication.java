@@ -1,6 +1,6 @@
 package com.ao.platform.auth;
 
-import com.ao.platform.auth.security.jwt.JwtSecretGenerator;
+import com.ao.platform.security.jwt.JwtSecretGenerator;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;

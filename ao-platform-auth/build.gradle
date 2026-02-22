@@ -27,6 +27,7 @@ dependencies {
 
     implementation project(':ao-platform-base')
     implementation project(':ao-platform-auth-api')
+    implementation project(':ao-platform-security')
 
     implementation 'org.mapstruct:mapstruct'
     annotationProcessor 'org.mapstruct:mapstruct-processor'
@@ -42,10 +43,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-
-    implementation "io.jsonwebtoken:jjwt-api:${JsonWebTokenVersion}"
-    runtimeOnly "io.jsonwebtoken:jjwt-impl:${JsonWebTokenVersion}"
-    runtimeOnly "io.jsonwebtoken:jjwt-jackson:${JsonWebTokenVersion}"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

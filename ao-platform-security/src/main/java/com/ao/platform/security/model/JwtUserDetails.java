@@ -1,4 +1,4 @@
-package com.ao.platform.auth.security.model;
+package com.ao.platform.security.model;
 
 import lombok.Builder;
 import lombok.Getter;

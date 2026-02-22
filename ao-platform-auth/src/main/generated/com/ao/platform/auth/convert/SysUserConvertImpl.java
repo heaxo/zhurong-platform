@@ -5,6 +5,7 @@ import com.ao.platform.auth.dto.SysUserDTO;
 import com.ao.platform.auth.dto.SysUserPageQuery;
 import com.ao.platform.auth.entity.SysUser;
 import com.ao.platform.auth.vo.SysUserVO;
+import com.ao.platform.security.model.TokenUser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-18T23:35:29+0800",
+    date = "2026-02-22T15:52:57+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -130,6 +131,49 @@ public class SysUserConvertImpl implements SysUserConvert {
         }
 
         return sysUserDTO;
+    }
+
+    @Override
+    public SysUserDTO toDTO(SysUser entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        SysUserDTO sysUserDTO = new SysUserDTO();
+
+        sysUserDTO.setId( entity.getId() );
+        sysUserDTO.setTenantId( entity.getTenantId() );
+        sysUserDTO.setDeleted( entity.getDeleted() );
+        sysUserDTO.setCreateBy( entity.getCreateBy() );
+        sysUserDTO.setCreateTime( entity.getCreateTime() );
+        sysUserDTO.setUpdateBy( entity.getUpdateBy() );
+        sysUserDTO.setUpdateTime( entity.getUpdateTime() );
+        sysUserDTO.setVersion( entity.getVersion() );
+        sysUserDTO.setUsername( entity.getUsername() );
+        sysUserDTO.setPassword( entity.getPassword() );
+        sysUserDTO.setRealName( entity.getRealName() );
+        sysUserDTO.setDeptId( entity.getDeptId() );
+        sysUserDTO.setStatus( entity.getStatus() );
+        sysUserDTO.setLastLoginTime( entity.getLastLoginTime() );
+        sysUserDTO.setLastLoginIp( entity.getLastLoginIp() );
+        sysUserDTO.setRemark( entity.getRemark() );
+
+        return sysUserDTO;
+    }
+
+    @Override
+    public TokenUser toTokenUser(SysUser entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        TokenUser.TokenUserBuilder tokenUser = TokenUser.builder();
+
+        tokenUser.id( entity.getId() );
+        tokenUser.username( entity.getUsername() );
+        tokenUser.tenantId( entity.getTenantId() );
+
+        return tokenUser.build();
     }
 
     @Override
