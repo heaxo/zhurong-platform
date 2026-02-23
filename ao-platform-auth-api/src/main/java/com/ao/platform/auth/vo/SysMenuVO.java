@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * VO
@@ -11,19 +12,20 @@ import java.time.LocalDateTime;
 @Data
 public class SysMenuVO implements Serializable {
 
-    private Long id;
-    private Long tenantId;
+    private String id;
+    private String tenantId;
     private Boolean deleted;
-    private Long createBy;
+    private String createBy;
     private LocalDateTime createTime;
-    private Long updateBy;
+    private String updateBy;
     private LocalDateTime updateTime;
     private Integer version;
-    private Long pid;
+    private String pid;
     private String name;
     private String type;
     private String path;
     private String activePath;
+    private String redirect;
     private String component;
     private String authCode;
     private Integer status;
@@ -43,5 +45,9 @@ public class SysMenuVO implements Serializable {
     private Boolean metaHideInBreadcrumb;
     private Boolean metaHideInTab;
     private String remark;
-
+    private SysMenuMetaVO meta;
+    private List<SysMenuVO> children;
+    public String getRedirect(){
+        return this.activePath;
+    }
 }

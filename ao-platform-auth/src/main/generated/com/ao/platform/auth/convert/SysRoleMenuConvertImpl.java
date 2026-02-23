@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T14:38:38+0800",
+    date = "2026-02-23T21:37:23+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -25,16 +25,28 @@ public class SysRoleMenuConvertImpl implements SysRoleMenuConvert {
 
         SysRoleMenuVO sysRoleMenuVO = new SysRoleMenuVO();
 
-        sysRoleMenuVO.setId( entity.getId() );
-        sysRoleMenuVO.setTenantId( entity.getTenantId() );
+        if ( entity.getId() != null ) {
+            sysRoleMenuVO.setId( String.valueOf( entity.getId() ) );
+        }
+        if ( entity.getTenantId() != null ) {
+            sysRoleMenuVO.setTenantId( String.valueOf( entity.getTenantId() ) );
+        }
         sysRoleMenuVO.setDeleted( entity.getDeleted() );
-        sysRoleMenuVO.setCreateBy( entity.getCreateBy() );
+        if ( entity.getCreateBy() != null ) {
+            sysRoleMenuVO.setCreateBy( String.valueOf( entity.getCreateBy() ) );
+        }
         sysRoleMenuVO.setCreateTime( entity.getCreateTime() );
-        sysRoleMenuVO.setUpdateBy( entity.getUpdateBy() );
+        if ( entity.getUpdateBy() != null ) {
+            sysRoleMenuVO.setUpdateBy( String.valueOf( entity.getUpdateBy() ) );
+        }
         sysRoleMenuVO.setUpdateTime( entity.getUpdateTime() );
         sysRoleMenuVO.setVersion( entity.getVersion() );
-        sysRoleMenuVO.setRoleId( entity.getRoleId() );
-        sysRoleMenuVO.setMenuId( entity.getMenuId() );
+        if ( entity.getRoleId() != null ) {
+            sysRoleMenuVO.setRoleId( String.valueOf( entity.getRoleId() ) );
+        }
+        if ( entity.getMenuId() != null ) {
+            sysRoleMenuVO.setMenuId( String.valueOf( entity.getMenuId() ) );
+        }
 
         return sysRoleMenuVO;
     }

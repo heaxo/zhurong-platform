@@ -57,12 +57,29 @@ public class SysAuthServiceImpl implements ISysAuthService {
         String token = jwtProvider.generateToken(tokenUser, codes);
 
         return LoginResponse.builder()
-                .id(user.getId())
+                .id(user.getId().toString())
                 .username(user.getUsername())
                 .realName(user.getRealName())
                 .roles(codes)
                 .accessToken(token)
                 .build();
+    }
+
+    public List<String> codes(String username) {
+        SysUser user = userMapper.selectOne(
+                Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, username)
+        );
+
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+
+        List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class)
+                .eq(SysUserRole::getUserId, user.getId()));
+
+        List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+        List<SysRole> roles = sysRoleService.list(Wrappers.lambdaQuery(SysRole.class).in(BaseEntity::getId, roleIds));
+        return roles.stream().map(SysRole::getCode).toList();
     }
 
 }

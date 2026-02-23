@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T14:38:39+0800",
+    date = "2026-02-23T21:37:23+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -25,15 +25,25 @@ public class SysMenuConvertImpl implements SysMenuConvert {
 
         SysMenuVO sysMenuVO = new SysMenuVO();
 
-        sysMenuVO.setId( entity.getId() );
-        sysMenuVO.setTenantId( entity.getTenantId() );
+        if ( entity.getId() != null ) {
+            sysMenuVO.setId( String.valueOf( entity.getId() ) );
+        }
+        if ( entity.getTenantId() != null ) {
+            sysMenuVO.setTenantId( String.valueOf( entity.getTenantId() ) );
+        }
         sysMenuVO.setDeleted( entity.getDeleted() );
-        sysMenuVO.setCreateBy( entity.getCreateBy() );
+        if ( entity.getCreateBy() != null ) {
+            sysMenuVO.setCreateBy( String.valueOf( entity.getCreateBy() ) );
+        }
         sysMenuVO.setCreateTime( entity.getCreateTime() );
-        sysMenuVO.setUpdateBy( entity.getUpdateBy() );
+        if ( entity.getUpdateBy() != null ) {
+            sysMenuVO.setUpdateBy( String.valueOf( entity.getUpdateBy() ) );
+        }
         sysMenuVO.setUpdateTime( entity.getUpdateTime() );
         sysMenuVO.setVersion( entity.getVersion() );
-        sysMenuVO.setPid( entity.getPid() );
+        if ( entity.getPid() != null ) {
+            sysMenuVO.setPid( String.valueOf( entity.getPid() ) );
+        }
         sysMenuVO.setName( entity.getName() );
         sysMenuVO.setType( entity.getType() );
         sysMenuVO.setPath( entity.getPath() );
@@ -59,6 +69,20 @@ public class SysMenuConvertImpl implements SysMenuConvert {
         sysMenuVO.setRemark( entity.getRemark() );
 
         return sysMenuVO;
+    }
+
+    @Override
+    public List<SysMenuVO> toVO(List<SysMenu> entitys) {
+        if ( entitys == null ) {
+            return null;
+        }
+
+        List<SysMenuVO> list = new ArrayList<SysMenuVO>( entitys.size() );
+        for ( SysMenu sysMenu : entitys ) {
+            list.add( toVO( sysMenu ) );
+        }
+
+        return list;
     }
 
     @Override

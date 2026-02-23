@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 @Data
 public class SysRoleMenuVO implements Serializable {
 
-    private Long id;
-    private Long tenantId;
+    private String id;
+    private String tenantId;
     private Boolean deleted;
-    private Long createBy;
+    private String createBy;
     private LocalDateTime createTime;
-    private Long updateBy;
+    private String updateBy;
     private LocalDateTime updateTime;
     private Integer version;
-    private Long roleId;
-    private Long menuId;
+    private String roleId;
+    private String menuId;
 
 }

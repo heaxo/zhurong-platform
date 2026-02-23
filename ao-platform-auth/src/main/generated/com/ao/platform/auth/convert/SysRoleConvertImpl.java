@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T14:38:38+0800",
+    date = "2026-02-23T21:37:22+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -25,12 +25,20 @@ public class SysRoleConvertImpl implements SysRoleConvert {
 
         SysRoleVO sysRoleVO = new SysRoleVO();
 
-        sysRoleVO.setId( entity.getId() );
-        sysRoleVO.setTenantId( entity.getTenantId() );
+        if ( entity.getId() != null ) {
+            sysRoleVO.setId( String.valueOf( entity.getId() ) );
+        }
+        if ( entity.getTenantId() != null ) {
+            sysRoleVO.setTenantId( String.valueOf( entity.getTenantId() ) );
+        }
         sysRoleVO.setDeleted( entity.getDeleted() );
-        sysRoleVO.setCreateBy( entity.getCreateBy() );
+        if ( entity.getCreateBy() != null ) {
+            sysRoleVO.setCreateBy( String.valueOf( entity.getCreateBy() ) );
+        }
         sysRoleVO.setCreateTime( entity.getCreateTime() );
-        sysRoleVO.setUpdateBy( entity.getUpdateBy() );
+        if ( entity.getUpdateBy() != null ) {
+            sysRoleVO.setUpdateBy( String.valueOf( entity.getUpdateBy() ) );
+        }
         sysRoleVO.setUpdateTime( entity.getUpdateTime() );
         sysRoleVO.setVersion( entity.getVersion() );
         sysRoleVO.setName( entity.getName() );

@@ -26,6 +26,7 @@ public interface SysMenuConvert {
      * Entity → VO
      */
     SysMenuVO toVO(SysMenu entity);
+    List<SysMenuVO> toVO(List<SysMenu> entitys);
 
     /**
      * Entity 列表 → VO 列表

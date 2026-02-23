@@ -2,8 +2,13 @@ package com.ao.platform.auth.web;
 
 import com.ao.platform.base.exception.BusinessException;
 import com.ao.platform.security.model.JwtUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Controller 基类
@@ -69,5 +74,25 @@ public abstract class BaseController {
      */
     protected boolean isSuperAdmin() {
         return getCurrentUser().getRoles().contains("SUPER_ADMIN");
+    }
+
+    protected HttpServletRequest getRequest() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+
+        if (attributes == null) {
+            throw new IllegalStateException("No request context bound to current thread");
+        }
+
+        return ((ServletRequestAttributes) attributes).getRequest();
+    }
+
+    protected HttpServletResponse getResponse() {
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+
+        if (attributes == null) {
+            throw new IllegalStateException("No request context bound to current thread");
+        }
+
+        return ((ServletRequestAttributes) attributes).getResponse();
     }
 }

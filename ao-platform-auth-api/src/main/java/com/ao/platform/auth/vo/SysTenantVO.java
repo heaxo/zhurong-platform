@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 public class SysTenantVO implements Serializable {
 
-    private Long id;
+    private String id;
     private String name;
     private Integer status;
     private LocalDateTime expireTime;

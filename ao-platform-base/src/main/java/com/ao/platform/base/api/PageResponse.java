@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public record PageResponse<T>(
-        List<T> records,
+        List<T> items,
         long total,
         long current,
         long size

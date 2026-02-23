@@ -66,4 +66,9 @@ public interface ISysMenuApi {
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
             <Serializable> ids);
+    /**
+     * 当前用户所有菜单
+     */
+    @GetMapping("all")
+    ApiResponse<List<SysMenuVO>> all();
 }

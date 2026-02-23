@@ -12,17 +12,17 @@ import java.util.List;
 @Data
 public class SysUserVO implements Serializable {
 
-    private Long id;
-    private Long tenantId;
+    private String id;
+    private String tenantId;
     private Boolean deleted;
-    private Long createBy;
+    private String createBy;
     private LocalDateTime createTime;
-    private Long updateBy;
+    private String updateBy;
     private LocalDateTime updateTime;
     private Integer version;
     private String username;
     private String realName;
-    private Long deptId;
+    private String deptId;
     private Integer status;
     private LocalDateTime lastLoginTime;
     private String lastLoginIp;

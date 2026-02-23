@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 public class ${entity}VO implements Serializable {
 
 <#list table.fields as field>
-    private ${field.propertyType} ${field.propertyName};
+    <#if field.propertyType?contains("Long") || field.propertyType == "long">
+        private String ${field.propertyName};
+    <#else>
+        private ${field.propertyType} ${field.propertyName};
+    </#if>
 </#list>
-
 }

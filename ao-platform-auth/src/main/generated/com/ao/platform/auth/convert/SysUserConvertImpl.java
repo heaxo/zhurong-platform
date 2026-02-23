@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T15:52:57+0800",
+    date = "2026-02-23T21:37:24+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -27,17 +27,27 @@ public class SysUserConvertImpl implements SysUserConvert {
 
         SysUserVO sysUserVO = new SysUserVO();
 
-        sysUserVO.setId( entity.getId() );
-        sysUserVO.setTenantId( entity.getTenantId() );
+        if ( entity.getId() != null ) {
+            sysUserVO.setId( String.valueOf( entity.getId() ) );
+        }
+        if ( entity.getTenantId() != null ) {
+            sysUserVO.setTenantId( String.valueOf( entity.getTenantId() ) );
+        }
         sysUserVO.setDeleted( entity.getDeleted() );
-        sysUserVO.setCreateBy( entity.getCreateBy() );
+        if ( entity.getCreateBy() != null ) {
+            sysUserVO.setCreateBy( String.valueOf( entity.getCreateBy() ) );
+        }
         sysUserVO.setCreateTime( entity.getCreateTime() );
-        sysUserVO.setUpdateBy( entity.getUpdateBy() );
+        if ( entity.getUpdateBy() != null ) {
+            sysUserVO.setUpdateBy( String.valueOf( entity.getUpdateBy() ) );
+        }
         sysUserVO.setUpdateTime( entity.getUpdateTime() );
         sysUserVO.setVersion( entity.getVersion() );
         sysUserVO.setUsername( entity.getUsername() );
         sysUserVO.setRealName( entity.getRealName() );
-        sysUserVO.setDeptId( entity.getDeptId() );
+        if ( entity.getDeptId() != null ) {
+            sysUserVO.setDeptId( String.valueOf( entity.getDeptId() ) );
+        }
         sysUserVO.setStatus( entity.getStatus() );
         sysUserVO.setLastLoginTime( entity.getLastLoginTime() );
         sysUserVO.setLastLoginIp( entity.getLastLoginIp() );

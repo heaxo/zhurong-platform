@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T14:38:39+0800",
+    date = "2026-02-23T21:37:23+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -25,15 +25,25 @@ public class SysDeptConvertImpl implements SysDeptConvert {
 
         SysDeptVO sysDeptVO = new SysDeptVO();
 
-        sysDeptVO.setId( entity.getId() );
-        sysDeptVO.setTenantId( entity.getTenantId() );
+        if ( entity.getId() != null ) {
+            sysDeptVO.setId( String.valueOf( entity.getId() ) );
+        }
+        if ( entity.getTenantId() != null ) {
+            sysDeptVO.setTenantId( String.valueOf( entity.getTenantId() ) );
+        }
         sysDeptVO.setDeleted( entity.getDeleted() );
-        sysDeptVO.setCreateBy( entity.getCreateBy() );
+        if ( entity.getCreateBy() != null ) {
+            sysDeptVO.setCreateBy( String.valueOf( entity.getCreateBy() ) );
+        }
         sysDeptVO.setCreateTime( entity.getCreateTime() );
-        sysDeptVO.setUpdateBy( entity.getUpdateBy() );
+        if ( entity.getUpdateBy() != null ) {
+            sysDeptVO.setUpdateBy( String.valueOf( entity.getUpdateBy() ) );
+        }
         sysDeptVO.setUpdateTime( entity.getUpdateTime() );
         sysDeptVO.setVersion( entity.getVersion() );
-        sysDeptVO.setPid( entity.getPid() );
+        if ( entity.getPid() != null ) {
+            sysDeptVO.setPid( String.valueOf( entity.getPid() ) );
+        }
         sysDeptVO.setName( entity.getName() );
         sysDeptVO.setStatus( entity.getStatus() );
         sysDeptVO.setSortOrder( entity.getSortOrder() );

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-22T14:38:38+0800",
+    date = "2026-02-23T21:37:24+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -25,7 +25,9 @@ public class SysTenantConvertImpl implements SysTenantConvert {
 
         SysTenantVO sysTenantVO = new SysTenantVO();
 
-        sysTenantVO.setId( entity.getId() );
+        if ( entity.getId() != null ) {
+            sysTenantVO.setId( String.valueOf( entity.getId() ) );
+        }
         sysTenantVO.setName( entity.getName() );
         sysTenantVO.setStatus( entity.getStatus() );
         sysTenantVO.setExpireTime( entity.getExpireTime() );
