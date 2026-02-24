@@ -25,22 +25,27 @@ public class SysMenuServiceImpl
 
 
     @Override
-    public SysMenuVO getVOById(Serializable id) {
+    public SysMenuVO getVOById(Long id) {
         SysMenu entity = this.getById(id);
         return convert.toVO(entity);
     }
 
     @Override
     public Long saveFromDTO(SysMenuDTO dto) {
-        SysMenu entity = convert.toEntity(dto);
+        SysMenuDTO sysMenuDTO = dto.getMeta().to(dto);
+        SysMenu entity = convert.toEntity(sysMenuDTO);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
         this.save(entity);
         return entity.getId();
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysMenuDTO dto) {
+    public Boolean updateFromDTO(Long id, SysMenuDTO dto) {
+        SysMenuDTO sysMenuDTO = dto.getMeta().to(dto);
         SysMenu entity = this.getById(id);
-        convert.updateFromDTO(dto, entity);
+        convert.updateFromDTO(sysMenuDTO, entity);
         return this.updateById(entity);
     }
 }

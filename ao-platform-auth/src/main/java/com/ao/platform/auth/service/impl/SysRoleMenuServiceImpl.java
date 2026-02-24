@@ -25,7 +25,7 @@ public class SysRoleMenuServiceImpl
 
 
     @Override
-    public SysRoleMenuVO getVOById(Serializable id) {
+    public SysRoleMenuVO getVOById(Long id) {
         SysRoleMenu entity = this.getById(id);
         return convert.toVO(entity);
     }
@@ -33,12 +33,15 @@ public class SysRoleMenuServiceImpl
     @Override
     public Long saveFromDTO(SysRoleMenuDTO dto) {
         SysRoleMenu entity = convert.toEntity(dto);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
         this.save(entity);
         return entity.getId();
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysRoleMenuDTO dto) {
+    public Boolean updateFromDTO(Long id, SysRoleMenuDTO dto) {
         SysRoleMenu entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);

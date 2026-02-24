@@ -10,8 +10,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
-
 /**
  * 服务实现类
  */
@@ -25,7 +23,7 @@ public class SysDeptServiceImpl
 
 
     @Override
-    public SysDeptVO getVOById(Serializable id) {
+    public SysDeptVO getVOById(Long id) {
         SysDept entity = this.getById(id);
         return convert.toVO(entity);
     }
@@ -33,12 +31,15 @@ public class SysDeptServiceImpl
     @Override
     public Long saveFromDTO(SysDeptDTO dto) {
         SysDept entity = convert.toEntity(dto);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
         this.save(entity);
         return entity.getId();
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysDeptDTO dto) {
+    public Boolean updateFromDTO(Long id, SysDeptDTO dto) {
         SysDept entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);

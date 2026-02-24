@@ -5,6 +5,8 @@ import com.ao.platform.auth.convert.SysRoleConvert;
 import com.ao.platform.auth.dto.SysRoleDTO;
 import com.ao.platform.auth.dto.SysRolePageQuery;
 import com.ao.platform.auth.entity.SysRole;
+import com.ao.platform.auth.entity.SysRoleMenu;
+import com.ao.platform.auth.service.ISysRoleMenuService;
 import com.ao.platform.auth.service.ISysRoleService;
 import com.ao.platform.auth.vo.SysRoleVO;
 import com.ao.platform.auth.web.BaseController;
@@ -18,8 +20,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 控制器实现
@@ -30,6 +34,7 @@ public class SysRoleController extends BaseController implements ISysRoleApi {
 
     private final SysRoleConvert convert;
     private final ISysRoleService service;
+    private final ISysRoleMenuService sysRoleMenuService;
 
     @Override
     public ApiResponse
@@ -50,6 +55,16 @@ public class SysRoleController extends BaseController implements ISysRoleApi {
                 .map(convert::toVO)
                 .toList();
 
+        List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.list();
+        Map<Long, List<SysRoleMenu>> map = sysRoleMenus.stream().collect(Collectors.groupingBy(SysRoleMenu::getRoleId));
+        voList.forEach(v -> {
+            v.setPermissions(map.getOrDefault(Long.parseLong(v.getId()), new ArrayList<>())
+                    .stream()
+                    .map(SysRoleMenu::getMenuId)
+                    .map(String::valueOf)
+                    .toList());
+        });
+
         PageResponse
                 <SysRoleVO> response = new PageResponse<>(
                 voList,
@@ -63,7 +78,7 @@ public class SysRoleController extends BaseController implements ISysRoleApi {
 
     @Override
     public ApiResponse
-            <SysRoleVO> getById(Serializable id) {
+            <SysRoleVO> getById(Long id) {
         return ApiResponse.success(service.getVOById(id));
     }
 
@@ -76,22 +91,23 @@ public class SysRoleController extends BaseController implements ISysRoleApi {
 
     @Override
     public ApiResponse
-            <Boolean> update(Serializable id, @Valid SysRoleDTO dto) {
+            <Boolean> update(Long id, @Valid SysRoleDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
     }
 
     @Override
     public ApiResponse
-            <Boolean> remove(Serializable id) {
-        boolean remove = service.removeById(id);
-        return ApiResponse.success(remove);
+            <Boolean> remove(Long id) {
+        boolean remove1 = service.removeById(id);
+        boolean remove2 = sysRoleMenuService.remove(Wrappers.lambdaUpdate(SysRoleMenu.class)
+                .eq(SysRoleMenu::getRoleId, id));
+        return ApiResponse.success(remove1 && remove2);
     }
 
     @Override
     public ApiResponse
-            <Boolean> batchRemove(List
-                                          <Serializable> ids) {
+            <Boolean> batchRemove(List<Long> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }

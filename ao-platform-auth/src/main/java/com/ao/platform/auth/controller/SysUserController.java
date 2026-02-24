@@ -67,7 +67,7 @@ public class SysUserController extends BaseController implements ISysUserApi {
 
     @Override
     public ApiResponse
-            <SysUserVO> getById(Serializable id) {
+            <SysUserVO> getById(Long id) {
         return ApiResponse.success(service.getVOById(id));
     }
 
@@ -80,22 +80,21 @@ public class SysUserController extends BaseController implements ISysUserApi {
 
     @Override
     public ApiResponse
-            <Boolean> update(Serializable id, @Valid SysUserDTO dto) {
+            <Boolean> update(Long id, @Valid SysUserDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
     }
 
     @Override
     public ApiResponse
-            <Boolean> remove(Serializable id) {
+            <Boolean> remove(Long id) {
         boolean remove = service.removeById(id);
         return ApiResponse.success(remove);
     }
 
     @Override
     public ApiResponse
-            <Boolean> batchRemove(List
-                                          <Serializable> ids) {
+            <Boolean> batchRemove(List<Long> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }

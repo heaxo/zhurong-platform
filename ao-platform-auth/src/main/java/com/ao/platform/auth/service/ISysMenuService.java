@@ -11,9 +11,9 @@ import java.io.Serializable;
  * 服务接口
  */
 public interface ISysMenuService extends IService<SysMenu> {
-    SysMenuVO getVOById(Serializable id);
+    SysMenuVO getVOById(Long id);
 
     Long saveFromDTO(SysMenuDTO dto);
 
-    Boolean updateFromDTO(Serializable id, SysMenuDTO dto);
+    Boolean updateFromDTO(Long id, SysMenuDTO dto);
 }

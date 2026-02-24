@@ -33,7 +33,7 @@ public interface ISysTenantApi {
      */
     @GetMapping("/{id}")
     ApiResponse
-            <SysTenantVO> getById(@PathVariable Serializable id);
+            <SysTenantVO> getById(@PathVariable Long id);
 
     /**
      * 新增
@@ -48,7 +48,7 @@ public interface ISysTenantApi {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Serializable id,
+            @PathVariable Long id,
             @Valid @RequestBody SysTenantDTO dto
     );
 
@@ -57,7 +57,7 @@ public interface ISysTenantApi {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Serializable id);
+            <Boolean> remove(@PathVariable Long id);
 
     /**
      * 批量删除
@@ -65,5 +65,5 @@ public interface ISysTenantApi {
     @DeleteMapping
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
-            <Serializable> ids);
+            <Long> ids);
 }

@@ -11,11 +11,11 @@ import java.io.Serializable;
  * 服务接口
  */
 public interface ISysUserService extends IService<SysUser> {
-    SysUserVO getVOById(Serializable id);
+    SysUserVO getVOById(Long id);
 
     Long saveFromDTO(SysUserDTO dto);
 
-    Boolean updateFromDTO(Serializable id, SysUserDTO dto);
+    Boolean updateFromDTO(Long id, SysUserDTO dto);
 
     boolean createUser(SysUserDTO request);
 }

@@ -40,7 +40,7 @@ public class SysUserServiceImpl
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public SysUserVO getVOById(Serializable id) {
+    public SysUserVO getVOById(Long id) {
         SysUser entity = this.getById(id);
         SysUserVO vo = convert.toVO(entity);
         List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserId, id));
@@ -53,12 +53,15 @@ public class SysUserServiceImpl
     @Override
     public Long saveFromDTO(SysUserDTO dto) {
         SysUser entity = convert.toEntity(dto);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
         this.save(entity);
         return entity.getId();
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysUserDTO dto) {
+    public Boolean updateFromDTO(Long id, SysUserDTO dto) {
         SysUser entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);

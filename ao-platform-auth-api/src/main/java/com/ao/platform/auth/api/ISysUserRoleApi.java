@@ -33,7 +33,7 @@ public interface ISysUserRoleApi {
      */
     @GetMapping("/{id}")
     ApiResponse
-            <SysUserRoleVO> getById(@PathVariable Serializable id);
+            <SysUserRoleVO> getById(@PathVariable Long id);
 
     /**
      * 新增
@@ -48,7 +48,7 @@ public interface ISysUserRoleApi {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Serializable id,
+            @PathVariable Long id,
             @Valid @RequestBody SysUserRoleDTO dto
     );
 
@@ -57,7 +57,7 @@ public interface ISysUserRoleApi {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Serializable id);
+            <Boolean> remove(@PathVariable Long id);
 
     /**
      * 批量删除
@@ -65,5 +65,5 @@ public interface ISysUserRoleApi {
     @DeleteMapping
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
-            <Serializable> ids);
+            <Long> ids);
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * VO
@@ -24,5 +25,6 @@ public class SysDeptVO implements Serializable {
     private Integer status;
     private Integer sortOrder;
     private String remark;
+    private List<SysDeptVO> children;
 
 }

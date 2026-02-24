@@ -33,7 +33,7 @@ public interface ISysRoleMenuApi {
      */
     @GetMapping("/{id}")
     ApiResponse
-            <SysRoleMenuVO> getById(@PathVariable Serializable id);
+            <SysRoleMenuVO> getById(@PathVariable Long id);
 
     /**
      * 新增
@@ -48,7 +48,7 @@ public interface ISysRoleMenuApi {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Serializable id,
+            @PathVariable Long id,
             @Valid @RequestBody SysRoleMenuDTO dto
     );
 
@@ -57,7 +57,7 @@ public interface ISysRoleMenuApi {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Serializable id);
+            <Boolean> remove(@PathVariable Long id);
 
     /**
      * 批量删除
@@ -65,5 +65,5 @@ public interface ISysRoleMenuApi {
     @DeleteMapping
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
-            <Serializable> ids);
+            <Long> ids);
 }

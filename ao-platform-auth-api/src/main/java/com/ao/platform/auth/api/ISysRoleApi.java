@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public interface ISysRoleApi {
      */
     @GetMapping("/{id}")
     ApiResponse
-            <SysRoleVO> getById(@PathVariable Serializable id);
+            <SysRoleVO> getById(@PathVariable Long id);
 
     /**
      * 新增
@@ -48,7 +47,7 @@ public interface ISysRoleApi {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Serializable id,
+            @PathVariable Long id,
             @Valid @RequestBody SysRoleDTO dto
     );
 
@@ -57,7 +56,7 @@ public interface ISysRoleApi {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Serializable id);
+            <Boolean> remove(@PathVariable Long id);
 
     /**
      * 批量删除
@@ -65,5 +64,5 @@ public interface ISysRoleApi {
     @DeleteMapping
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
-            <Serializable> ids);
+            <Long> ids);
 }

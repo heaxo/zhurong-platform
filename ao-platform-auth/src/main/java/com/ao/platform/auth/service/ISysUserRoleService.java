@@ -11,9 +11,9 @@ import java.io.Serializable;
  * 服务接口
  */
 public interface ISysUserRoleService extends IService<SysUserRole> {
-    SysUserRoleVO getVOById(Serializable id);
+    SysUserRoleVO getVOById(Long id);
 
     Long saveFromDTO(SysUserRoleDTO dto);
 
-    Boolean updateFromDTO(Serializable id, SysUserRoleDTO dto);
+    Boolean updateFromDTO(Long id, SysUserRoleDTO dto);
 }

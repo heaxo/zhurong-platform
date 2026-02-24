@@ -1,8 +1,9 @@
 package com.ao.platform.base.util;
 
 import java.util.*;
-import java.util.function.*;
-import java.util.stream.Collectors;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class TreeBuilder {
 
@@ -15,8 +16,11 @@ public class TreeBuilder {
             BiConsumer<T, List<T>> childrenSetter
     ) {
 
-        Map<K, List<T>> parentMap = list.stream()
-                .collect(Collectors.groupingBy(pidGetter));
+        Map<K, List<T>> parentMap = new HashMap<>();
+        for (T item : list) {
+            K pid = pidGetter.apply(item);
+            parentMap.computeIfAbsent(pid, k -> new ArrayList<>()).add(item);
+        }
 
         List<T> roots = list.stream()
                 .filter(node -> rootPredicate.test(pidGetter.apply(node)))

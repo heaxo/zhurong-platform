@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * VO
@@ -25,4 +26,5 @@ public class SysRoleVO implements Serializable {
     private Integer dataScope;
     private String remark;
 
+    private List<String> permissions;
 }

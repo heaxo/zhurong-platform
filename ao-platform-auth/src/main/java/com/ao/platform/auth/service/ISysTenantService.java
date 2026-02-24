@@ -11,9 +11,9 @@ import java.io.Serializable;
  * 服务接口
  */
 public interface ISysTenantService extends IService<SysTenant> {
-    SysTenantVO getVOById(Serializable id);
+    SysTenantVO getVOById(Long id);
 
     Long saveFromDTO(SysTenantDTO dto);
 
-    Boolean updateFromDTO(Serializable id, SysTenantDTO dto);
+    Boolean updateFromDTO(Long id, SysTenantDTO dto);
 }

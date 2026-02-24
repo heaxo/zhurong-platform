@@ -41,11 +41,6 @@ CREATE INDEX idx_dept_tenant ON sys_dept (tenant_id);
 CREATE INDEX idx_dept_pid ON sys_dept (pid);
 CREATE INDEX idx_dept_status ON sys_dept (status);
 
-CREATE UNIQUE INDEX uk_dept_name
-    ON sys_dept (tenant_id, name)
-    WHERE deleted = FALSE;
-
-
 -- =====================================================
 -- 角色表
 -- =====================================================
@@ -71,9 +66,6 @@ CREATE TABLE sys_role
 CREATE INDEX idx_role_tenant ON sys_role (tenant_id);
 CREATE INDEX idx_role_status ON sys_role (status);
 
-CREATE UNIQUE INDEX uk_role_name
-    ON sys_role (tenant_id, name)
-    WHERE deleted = FALSE;
 
 
 -- =====================================================
@@ -106,9 +98,6 @@ CREATE INDEX idx_user_tenant ON sys_user (tenant_id);
 CREATE INDEX idx_user_dept ON sys_user (dept_id);
 CREATE INDEX idx_user_status ON sys_user (status);
 
-CREATE UNIQUE INDEX uk_user_username
-    ON sys_user (tenant_id, username)
-    WHERE deleted = FALSE;
 
 
 -- =====================================================
@@ -133,9 +122,6 @@ CREATE TABLE sys_user_role
 CREATE INDEX idx_user_role_user ON sys_user_role (user_id);
 CREATE INDEX idx_user_role_role ON sys_user_role (role_id);
 
-CREATE UNIQUE INDEX uk_user_role_unique
-    ON sys_user_role (tenant_id, user_id, role_id)
-    WHERE deleted = FALSE;
 
 
 -- =====================================================
@@ -195,14 +181,6 @@ CREATE INDEX idx_menu_tenant ON sys_menu (tenant_id);
 CREATE INDEX idx_menu_pid ON sys_menu (pid);
 CREATE INDEX idx_menu_status ON sys_menu (status);
 
-CREATE UNIQUE INDEX uk_menu_name
-    ON sys_menu (tenant_id, name)
-    WHERE deleted = FALSE;
-
-CREATE UNIQUE INDEX uk_menu_auth
-    ON sys_menu (tenant_id, auth_code)
-    WHERE deleted = FALSE AND auth_code IS NOT NULL;
-
 
 -- =====================================================
 -- 角色菜单关联表
@@ -226,6 +204,26 @@ CREATE TABLE sys_role_menu
 CREATE INDEX idx_role_menu_role ON sys_role_menu (role_id);
 CREATE INDEX idx_role_menu_menu ON sys_role_menu (menu_id);
 
-CREATE UNIQUE INDEX uk_role_menu_unique
-    ON sys_role_menu (tenant_id, role_id, menu_id)
-    WHERE deleted = FALSE;
+-- 为 sys_role_menu 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_role_menu_id
+    ON sys_role_menu (id);
+
+-- 为 sys_menu 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_menu_id
+    ON sys_menu (id);
+
+-- 为 sys_user_role 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_user_role_id
+    ON sys_user_role (id);
+
+-- 为 sys_user 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_user_id
+    ON sys_user (id);
+
+-- 为 sys_role 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_role_id
+    ON sys_role (id);
+
+-- 为 sys_dept 表创建基于 id 的唯一索引
+CREATE UNIQUE INDEX uk_dept_id
+    ON sys_dept (id);

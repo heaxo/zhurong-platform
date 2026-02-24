@@ -70,8 +70,24 @@ public class SysMenuController extends BaseController implements ISysMenuApi {
     }
 
     @Override
+    public ApiResponse<Boolean> nameExists(SysMenuDTO dto) {
+        long count = service.count(Wrappers.lambdaQuery(SysMenu.class)
+                .ne(BaseEntity::getId, dto.getId())
+                .eq(SysMenu::getName, dto.getName()));
+        return ApiResponse.success(count > 0);
+    }
+
+    @Override
+    public ApiResponse<Boolean> pathExists(SysMenuDTO dto) {
+        long count = service.count(Wrappers.lambdaQuery(SysMenu.class)
+                .ne(BaseEntity::getId, dto.getId())
+                .eq(SysMenu::getPath, dto.getPath()));
+        return ApiResponse.success(count > 0);
+    }
+
+    @Override
     public ApiResponse
-            <SysMenuVO> getById(Serializable id) {
+            <SysMenuVO> getById(Long id) {
         return ApiResponse.success(service.getVOById(id));
     }
 
@@ -84,22 +100,21 @@ public class SysMenuController extends BaseController implements ISysMenuApi {
 
     @Override
     public ApiResponse
-            <Boolean> update(Serializable id, @Valid SysMenuDTO dto) {
+            <Boolean> update(Long id, @Valid SysMenuDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
     }
 
     @Override
     public ApiResponse
-            <Boolean> remove(Serializable id) {
+            <Boolean> remove(Long id) {
         boolean remove = service.removeById(id);
         return ApiResponse.success(remove);
     }
 
     @Override
     public ApiResponse
-            <Boolean> batchRemove(List
-                                          <Serializable> ids) {
+            <Boolean> batchRemove(List<Long> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }

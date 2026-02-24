@@ -25,8 +25,11 @@ public class SysUserRoleServiceImpl
 
 
     @Override
-    public SysUserRoleVO getVOById(Serializable id) {
+    public SysUserRoleVO getVOById(Long id) {
         SysUserRole entity = this.getById(id);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
         return convert.toVO(entity);
     }
 
@@ -38,7 +41,7 @@ public class SysUserRoleServiceImpl
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysUserRoleDTO dto) {
+    public Boolean updateFromDTO(Long id, SysUserRoleDTO dto) {
         SysUserRole entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);

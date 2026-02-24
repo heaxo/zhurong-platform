@@ -27,7 +27,7 @@ private final ${entity}Convert convert;
 
 
 @Override
-public ${entity}VO getVOById(Serializable id) {
+public ${entity}VO getVOById(Long id) {
 ${entity} entity = this.getById(id);
 return convert.toVO(entity);
 }
@@ -40,7 +40,7 @@ return entity.getId();
 }
 
 @Override
-public Boolean updateFromDTO(Serializable id, ${entity}DTO dto) {
+public Boolean updateFromDTO(Long id, ${entity}DTO dto) {
 ${entity} entity = this.getById(id);
 convert.updateFromDTO(dto, entity);
 return this.updateById(entity);

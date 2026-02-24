@@ -35,7 +35,7 @@ ApiResponse
     */
     @GetMapping("/{id}")
     ApiResponse
-    <${entity}VO> getById(@PathVariable Serializable id);
+    <${entity}VO> getById(@PathVariable Long id);
 
         /**
         * 新增
@@ -59,7 +59,7 @@ ApiResponse
                 */
                 @DeleteMapping("/{id}")
                 ApiResponse
-                <Boolean> remove(@PathVariable Serializable id);
+                <Boolean> remove(@PathVariable Long id);
 
                     /**
                     * 批量删除

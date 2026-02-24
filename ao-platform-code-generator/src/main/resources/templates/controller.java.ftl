@@ -66,7 +66,7 @@ public ApiResponse
 
             @Override
             public ApiResponse
-            <${entity}VO> getById(Serializable id) {
+            <${entity}VO> getById(Long id) {
                 return ApiResponse.success(service.getVOById(id));
                 }
 
@@ -79,14 +79,14 @@ public ApiResponse
 
                     @Override
                     public ApiResponse
-                    <Boolean> update(Serializable id, @Valid ${entity}DTO dto) {
+                    <Boolean> update(Long id, @Valid ${entity}DTO dto) {
                         boolean update = service.updateFromDTO(id, dto);
                         return ApiResponse.success(update);
                         }
 
                         @Override
                         public ApiResponse
-                        <Boolean> remove(Serializable id) {
+                        <Boolean> remove(Long id) {
                             boolean remove = service.removeById(id);
                             return ApiResponse.success(remove);
                             }

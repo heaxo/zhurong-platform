@@ -27,13 +27,23 @@ public interface ISysMenuApi {
     ApiResponse
             <PageResponse
                     <SysMenuVO>> page(@SpringQueryMap SysMenuPageQuery pageQuery);
+    /**
+     *
+     */
+    @GetMapping("/name-exists")
+    ApiResponse<Boolean> nameExists(@SpringQueryMap SysMenuDTO dto);
+    /**
+     *
+     */
+    @GetMapping("/path-exists")
+    ApiResponse<Boolean> pathExists(@SpringQueryMap SysMenuDTO dto);
 
     /**
      * 根据ID查询
      */
     @GetMapping("/{id}")
     ApiResponse
-            <SysMenuVO> getById(@PathVariable Serializable id);
+            <SysMenuVO> getById(@PathVariable Long id);
 
     /**
      * 新增
@@ -48,7 +58,7 @@ public interface ISysMenuApi {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Serializable id,
+            @PathVariable Long id,
             @Valid @RequestBody SysMenuDTO dto
     );
 
@@ -57,7 +67,7 @@ public interface ISysMenuApi {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Serializable id);
+            <Boolean> remove(@PathVariable Long id);
 
     /**
      * 批量删除
@@ -65,7 +75,7 @@ public interface ISysMenuApi {
     @DeleteMapping
     ApiResponse
             <Boolean> batchRemove(@RequestBody List
-            <Serializable> ids);
+            <Long> ids);
     /**
      * 当前用户所有菜单
      */

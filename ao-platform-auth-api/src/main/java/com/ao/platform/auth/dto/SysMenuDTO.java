@@ -43,5 +43,5 @@ public class SysMenuDTO implements Serializable {
     private Boolean metaHideInBreadcrumb;
     private Boolean metaHideInTab;
     private String remark;
-
+    private SysMenuMetaDTO meta;
 }

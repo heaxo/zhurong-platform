@@ -63,7 +63,7 @@ public class SysTenantController extends BaseController implements ISysTenantApi
 
     @Override
     public ApiResponse
-            <SysTenantVO> getById(Serializable id) {
+            <SysTenantVO> getById(Long id) {
         return ApiResponse.success(service.getVOById(id));
     }
 
@@ -76,22 +76,21 @@ public class SysTenantController extends BaseController implements ISysTenantApi
 
     @Override
     public ApiResponse
-            <Boolean> update(Serializable id, @Valid SysTenantDTO dto) {
+            <Boolean> update(Long id, @Valid SysTenantDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
     }
 
     @Override
     public ApiResponse
-            <Boolean> remove(Serializable id) {
+            <Boolean> remove(Long id) {
         boolean remove = service.removeById(id);
         return ApiResponse.success(remove);
     }
 
     @Override
     public ApiResponse
-            <Boolean> batchRemove(List
-                                          <Serializable> ids) {
+            <Boolean> batchRemove(List<Long> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }

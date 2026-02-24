@@ -25,7 +25,7 @@ public class SysTenantServiceImpl
 
 
     @Override
-    public SysTenantVO getVOById(Serializable id) {
+    public SysTenantVO getVOById(Long id) {
         SysTenant entity = this.getById(id);
         return convert.toVO(entity);
     }
@@ -38,7 +38,7 @@ public class SysTenantServiceImpl
     }
 
     @Override
-    public Boolean updateFromDTO(Serializable id, SysTenantDTO dto) {
+    public Boolean updateFromDTO(Long id, SysTenantDTO dto) {
         SysTenant entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);
