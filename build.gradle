@@ -14,7 +14,9 @@ ext {
     mybatisPlusJsqlParserVersion = '3.5.16'
     lombokVersion = "1.18.42"
     flywayVersion = '9.22.3'
+    flywayDatabasePostgreSqlVersion = '10.10.0'
     postgresqlVersion = '42.7.3'
+    mssqlVersion = '11.2.0.jre8'
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
     JsonWebTokenVersion = '0.12.5'

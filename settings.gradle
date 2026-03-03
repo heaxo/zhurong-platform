@@ -21,3 +21,6 @@ include 'ao-platform-base'
 include 'ao-platform-core-api'
 include 'ao-platform-auth-api'
 include 'ao-platform-security'
+
+
+include 'ao-platform-custom:ao-platform-custom-first'

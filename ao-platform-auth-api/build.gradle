@@ -10,6 +10,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     // 仅用于编译 API 注解
     compileOnly 'org.springframework:spring-web'
     // 如果用到 @Valid
