@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
+    id 'com.bmuschko.docker-spring-boot-application'
 }
 
 group = 'com.ao'
@@ -45,9 +46,6 @@ dependencies {
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test"
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
@@ -56,5 +54,13 @@ tasks.named('test') {
 tasks.register('printVersion') {
     doLast {
         println "Current version: ${project.version}"
+    }
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
+        images = ['a.he/ao-platform-custom-first']
+        ports = [9300]
     }
 }

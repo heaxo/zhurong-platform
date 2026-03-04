@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
+    id 'com.bmuschko.docker-spring-boot-application'
 }
 
 group = 'com.ao'
@@ -46,24 +47,28 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
-    implementation "com.baomidou:mybatis-plus-boot-starter"
     implementation "com.baomidou:mybatis-plus-jsqlparser"
 
-    compileOnly 'org.projectlombok:lombok'
     // PostgreSQL
     runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
 
     // Flyway
-    implementation "org.flywaydb:flyway-core:${flywayVersion}"
-    implementation "org.flywaydb:flyway-database-postgresql:${flywayDatabasePostgreSqlVersion}"
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-database-postgresql"
 
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "org.mybatis.spring.boot:mybatis-spring-boot-starter-test"
-    testImplementation 'org.springframework.security:spring-security-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    annotationProcessor "com.baomidou:mybatis-plus-annotation:${mybatisPlusVersion}"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
+        images = ['a.he/ao-platform-auth']
+        ports = [9100]
+    }
 }

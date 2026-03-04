@@ -37,5 +37,7 @@ out/
 .vscode/
 
 docker/data
+docker/mysql
+docker/standalone-logs
 
 ao-platform-code-generator/src/main/generated

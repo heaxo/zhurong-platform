@@ -1,5 +1,8 @@
 version: '3.9'
 
+include:
+  - standalone-mysql.yaml
+
 services:
   ao-postgres:
     image: postgres:16
@@ -16,9 +19,53 @@ services:
     networks:
       - ao-network
 
-include:
-  - standalone-mysql.yaml
+  # ao-platform-gateway 服务
+  ao-platform-gateway:
+    image: a.he/ao-platform-gateway  # 使用你打包的 Spring Boot 镜像
+    container_name: ao-platform-gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - nacos
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - ao-network
 
+  # ao-platform-auth 服务
+  ao-platform-auth:
+    image: a.he/ao-platform-auth
+    container_name: ao-platform-auth
+    ports:
+      - "9100:9100"
+    depends_on:
+      - nacos
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - ao-network
+
+  # ao-platform-core 服务
+  ao-platform-core:
+    image: a.he/ao-platform-core
+    container_name: ao-platform-core
+    ports:
+      - "9200:9200"
+    depends_on:
+      - nacos
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - ao-network
 
 networks:
   ao-network:

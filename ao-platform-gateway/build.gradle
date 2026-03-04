@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
+    id 'com.bmuschko.docker-spring-boot-application'
 }
 
 group = 'com.ao'
@@ -53,4 +54,11 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+docker {
+    springBootApplication {
+        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
+        images = ['a.he/ao-platform-gateway']
+        ports = [9000]
+    }
 }

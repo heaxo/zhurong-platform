@@ -18,9 +18,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: lantekha:8848
+        server-addr: localhost:8848
       config:
-        server-addr: lantekha:8848
+        server-addr: localhost:8848
         file-extension: yaml
         group: DEFAULT_GROUP
 
@@ -42,6 +42,13 @@ spring:
           uri: lb://ao-platform-core
           predicates:
             - Path=/api/system/**,/api/core/**
+          filters:
+            - StripPrefix=2
+
+        - id: custom-service
+          uri: lb://ao-platform-custom
+          predicates:
+            - Path=/api/custom/**
           filters:
             - StripPrefix=2
   config:

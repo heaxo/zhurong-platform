@@ -5,10 +5,7 @@ import ${package.Parent}.dto.${entity}DTO;
 import ${package.Parent}.dto.${entity}PageQuery;
 import ${package.Parent}.vo.${entity}VO;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -20,7 +17,10 @@ import java.util.List;
 * 2. Entity ↔ VO
 * 3. 使用 MapStruct 自动生成实现
 */
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
 public interface ${entity}Convert {
 
 /**
