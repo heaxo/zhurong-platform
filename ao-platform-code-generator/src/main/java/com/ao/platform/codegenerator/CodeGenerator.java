@@ -14,11 +14,29 @@ public class CodeGenerator {
         );
 
         GeneratorConfig config = new GeneratorConfig(
-                "com.ao.platform",
-                "core",
+                "com.ao.platform.core",
+                "lantek",
 //                new String[]{"flyway_schema_history"},
                 null,
-                new String[]{"DIS_NEST_NEST_00000100"},
+                new String[]{
+                        "DIS_MMNN_MMOO_00000200",
+                        "DIS_MMTT_MMTT_00000100",
+                        "DIS_NEST_NEST_00000100",
+                        "DIS_NEST_NEST_00000200",
+                        "DIS_NEST_NEST_00000300",
+                        "DIS_NEST_NEST_00000400",
+                        "DIS_NEST_NEST_00000500",
+                        "DIS_PPTT_TTRR_00000700",
+                        "DIS_PPTT_TTRR_00000800",
+                        "DIS_PPTT_WWCC_00000800",
+                        "DIS_SHPR_PPTT_00000200",
+                        "MMNN_MMOO_00000100",
+                        "MMNN_MMOO_00000300",
+                        "PPRR_PPRR_00000100",
+                        "SYST_OWND_00000100",
+                        "WWCC_WWCC_00000100"
+                },
+                true,
                 true
         );
 

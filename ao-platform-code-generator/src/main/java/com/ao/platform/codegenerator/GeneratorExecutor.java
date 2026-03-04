@@ -69,6 +69,7 @@ public class GeneratorExecutor {
 
                     Map<String, Object> customMap = new HashMap<>();
                     customMap.put("useDbColumnName", config.useDbColumnName());
+                    customMap.put("importLantekBaseEntity", config.importLantekBaseEntity());
 
                     builder.customMap(customMap);
                     builder.customFile(new CustomFile.Builder()

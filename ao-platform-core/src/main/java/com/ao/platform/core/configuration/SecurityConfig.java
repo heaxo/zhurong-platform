@@ -24,7 +24,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers(
+                                //必须放行error，不然gateway响应的异常是403（500返回403）
+                                "/error",
+                                "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(

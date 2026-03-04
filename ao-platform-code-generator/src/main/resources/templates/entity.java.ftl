@@ -7,7 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+<#if importLantekBaseEntity>
+import ${package.Entity}.BaseEntity;
+<#else>
 import com.ao.platform.base.model.BaseEntity;
+</#if>
 
 /**
 * ${table.comment!}

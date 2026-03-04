@@ -1,4 +1,4 @@
-package com.ao.platform.core.controller;
+package com.ao.platform.core.lantek.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

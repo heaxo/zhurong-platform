@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 
-import java.io.Serializable;
+import java.lang.Long;
 import java.util.List;
 
 /**
@@ -50,7 +50,7 @@ ApiResponse
             @PutMapping("/{id}")
             ApiResponse
             <Boolean> update(
-                @PathVariable Serializable id,
+                @PathVariable Long id,
                 @Valid @RequestBody ${entity}DTO dto
                 );
 
@@ -67,5 +67,5 @@ ApiResponse
                     @DeleteMapping
                     ApiResponse
                     <Boolean> batchRemove(@RequestBody List
-                        <Serializable> ids);
+                        <Long> ids);
                             }

@@ -11,7 +11,7 @@ import ${package.Parent}.convert.${entity}Convert;
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.api.PageResponse;
 import com.ao.platform.base.model.PageFactory;
-import com.ao.platform.auth.web.BaseController;
+import ${package.Parent}.web.BaseController;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -94,7 +94,7 @@ public ApiResponse
                             @Override
                             public ApiResponse
                             <Boolean> batchRemove(List
-                                <Serializable> ids) {
+                                <Long> ids) {
                                     boolean remove = service.removeByIds(ids);
                                     return ApiResponse.success(remove);
                                     }
