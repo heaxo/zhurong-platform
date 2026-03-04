@@ -6,6 +6,11 @@ spring:
     active: dev
   application:
     name: ao-platform-core
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   datasource:
     url: jdbc:sqlserver://127.0.0.1:1433;databaseName=LSystemDB;encrypt=false
     username: sa
