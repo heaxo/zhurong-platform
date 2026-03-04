@@ -8,15 +8,18 @@ package com.ao.platform.codegenerator;
 public class CodeGenerator {
     public static void main(String[] args) {
         DatabaseConfig db = new DatabaseConfig(
-                "jdbc:postgresql://lantekha:5432/ao_platform_auth",
-                "postgres",
-                "123456"
+                "jdbc:sqlserver://lantekha\\Lantek;databaseName=LSystemDB;encrypt=false",
+                "sa",
+                ""
         );
 
         GeneratorConfig config = new GeneratorConfig(
                 "com.ao.platform",
-                "auth",
-                new String[]{"flyway_schema_history"}
+                "core",
+//                new String[]{"flyway_schema_history"},
+                null,
+                new String[]{"DIS_NEST_NEST_00000100"},
+                true
         );
 
         GeneratorExecutor.execute(db, config);

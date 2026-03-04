@@ -1,5 +1,6 @@
 package com.ao.platform.codegenerator;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
@@ -7,7 +8,10 @@ import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GeneratorExecutor {
 
@@ -46,17 +50,27 @@ public class GeneratorExecutor {
                                 .moduleName(config.moduleName())
                                 .pathInfo(Collections.singletonMap(OutputFile.xml, outputDir + "/mapper"))
                 )
-                .strategyConfig(builder ->
-                        builder
-                                .addExclude(config.excludeTables())
-                                .entityBuilder()
-                                .enableLombok()
-                                .logicDeleteColumnName("deleted")
-                                .controllerBuilder()
-                                .enableRestStyle()
-                )
+                .strategyConfig(builder -> {
+
+                    if (config.excludeTables() != null && CollectionUtils.isNotEmpty(Arrays.asList(config.excludeTables()))){
+                        builder.addExclude(config.excludeTables());
+                    }
+                    if (config.includeTables() != null && CollectionUtils.isNotEmpty(Arrays.asList(config.includeTables()))){
+                        builder.addInclude(config.includeTables());
+                    }
+                    builder
+                            .entityBuilder()
+                            .enableLombok()
+                            .logicDeleteColumnName("deleted")
+                            .controllerBuilder()
+                            .enableRestStyle();
+                })
                 .injectionConfig(builder -> {
 
+                    Map<String, Object> customMap = new HashMap<>();
+                    customMap.put("useDbColumnName", config.useDbColumnName());
+
+                    builder.customMap(customMap);
                     builder.customFile(new CustomFile.Builder()
                             .fileName("DTO.java")
                             .templatePath("/templates/dto.java.ftl")

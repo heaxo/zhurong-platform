@@ -20,6 +20,7 @@ dependencies {
     implementation "com.baomidou:mybatis-plus-extension:${mybatisPlusVersion}"
     implementation "org.freemarker:freemarker"
     implementation "org.postgresql:postgresql"
+    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc"
 
     implementation 'org.slf4j:slf4j-api:2.0.9'
     implementation 'ch.qos.logback:logback-classic:1.4.14'

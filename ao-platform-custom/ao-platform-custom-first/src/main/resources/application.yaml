@@ -6,6 +6,11 @@ spring:
     active: dev
   application:
     name: ao-platform-custom
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=LSystemDB;encrypt=false
+    username: sa
+    password:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   mybatis-plus:
     mapper-locations: classpath*:/mapper/**/*.xml
     type-aliases-package: com.ao.platform.custom.entity
@@ -14,9 +19,9 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: lantekha:8848
+        server-addr: localhost:8848
       config:
-        server-addr: lantekha:8848
+        server-addr: localhost:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
