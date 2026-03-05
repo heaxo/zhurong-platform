@@ -1,15 +1,16 @@
 package com.ao.platform.core;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.ao.platform.core",markerInterface = BaseMapper.class)
+@MapperScan(basePackages = "com.ao.platform.core")
+@EnableScheduling
 @Slf4j
 public class AoPlatformCoreApplication {
 

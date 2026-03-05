@@ -21,6 +21,8 @@ ext {
     mapstructVersion = '1.5.5.Final'
     lombokMapstructBindingVersion = '0.2.0'
     JsonWebTokenVersion = '0.12.5'
+    shedlockSpringVersio = '5.12.0'
+    shedlockProviderJdbcTemplateVersio = '5.12.0'
 
 }
 

@@ -19,6 +19,9 @@ public class CodeGenerator {
 //                new String[]{"flyway_schema_history"},
                 null,
                 new String[]{
+                        "AO_PLATFORM_JOB_CURSOR",
+                        "AO_PLATFORM_OUTBOX_EVENT",
+                        "AO_PLATFORM_NEST100_STATE_SNAPSHOT",
                         "DIS_MMNN_MMOO_00000200",
                         "DIS_MMTT_MMTT_00000100",
                         "DIS_NEST_NEST_00000100",

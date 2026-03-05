@@ -53,6 +53,10 @@ dependencies {
     implementation "org.flywaydb:flyway-core"
     implementation "org.flywaydb:flyway-sqlserver"
 
+    implementation "net.javacrumbs.shedlock:shedlock-spring:${shedlockSpringVersio}"
+
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
 }

@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   nacos:
     image: nacos/nacos-server:${NACOS_VERSION}
