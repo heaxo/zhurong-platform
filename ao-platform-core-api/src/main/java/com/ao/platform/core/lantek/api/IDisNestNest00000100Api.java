@@ -16,7 +16,6 @@ import java.util.List;
  * <p>
  * 说明：仅定义接口契约
  */
-@RequestMapping("/disNestNest00000100")
 public interface IDisNestNest00000100Api {
 
     /**
@@ -32,7 +31,7 @@ public interface IDisNestNest00000100Api {
      */
     @GetMapping("/{id}")
     ApiResponse
-            <DisNestNest00000100VO> getById(@PathVariable Long id);
+            <DisNestNest00000100VO> getById(@PathVariable("id") Long id);
 
     /**
      * 新增
@@ -47,7 +46,7 @@ public interface IDisNestNest00000100Api {
     @PutMapping("/{id}")
     ApiResponse
             <Boolean> update(
-            @PathVariable Long id,
+            @PathVariable("id") Long id,
             @Valid @RequestBody DisNestNest00000100DTO dto
     );
 
@@ -56,7 +55,7 @@ public interface IDisNestNest00000100Api {
      */
     @DeleteMapping("/{id}")
     ApiResponse
-            <Boolean> remove(@PathVariable Long id);
+            <Boolean> remove(@PathVariable("id") Long id);
 
     /**
      * 批量删除

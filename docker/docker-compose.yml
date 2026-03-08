@@ -77,6 +77,23 @@ services:
     networks:
       - ao-network
 
+  # ao-platform-custom 服务
+  ao-platform-custom:
+    image: a.he/ao-platform-custom-first
+    container_name: ao-platform-custom-first
+    ports:
+      - "9300:9300"
+    depends_on:
+      - nacos
+      - rabbitmq
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - ao-network
+
 networks:
   ao-network:
     driver: bridge

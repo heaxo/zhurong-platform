@@ -10,6 +10,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,6 +46,25 @@ public class ServletJwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String header = request.getHeader(HEADER);
+
+        String internalToken = request.getHeader("X-Internal-Token");
+
+        if ("ao-platform-internal".equals(internalToken)) {
+
+            // 系统内部调用认证：
+            // 当请求携带合法的内部调用 Token 时，认为该请求来自系统内部服务（如 MQ 消费者或 Feign 调用）。
+            // 当前仅完成认证（Authentication），暂未对接口进行细粒度权限控制。
+            // 后续计划为该身份授予特定 API 权限（如 ROLE_API），并结合接口权限进行授权校验。
+            // 目前部分接口仍处于未启用权限校验的状态，因此即使未授权也可能访问成功。
+            Authentication auth =
+                    new UsernamePasswordAuthenticationToken(
+                            "api",
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_API"))
+                    );
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
 
         if (header == null || !header.startsWith(PREFIX)) {
             filterChain.doFilter(request, response);

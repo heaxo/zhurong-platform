@@ -34,7 +34,7 @@ ApiResponse
     */
     @GetMapping("/{id}")
     ApiResponse
-    <MmnnMmoo00000300VO> getById(@PathVariable Long id);
+    <MmnnMmoo00000300VO> getById(@PathVariable("id") Long id);
 
         /**
         * 新增
@@ -49,7 +49,7 @@ ApiResponse
             @PutMapping("/{id}")
             ApiResponse
             <Boolean> update(
-                @PathVariable Long id,
+                @PathVariable("id") Long id,
                 @Valid @RequestBody MmnnMmoo00000300DTO dto
                 );
 
@@ -58,7 +58,7 @@ ApiResponse
                 */
                 @DeleteMapping("/{id}")
                 ApiResponse
-                <Boolean> remove(@PathVariable Long id);
+                <Boolean> remove(@PathVariable("id") Long id);
 
                     /**
                     * 批量删除

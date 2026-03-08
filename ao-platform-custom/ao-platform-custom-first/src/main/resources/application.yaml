@@ -7,7 +7,7 @@ spring:
   application:
     name: ao-platform-custom
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: admin
     password: admin

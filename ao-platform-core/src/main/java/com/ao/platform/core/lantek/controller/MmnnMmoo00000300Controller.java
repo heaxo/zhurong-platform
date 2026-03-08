@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/mmnnMmoo00000300")
 public class MmnnMmoo00000300Controller extends BaseController implements IMmnnMmoo00000300Api {
 
     private final MmnnMmoo00000300Convert convert;
