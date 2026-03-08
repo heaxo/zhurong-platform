@@ -15,16 +15,10 @@ spring:
 
     listener:
       simple:
-        acknowledge-mode: manual
-        prefetch: 10
-        concurrency: 5
+        acknowledge-mode: auto
+        concurrency: 3
         max-concurrency: 10
-        retry:
-          enabled: true
-          max-attempts: 3
-          initial-interval: 1000ms
-          multiplier: 2
-          max-interval: 10000ms
+        prefetch: 10
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=LSystemDB;encrypt=false
     username: sa

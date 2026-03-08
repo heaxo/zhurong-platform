@@ -19,7 +19,6 @@ import java.util.List;
 *
 * 说明：仅定义接口契约
 */
-@RequestMapping("/mmnnMmoo00000300")
 public interface IMmnnMmoo00000300Api {
 
 /**

@@ -29,6 +29,7 @@ import java.util.List;
 */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/${table.entityPath}")
 public class ${table.controllerName} extends BaseController implements I${entity}Api {
 
 private final ${entity}Convert convert;

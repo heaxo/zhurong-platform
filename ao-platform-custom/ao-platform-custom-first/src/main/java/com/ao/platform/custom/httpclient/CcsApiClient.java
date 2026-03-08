@@ -18,7 +18,7 @@ public class CcsApiClient extends BaseApiClient {
         super(builder, baseUrl);
     }
 
-    public ApiResponse  requestAcceptOrder(AcceptOrderRequestDTO dto) {
-        return post(acceptOrderUrl,dto, ApiResponse.class);
+    public ApiResponse requestAcceptOrder(AcceptOrderRequestDTO dto) {
+        return post(acceptOrderUrl, dto, ApiResponse.class);
     }
 }

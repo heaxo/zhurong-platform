@@ -1,6 +1,8 @@
 package com.ao.platform.custom.consumer;
 
+import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.base.constant.NestConstant;
+import com.ao.platform.base.exception.BusinessException;
 import com.ao.platform.core.lantek.constants.NestMqConstants;
 import com.ao.platform.core.lantek.dto.DisNestNest00000100DTO;
 import com.ao.platform.core.lantek.dto.NestStateChangedEvent;
@@ -11,14 +13,11 @@ import com.ao.platform.custom.dto.AcceptOrderRequestDTO;
 import com.ao.platform.custom.feign.DisNestNest00000100FeignClient;
 import com.ao.platform.custom.feign.MmnnMmoo00000300FeignClient;
 import com.ao.platform.custom.httpclient.CcsApiClient;
-import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,38 +28,20 @@ import java.util.List;
 public class NestStateChangedConsumer {
 
 
-    DisNestNest00000100FeignClient disNestNest00000100FeignClient;
-    MmnnMmoo00000300FeignClient mmnnMmoo00000300FeignClient;
-
-    CcsApiClient ccsApiClient;
+    private final DisNestNest00000100FeignClient disNestNest00000100FeignClient;
+    private final MmnnMmoo00000300FeignClient mmnnMmoo00000300FeignClient;
+    private final CcsApiClient ccsApiClient;
 
     @RabbitListener(queues = NestMqConstants.Queue.CUSTOM_STATE)
-    public void handle(NestStateChangedEvent event,
-                       Channel channel,
-                       Message message) throws IOException {
+    public void handle(NestStateChangedEvent event) {
 
-        long tag = message.getMessageProperties().getDeliveryTag();
+        log.info("收到套料状态变更 recID={}, oldState={}, newState={}",
+                event.getRecID(),
+                event.getOldState(),
+                event.getNewState());
 
-        try {
-
-            log.info("收到套料状态变更 recID={}, oldState={}, newState={}",
-                    event.getRecID(),
-                    event.getOldState(),
-                    event.getNewState());
-
-            // 业务处理
-            process(event);
-
-            // ACK
-            channel.basicAck(tag, false);
-
-        } catch (Exception e) {
-
-            log.error("消费失败 recID={}", event.getRecID(), e);
-
-            // 重新入队
-            channel.basicNack(tag, false, true);
-        }
+        // 业务处理
+        process(event);
     }
 
     private void process(NestStateChangedEvent event) {
@@ -110,10 +91,21 @@ public class NestStateChangedConsumer {
 
             nestingMains.add(nestingMain);
 
-
             List<AcceptOrderRequestDTO.Details> jobPartDetails = new ArrayList<>();
+            dto.setDetails(jobPartDetails);
+            dto.setNestingMains(nestingMains);
 
-            ccsApiClient.requestAcceptOrder(dto);
+            ApiResponse apiResponse = ccsApiClient.requestAcceptOrder(dto);
+            if (apiResponse == null) {
+                String msg = "中控接口请求失败";
+                log.error(msg);
+                log.info(nest.getNstRef());
+                throw new BusinessException(msg);
+            }
+            if (apiResponse.code() != 0) {
+                log.error(apiResponse.message());
+                throw new BusinessException(apiResponse.message());
+            }
         }
     }
 

@@ -32,16 +32,6 @@ public record ApiResponse<T>(
                 null);
     }
 
-    public T getData(){
-        return data;
-    }
-    public String getMessage(){
-        return message;
-    }
-    public int getCode(){
-        return code;
-    }
-
     public T unwrap() {
 
         if (code != 0) {
