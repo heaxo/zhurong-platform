@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan(basePackages = "com.ao.platform.core")
+@MapperScan(basePackages = {"com.ao.platform.core.lantek.mapper"})
 @EnableScheduling
 @Slf4j
 public class AoPlatformCoreApplication {

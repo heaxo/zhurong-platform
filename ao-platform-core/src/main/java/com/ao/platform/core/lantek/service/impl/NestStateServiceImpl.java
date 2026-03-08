@@ -78,7 +78,7 @@ public class NestStateServiceImpl implements INestStateService {
             AoPlatformNest100StateSnapshot snapshot =
                     nest100StateSnapshotMapper.selectById(RecID);
 
-            // 快照不存在：初始化并跳过（不发事件）
+            // 快照不存在
             if (snapshot == null) {
                 AoPlatformNest100StateSnapshot newSnapshot = new AoPlatformNest100StateSnapshot();
                 newSnapshot.setRecID(RecID);
@@ -86,6 +86,7 @@ public class NestStateServiceImpl implements INestStateService {
                 newSnapshot.setLastDate(LastDate);
                 newSnapshot.setSyncTime(LocalDateTime.now());
                 nest100StateSnapshotMapper.insert(newSnapshot);
+                eventPublisher.publish(RecID, null, NewState, LastDate);
                 continue;
             }
 
@@ -105,7 +106,7 @@ public class NestStateServiceImpl implements INestStateService {
             }
         }
 
-        // 6) 推进游标（到本批次最大 LastDate）
+        // 推进游标（到本批次最大 LastDate）
         cursorMapper.updateCursorTime(jobName, maxSeenLastDate);
     }
 }
