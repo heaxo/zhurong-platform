@@ -1,19 +1,21 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.ao.platform.core.lantek.entity.BaseEntity;
 
 /**
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,168 +29,168 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("TurrRef")
+            @TableField("TurrRef")
             private String TurrRef;
 
         /**
         * 
         */
-        @TableField("TPosition")
+            @TableField("TPosition")
             private Integer TPosition;
 
         /**
         * 
         */
-        @TableField("TNumber")
+            @TableField("TNumber")
             private Integer TNumber;
 
         /**
         * 
         */
-        @TableField("MltRef")
+            @TableField("MltRef")
             private String MltRef;
 
         /**
         * 
         */
-        @TableField("StTRef")
+            @TableField("StTRef")
             private String StTRef;
 
         /**
         * 
         */
-        @TableField("Autoindex")
+            @TableField("Autoindex")
             private Byte Autoindex;
 
         /**
         * 
         */
-        @TableField("DMin")
+            @TableField("DMin")
             private Double DMin;
 
         /**
         * 
         */
-        @TableField("DMax")
+            @TableField("DMax")
             private Double DMax;
 
         /**
         * 
         */
-        @TableField("ZClamp")
+            @TableField("ZClamp")
             private Integer ZClamp;
 
         /**
         * 
         */
-        @TableField("ZLeft")
+            @TableField("ZLeft")
             private Double ZLeft;
 
         /**
         * 
         */
-        @TableField("ZRight")
+            @TableField("ZRight")
             private Double ZRight;
 
         /**
         * 
         */
-        @TableField("ZTop")
+            @TableField("ZTop")
             private Double ZTop;
 
         /**
         * 
         */
-        @TableField("OffsetXMin")
+            @TableField("OffsetXMin")
             private Double OffsetXMin;
 
         /**
         * 
         */
-        @TableField("OffsetXMax")
+            @TableField("OffsetXMax")
             private Double OffsetXMax;
 
         /**
         * 
         */
-        @TableField("OffsetYMin")
+            @TableField("OffsetYMin")
             private Double OffsetYMin;
 
         /**
         * 
         */
-        @TableField("OffsetYMax")
+            @TableField("OffsetYMax")
             private Double OffsetYMax;
 
         /**
         * 
         */
-        @TableField("Plane")
+            @TableField("Plane")
             private Integer Plane;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

@@ -10,24 +10,24 @@ import java.time.LocalDateTime;
 @Data
 public class SystOwnd00000100VO implements Serializable {
 
-        private String docDsc;
-        private String tblRef;
-        private Integer recordID;
-        private Integer sType;
-        private String fFType;
-        private String fFName;
-        private LocalDateTime fFDate;
-        private Double fFSize;
-        private String fFVault;
-        private Integer recState;
-        private LocalDateTime crtDate;
-        private LocalDateTime lastDate;
-        private String crtUser;
-        private String lastUser;
-        private String owner;
-        private String recEnt;
-        private String recOU;
-        private Integer recSec;
-        private Integer cntID;
-        private Integer recID;
+        private String DocDsc;
+        private String TblRef;
+        private Integer RecordID;
+        private Integer SType;
+        private String FFType;
+        private String FFName;
+        private LocalDateTime FFDate;
+        private Double FFSize;
+        private String FFVault;
+        private Integer RecState;
+        private LocalDateTime CrtDate;
+        private LocalDateTime LastDate;
+        private String CrtUser;
+        private String LastUser;
+        private String Owner;
+        private String RecEnt;
+        private String RecOU;
+        private Integer RecSec;
+        private Integer CntID;
+        private Integer RecID;
 }

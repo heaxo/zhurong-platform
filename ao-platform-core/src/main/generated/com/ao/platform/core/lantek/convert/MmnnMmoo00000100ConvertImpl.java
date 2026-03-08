@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-06T15:33:06+0800",
+    date = "2026-03-08T17:13:33+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -59,6 +59,17 @@ public class MmnnMmoo00000100ConvertImpl implements MmnnMmoo00000100Convert {
         mmnnMmoo00000100VO.setMainPackageName( entity.getMainPackageName() );
         mmnnMmoo00000100VO.setWorkPackage( entity.getWorkPackage() );
         mmnnMmoo00000100VO.setWorkPackageName( entity.getWorkPackageName() );
+        mmnnMmoo00000100VO.setGLS_Var1( entity.getGLS_Var1() );
+        mmnnMmoo00000100VO.setGLS_Var2( entity.getGLS_Var2() );
+        mmnnMmoo00000100VO.setGLS_Var3( entity.getGLS_Var3() );
+        mmnnMmoo00000100VO.setGLS_Var4( entity.getGLS_Var4() );
+        mmnnMmoo00000100VO.setGLS_Var5( entity.getGLS_Var5() );
+        mmnnMmoo00000100VO.setDIS_IsQuote( entity.getDIS_IsQuote() );
+        mmnnMmoo00000100VO.setDIS_OutQ( entity.getDIS_OutQ() );
+        mmnnMmoo00000100VO.setDIS_FillerPart( entity.getDIS_FillerPart() );
+        mmnnMmoo00000100VO.setDIS_RouteAbbreviation( entity.getDIS_RouteAbbreviation() );
+        mmnnMmoo00000100VO.setDIS_AutoNesting( entity.getDIS_AutoNesting() );
+        mmnnMmoo00000100VO.setDIS_AutoNestingStrategy( entity.getDIS_AutoNestingStrategy() );
         mmnnMmoo00000100VO.setRecState( entity.getRecState() );
         mmnnMmoo00000100VO.setCrtDate( entity.getCrtDate() );
         mmnnMmoo00000100VO.setLastDate( entity.getLastDate() );
@@ -130,6 +141,17 @@ public class MmnnMmoo00000100ConvertImpl implements MmnnMmoo00000100Convert {
         mmnnMmoo00000100.setMainPackageName( dto.getMainPackageName() );
         mmnnMmoo00000100.setWorkPackage( dto.getWorkPackage() );
         mmnnMmoo00000100.setWorkPackageName( dto.getWorkPackageName() );
+        mmnnMmoo00000100.setGLS_Var1( dto.getGLS_Var1() );
+        mmnnMmoo00000100.setGLS_Var2( dto.getGLS_Var2() );
+        mmnnMmoo00000100.setGLS_Var3( dto.getGLS_Var3() );
+        mmnnMmoo00000100.setGLS_Var4( dto.getGLS_Var4() );
+        mmnnMmoo00000100.setGLS_Var5( dto.getGLS_Var5() );
+        mmnnMmoo00000100.setDIS_IsQuote( dto.getDIS_IsQuote() );
+        mmnnMmoo00000100.setDIS_OutQ( dto.getDIS_OutQ() );
+        mmnnMmoo00000100.setDIS_FillerPart( dto.getDIS_FillerPart() );
+        mmnnMmoo00000100.setDIS_RouteAbbreviation( dto.getDIS_RouteAbbreviation() );
+        mmnnMmoo00000100.setDIS_AutoNesting( dto.getDIS_AutoNesting() );
+        mmnnMmoo00000100.setDIS_AutoNestingStrategy( dto.getDIS_AutoNestingStrategy() );
         mmnnMmoo00000100.setRecState( dto.getRecState() );
         mmnnMmoo00000100.setCrtDate( dto.getCrtDate() );
         mmnnMmoo00000100.setLastDate( dto.getLastDate() );
@@ -309,6 +331,39 @@ public class MmnnMmoo00000100ConvertImpl implements MmnnMmoo00000100Convert {
         }
         if ( dto.getWorkPackageName() != null ) {
             entity.setWorkPackageName( dto.getWorkPackageName() );
+        }
+        if ( dto.getGLS_Var1() != null ) {
+            entity.setGLS_Var1( dto.getGLS_Var1() );
+        }
+        if ( dto.getGLS_Var2() != null ) {
+            entity.setGLS_Var2( dto.getGLS_Var2() );
+        }
+        if ( dto.getGLS_Var3() != null ) {
+            entity.setGLS_Var3( dto.getGLS_Var3() );
+        }
+        if ( dto.getGLS_Var4() != null ) {
+            entity.setGLS_Var4( dto.getGLS_Var4() );
+        }
+        if ( dto.getGLS_Var5() != null ) {
+            entity.setGLS_Var5( dto.getGLS_Var5() );
+        }
+        if ( dto.getDIS_IsQuote() != null ) {
+            entity.setDIS_IsQuote( dto.getDIS_IsQuote() );
+        }
+        if ( dto.getDIS_OutQ() != null ) {
+            entity.setDIS_OutQ( dto.getDIS_OutQ() );
+        }
+        if ( dto.getDIS_FillerPart() != null ) {
+            entity.setDIS_FillerPart( dto.getDIS_FillerPart() );
+        }
+        if ( dto.getDIS_RouteAbbreviation() != null ) {
+            entity.setDIS_RouteAbbreviation( dto.getDIS_RouteAbbreviation() );
+        }
+        if ( dto.getDIS_AutoNesting() != null ) {
+            entity.setDIS_AutoNesting( dto.getDIS_AutoNesting() );
+        }
+        if ( dto.getDIS_AutoNestingStrategy() != null ) {
+            entity.setDIS_AutoNestingStrategy( dto.getDIS_AutoNestingStrategy() );
         }
         if ( dto.getRecState() != null ) {
             entity.setRecState( dto.getRecState() );

@@ -1,19 +1,21 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.ao.platform.core.lantek.entity.BaseEntity;
 
 /**
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,120 +29,120 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("NstRef")
+            @TableField("NstRef")
             private String NstRef;
 
         /**
         * 
         */
-        @TableField("MCode")
+            @TableField("MCode")
             private String MCode;
 
         /**
         * 
         */
-        @TableField("MsgDesc")
+            @TableField("MsgDesc")
             private String MsgDesc;
 
         /**
         * 
         */
-        @TableField("MsgNum")
+            @TableField("MsgNum")
             private Integer MsgNum;
 
         /**
         * 
         */
-        @TableField("ValType")
+            @TableField("ValType")
             private Integer ValType;
 
         /**
         * 
         */
-        @TableField("UCtName")
+            @TableField("UCtName")
             private String UCtName;
 
         /**
         * 
         */
-        @TableField("UntName")
+            @TableField("UntName")
             private String UntName;
 
         /**
         * 
         */
-        @TableField("DValue")
+            @TableField("DValue")
             private Double DValue;
 
         /**
         * 
         */
-        @TableField("CValue")
+            @TableField("CValue")
             private Double CValue;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

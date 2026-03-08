@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-06T15:33:06+0800",
+    date = "2026-03-08T17:13:32+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -34,6 +34,12 @@ public class WwccWwcc00000100ConvertImpl implements WwccWwcc00000100Convert {
         wwccWwcc00000100VO.setWrkCap( entity.getWrkCap() );
         wwccWwcc00000100VO.setDescrip( entity.getDescrip() );
         wwccWwcc00000100VO.setIsActive( entity.getIsActive() );
+        wwccWwcc00000100VO.setDIS_WrkType( entity.getDIS_WrkType() );
+        wwccWwcc00000100VO.setDIS_OTechn( entity.getDIS_OTechn() );
+        wwccWwcc00000100VO.setDIS_CfgFile( entity.getDIS_CfgFile() );
+        wwccWwcc00000100VO.setDIS_PsfFile( entity.getDIS_PsfFile() );
+        wwccWwcc00000100VO.setDIS_SawRef( entity.getDIS_SawRef() );
+        wwccWwcc00000100VO.setDIS_Group( entity.getDIS_Group() );
         wwccWwcc00000100VO.setWosMessages( entity.getWosMessages() );
         wwccWwcc00000100VO.setWosState( entity.getWosState() );
         wwccWwcc00000100VO.setWosStateLastDate( entity.getWosStateLastDate() );
@@ -85,6 +91,12 @@ public class WwccWwcc00000100ConvertImpl implements WwccWwcc00000100Convert {
         wwccWwcc00000100.setWrkCap( dto.getWrkCap() );
         wwccWwcc00000100.setDescrip( dto.getDescrip() );
         wwccWwcc00000100.setIsActive( dto.getIsActive() );
+        wwccWwcc00000100.setDIS_WrkType( dto.getDIS_WrkType() );
+        wwccWwcc00000100.setDIS_OTechn( dto.getDIS_OTechn() );
+        wwccWwcc00000100.setDIS_CfgFile( dto.getDIS_CfgFile() );
+        wwccWwcc00000100.setDIS_PsfFile( dto.getDIS_PsfFile() );
+        wwccWwcc00000100.setDIS_SawRef( dto.getDIS_SawRef() );
+        wwccWwcc00000100.setDIS_Group( dto.getDIS_Group() );
         wwccWwcc00000100.setWosMessages( dto.getWosMessages() );
         wwccWwcc00000100.setWosState( dto.getWosState() );
         wwccWwcc00000100.setWosStateLastDate( dto.getWosStateLastDate() );
@@ -174,6 +186,24 @@ public class WwccWwcc00000100ConvertImpl implements WwccWwcc00000100Convert {
         }
         if ( dto.getIsActive() != null ) {
             entity.setIsActive( dto.getIsActive() );
+        }
+        if ( dto.getDIS_WrkType() != null ) {
+            entity.setDIS_WrkType( dto.getDIS_WrkType() );
+        }
+        if ( dto.getDIS_OTechn() != null ) {
+            entity.setDIS_OTechn( dto.getDIS_OTechn() );
+        }
+        if ( dto.getDIS_CfgFile() != null ) {
+            entity.setDIS_CfgFile( dto.getDIS_CfgFile() );
+        }
+        if ( dto.getDIS_PsfFile() != null ) {
+            entity.setDIS_PsfFile( dto.getDIS_PsfFile() );
+        }
+        if ( dto.getDIS_SawRef() != null ) {
+            entity.setDIS_SawRef( dto.getDIS_SawRef() );
+        }
+        if ( dto.getDIS_Group() != null ) {
+            entity.setDIS_Group( dto.getDIS_Group() );
         }
         if ( dto.getWosMessages() != null ) {
             entity.setWosMessages( dto.getWosMessages() );

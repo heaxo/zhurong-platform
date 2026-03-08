@@ -1,19 +1,21 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.ao.platform.core.lantek.entity.BaseEntity;
 
 /**
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,186 +29,186 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("WrkRef")
+            @TableField("WrkRef")
             private String WrkRef;
 
         /**
         * 
         */
-        @TableField("WrkOEM")
+            @TableField("WrkOEM")
             private String WrkOEM;
 
         /**
         * 
         */
-        @TableField("WrkCNC")
+            @TableField("WrkCNC")
             private String WrkCNC;
 
         /**
         * 
         */
-        @TableField("IsOutsourcing")
+            @TableField("IsOutsourcing")
             private Byte IsOutsourcing;
 
         /**
         * 
         */
-        @TableField("WrkCapUCtName")
+            @TableField("WrkCapUCtName")
             private String WrkCapUCtName;
 
         /**
         * 
         */
-        @TableField("WrkCapUntName")
+            @TableField("WrkCapUntName")
             private String WrkCapUntName;
 
         /**
         * 
         */
-        @TableField("WrkCap")
+            @TableField("WrkCap")
             private Double WrkCap;
 
         /**
         * 
         */
-        @TableField("Descrip")
+            @TableField("Descrip")
             private String Descrip;
 
         /**
         * 
         */
-        @TableField("IsActive")
+            @TableField("IsActive")
             private Byte IsActive;
 
         /**
         * 
         */
-        @TableField("DIS_WrkType")
+            @TableField("DIS_WrkType")
             private Integer DIS_WrkType;
 
         /**
         * 
         */
-        @TableField("DIS_OTechn")
+            @TableField("DIS_OTechn")
             private Integer DIS_OTechn;
 
         /**
         * 
         */
-        @TableField("DIS_CfgFile")
+            @TableField("DIS_CfgFile")
             private String DIS_CfgFile;
 
         /**
         * 
         */
-        @TableField("DIS_PsfFile")
+            @TableField("DIS_PsfFile")
             private String DIS_PsfFile;
 
         /**
         * 
         */
-        @TableField("DIS_SawRef")
+            @TableField("DIS_SawRef")
             private String DIS_SawRef;
 
         /**
         * 
         */
-        @TableField("DIS_Group")
+            @TableField("DIS_Group")
             private String DIS_Group;
 
         /**
         * 
         */
-        @TableField("WosMessages")
+            @TableField("WosMessages")
             private String WosMessages;
 
         /**
         * 
         */
-        @TableField("WosState")
+            @TableField("WosState")
             private Integer WosState;
 
         /**
         * 
         */
-        @TableField("WosStateLastDate")
+            @TableField("WosStateLastDate")
             private LocalDateTime WosStateLastDate;
 
         /**
         * 
         */
-        @TableField("WosPauseReason")
+            @TableField("WosPauseReason")
             private String WosPauseReason;
 
         /**
         * 
         */
-        @TableField("WosOperatorComment")
+            @TableField("WosOperatorComment")
             private String WosOperatorComment;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

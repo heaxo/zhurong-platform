@@ -10,18 +10,18 @@ import java.time.LocalDateTime;
 @Data
 public class DisPpttWwcc00000800DTO implements Serializable {
 
-    private String wrkRef;
-    private String turrRef;
-    private Integer recState;
-    private LocalDateTime crtDate;
-    private LocalDateTime lastDate;
-    private String crtUser;
-    private String lastUser;
-    private String owner;
-    private String recEnt;
-    private String recOU;
-    private Integer recSec;
-    private Integer cntID;
-    private Integer recID;
+    private String WrkRef;
+    private String TurrRef;
+    private Integer RecState;
+    private LocalDateTime CrtDate;
+    private LocalDateTime LastDate;
+    private String CrtUser;
+    private String LastUser;
+    private String Owner;
+    private String RecEnt;
+    private String RecOU;
+    private Integer RecSec;
+    private Integer CntID;
+    private Integer RecID;
 
 }

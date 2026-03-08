@@ -10,20 +10,20 @@ import java.time.LocalDateTime;
 @Data
 public class DisPpttTtrr00000700VO implements Serializable {
 
-        private String turrRef;
-        private Integer trType;
-        private Integer trCategory;
-        private String descrip;
-        private Integer toolClass;
-        private Integer recState;
-        private LocalDateTime crtDate;
-        private LocalDateTime lastDate;
-        private String crtUser;
-        private String lastUser;
-        private String owner;
-        private String recEnt;
-        private String recOU;
-        private Integer recSec;
-        private Integer cntID;
-        private Integer recID;
+        private String TurrRef;
+        private Integer TrType;
+        private Integer TrCategory;
+        private String Descrip;
+        private Integer ToolClass;
+        private Integer RecState;
+        private LocalDateTime CrtDate;
+        private LocalDateTime LastDate;
+        private String CrtUser;
+        private String LastUser;
+        private String Owner;
+        private String RecEnt;
+        private String RecOU;
+        private Integer RecSec;
+        private Integer CntID;
+        private Integer RecID;
 }

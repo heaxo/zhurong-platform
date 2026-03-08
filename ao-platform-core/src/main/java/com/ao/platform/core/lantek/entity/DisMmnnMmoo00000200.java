@@ -1,6 +1,8 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,210 +29,210 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("JobRef")
+            @TableField("JobRef")
             private String JobRef;
 
         /**
         * 
         */
-        @TableField("MState")
+            @TableField("MState")
             private Integer MState;
 
         /**
         * 
         */
-        @TableField("CDate")
+            @TableField("CDate")
             private LocalDateTime CDate;
 
         /**
         * 
         */
-        @TableField("JGroup")
+            @TableField("JGroup")
             private String JGroup;
 
         /**
         * 
         */
-        @TableField("UData1")
+            @TableField("UData1")
             private String UData1;
 
         /**
         * 
         */
-        @TableField("UData2")
+            @TableField("UData2")
             private String UData2;
 
         /**
         * 
         */
-        @TableField("UData3")
+            @TableField("UData3")
             private String UData3;
 
         /**
         * 
         */
-        @TableField("UData4")
+            @TableField("UData4")
             private String UData4;
 
         /**
         * 
         */
-        @TableField("UData5")
+            @TableField("UData5")
             private String UData5;
 
         /**
         * 
         */
-        @TableField("WrkRef")
+            @TableField("WrkRef")
             private String WrkRef;
 
         /**
         * 
         */
-        @TableField("MatRef")
+            @TableField("MatRef")
             private String MatRef;
 
         /**
         * 
         */
-        @TableField("Thickness")
+            @TableField("Thickness")
             private Double Thickness;
 
         /**
         * 
         */
-        @TableField("Descrip")
+            @TableField("Descrip")
             private String Descrip;
 
         /**
         * 
         */
-        @TableField("IsQuote")
+            @TableField("IsQuote")
             private Byte IsQuote;
 
         /**
         * 
         */
-        @TableField("CusRef")
+            @TableField("CusRef")
             private String CusRef;
 
         /**
         * 
         */
-        @TableField("CusName")
+            @TableField("CusName")
             private String CusName;
 
         /**
         * 
         */
-        @TableField("QutRef")
+            @TableField("QutRef")
             private String QutRef;
 
         /**
         * 
         */
-        @TableField("JobName")
+            @TableField("JobName")
             private String JobName;
 
         /**
         * 
         */
-        @TableField("JobOrder")
+            @TableField("JobOrder")
             private Integer JobOrder;
 
         /**
         * 
         */
-        @TableField("RDate")
+            @TableField("RDate")
             private LocalDateTime RDate;
 
         /**
         * 
         */
-        @TableField("CamLastDate")
+            @TableField("CamLastDate")
             private LocalDateTime CamLastDate;
 
         /**
         * 
         */
-        @TableField("LastQuoteModification")
+            @TableField("LastQuoteModification")
             private LocalDateTime LastQuoteModification;
 
         /**
         * 
         */
-        @TableField("JobElementLastDate")
+            @TableField("JobElementLastDate")
             private LocalDateTime JobElementLastDate;
 
         /**
         * 
         */
-        @TableField("ExternalKey")
+            @TableField("ExternalKey")
             private String ExternalKey;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-06T15:33:06+0800",
+    date = "2026-03-08T17:13:33+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -51,9 +51,13 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300VO.setUCtName( entity.getUCtName() );
         mmnnMmoo00000300VO.setUntName( entity.getUntName() );
         mmnnMmoo00000300VO.setQuantity( entity.getQuantity() );
+        mmnnMmoo00000300VO.setAQ( entity.getAQ() );
+        mmnnMmoo00000300VO.setMQ( entity.getMQ() );
+        mmnnMmoo00000300VO.setLQ( entity.getLQ() );
         mmnnMmoo00000300VO.setToOutQ( entity.getToOutQ() );
         mmnnMmoo00000300VO.setOutQ( entity.getOutQ() );
         mmnnMmoo00000300VO.setMState( entity.getMState() );
+        mmnnMmoo00000300VO.setRQ( entity.getRQ() );
         mmnnMmoo00000300VO.setOState( entity.getOState() );
         mmnnMmoo00000300VO.setEDuration( entity.getEDuration() );
         mmnnMmoo00000300VO.setIOrder( entity.getIOrder() );
@@ -92,7 +96,22 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300VO.setMainOriginTypeFilter( entity.getMainOriginTypeFilter() );
         mmnnMmoo00000300VO.setMainPackage( entity.getMainPackage() );
         mmnnMmoo00000300VO.setMainPackageName( entity.getMainPackageName() );
+        mmnnMmoo00000300VO.setDIS_PGroup( entity.getDIS_PGroup() );
+        mmnnMmoo00000300VO.setDIS_MatRef( entity.getDIS_MatRef() );
+        mmnnMmoo00000300VO.setDIS_Thickness( entity.getDIS_Thickness() );
+        mmnnMmoo00000300VO.setDIS_JobRef( entity.getDIS_JobRef() );
+        mmnnMmoo00000300VO.setDIS_FPosition( entity.getDIS_FPosition() );
+        mmnnMmoo00000300VO.setDIS_NQ( entity.getDIS_NQ() );
+        mmnnMmoo00000300VO.setDIS_IsChanged( entity.getDIS_IsChanged() );
+        mmnnMmoo00000300VO.setDIS_IsDuct( entity.getDIS_IsDuct() );
+        mmnnMmoo00000300VO.setDIS_Is2DSOp( entity.getDIS_Is2DSOp() );
+        mmnnMmoo00000300VO.setDIS_Is3DSOp( entity.getDIS_Is3DSOp() );
+        mmnnMmoo00000300VO.setDIS_IsQuote( entity.getDIS_IsQuote() );
+        mmnnMmoo00000300VO.setDIS_WrkCfg( entity.getDIS_WrkCfg() );
         mmnnMmoo00000300VO.setWosStatus( entity.getWosStatus() );
+        mmnnMmoo00000300VO.setDIS_NonCuttingJob( entity.getDIS_NonCuttingJob() );
+        mmnnMmoo00000300VO.setDIS_OrgOprID( entity.getDIS_OrgOprID() );
+        mmnnMmoo00000300VO.setDIS_MStateCloudStatus( entity.getDIS_MStateCloudStatus() );
         mmnnMmoo00000300VO.setRecState( entity.getRecState() );
         mmnnMmoo00000300VO.setCrtDate( entity.getCrtDate() );
         mmnnMmoo00000300VO.setLastDate( entity.getLastDate() );
@@ -156,9 +175,13 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300.setUCtName( dto.getUCtName() );
         mmnnMmoo00000300.setUntName( dto.getUntName() );
         mmnnMmoo00000300.setQuantity( dto.getQuantity() );
+        mmnnMmoo00000300.setAQ( dto.getAQ() );
+        mmnnMmoo00000300.setMQ( dto.getMQ() );
+        mmnnMmoo00000300.setLQ( dto.getLQ() );
         mmnnMmoo00000300.setToOutQ( dto.getToOutQ() );
         mmnnMmoo00000300.setOutQ( dto.getOutQ() );
         mmnnMmoo00000300.setMState( dto.getMState() );
+        mmnnMmoo00000300.setRQ( dto.getRQ() );
         mmnnMmoo00000300.setOState( dto.getOState() );
         mmnnMmoo00000300.setEDuration( dto.getEDuration() );
         mmnnMmoo00000300.setIOrder( dto.getIOrder() );
@@ -197,7 +220,22 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300.setMainOriginTypeFilter( dto.getMainOriginTypeFilter() );
         mmnnMmoo00000300.setMainPackage( dto.getMainPackage() );
         mmnnMmoo00000300.setMainPackageName( dto.getMainPackageName() );
+        mmnnMmoo00000300.setDIS_PGroup( dto.getDIS_PGroup() );
+        mmnnMmoo00000300.setDIS_MatRef( dto.getDIS_MatRef() );
+        mmnnMmoo00000300.setDIS_Thickness( dto.getDIS_Thickness() );
+        mmnnMmoo00000300.setDIS_JobRef( dto.getDIS_JobRef() );
+        mmnnMmoo00000300.setDIS_FPosition( dto.getDIS_FPosition() );
+        mmnnMmoo00000300.setDIS_NQ( dto.getDIS_NQ() );
+        mmnnMmoo00000300.setDIS_IsChanged( dto.getDIS_IsChanged() );
+        mmnnMmoo00000300.setDIS_IsDuct( dto.getDIS_IsDuct() );
+        mmnnMmoo00000300.setDIS_Is2DSOp( dto.getDIS_Is2DSOp() );
+        mmnnMmoo00000300.setDIS_Is3DSOp( dto.getDIS_Is3DSOp() );
+        mmnnMmoo00000300.setDIS_IsQuote( dto.getDIS_IsQuote() );
+        mmnnMmoo00000300.setDIS_WrkCfg( dto.getDIS_WrkCfg() );
         mmnnMmoo00000300.setWosStatus( dto.getWosStatus() );
+        mmnnMmoo00000300.setDIS_NonCuttingJob( dto.getDIS_NonCuttingJob() );
+        mmnnMmoo00000300.setDIS_OrgOprID( dto.getDIS_OrgOprID() );
+        mmnnMmoo00000300.setDIS_MStateCloudStatus( dto.getDIS_MStateCloudStatus() );
         mmnnMmoo00000300.setRecState( dto.getRecState() );
         mmnnMmoo00000300.setCrtDate( dto.getCrtDate() );
         mmnnMmoo00000300.setLastDate( dto.getLastDate() );
@@ -388,6 +426,15 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         if ( dto.getQuantity() != null ) {
             entity.setQuantity( dto.getQuantity() );
         }
+        if ( dto.getAQ() != null ) {
+            entity.setAQ( dto.getAQ() );
+        }
+        if ( dto.getMQ() != null ) {
+            entity.setMQ( dto.getMQ() );
+        }
+        if ( dto.getLQ() != null ) {
+            entity.setLQ( dto.getLQ() );
+        }
         if ( dto.getToOutQ() != null ) {
             entity.setToOutQ( dto.getToOutQ() );
         }
@@ -396,6 +443,9 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         }
         if ( dto.getMState() != null ) {
             entity.setMState( dto.getMState() );
+        }
+        if ( dto.getRQ() != null ) {
+            entity.setRQ( dto.getRQ() );
         }
         if ( dto.getOState() != null ) {
             entity.setOState( dto.getOState() );
@@ -511,8 +561,53 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         if ( dto.getMainPackageName() != null ) {
             entity.setMainPackageName( dto.getMainPackageName() );
         }
+        if ( dto.getDIS_PGroup() != null ) {
+            entity.setDIS_PGroup( dto.getDIS_PGroup() );
+        }
+        if ( dto.getDIS_MatRef() != null ) {
+            entity.setDIS_MatRef( dto.getDIS_MatRef() );
+        }
+        if ( dto.getDIS_Thickness() != null ) {
+            entity.setDIS_Thickness( dto.getDIS_Thickness() );
+        }
+        if ( dto.getDIS_JobRef() != null ) {
+            entity.setDIS_JobRef( dto.getDIS_JobRef() );
+        }
+        if ( dto.getDIS_FPosition() != null ) {
+            entity.setDIS_FPosition( dto.getDIS_FPosition() );
+        }
+        if ( dto.getDIS_NQ() != null ) {
+            entity.setDIS_NQ( dto.getDIS_NQ() );
+        }
+        if ( dto.getDIS_IsChanged() != null ) {
+            entity.setDIS_IsChanged( dto.getDIS_IsChanged() );
+        }
+        if ( dto.getDIS_IsDuct() != null ) {
+            entity.setDIS_IsDuct( dto.getDIS_IsDuct() );
+        }
+        if ( dto.getDIS_Is2DSOp() != null ) {
+            entity.setDIS_Is2DSOp( dto.getDIS_Is2DSOp() );
+        }
+        if ( dto.getDIS_Is3DSOp() != null ) {
+            entity.setDIS_Is3DSOp( dto.getDIS_Is3DSOp() );
+        }
+        if ( dto.getDIS_IsQuote() != null ) {
+            entity.setDIS_IsQuote( dto.getDIS_IsQuote() );
+        }
+        if ( dto.getDIS_WrkCfg() != null ) {
+            entity.setDIS_WrkCfg( dto.getDIS_WrkCfg() );
+        }
         if ( dto.getWosStatus() != null ) {
             entity.setWosStatus( dto.getWosStatus() );
+        }
+        if ( dto.getDIS_NonCuttingJob() != null ) {
+            entity.setDIS_NonCuttingJob( dto.getDIS_NonCuttingJob() );
+        }
+        if ( dto.getDIS_OrgOprID() != null ) {
+            entity.setDIS_OrgOprID( dto.getDIS_OrgOprID() );
+        }
+        if ( dto.getDIS_MStateCloudStatus() != null ) {
+            entity.setDIS_MStateCloudStatus( dto.getDIS_MStateCloudStatus() );
         }
         if ( dto.getRecState() != null ) {
             entity.setRecState( dto.getRecState() );

@@ -1,19 +1,21 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.ao.platform.core.lantek.entity.BaseEntity;
 
 /**
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,144 +29,144 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("NstRef")
+            @TableField("NstRef")
             private String NstRef;
 
         /**
         * 
         */
-        @TableField("WrkRef")
+            @TableField("WrkRef")
             private String WrkRef;
 
         /**
         * 
         */
-        @TableField("TurrRef")
+            @TableField("TurrRef")
             private String TurrRef;
 
         /**
         * 
         */
-        @TableField("TPosition")
+            @TableField("TPosition")
             private Integer TPosition;
 
         /**
         * 
         */
-        @TableField("MltRef")
+            @TableField("MltRef")
             private String MltRef;
 
         /**
         * 
         */
-        @TableField("MPosition")
+            @TableField("MPosition")
             private Integer MPosition;
 
         /**
         * 
         */
-        @TableField("PunchRef")
+            @TableField("PunchRef")
             private String PunchRef;
 
         /**
         * 
         */
-        @TableField("DieRef")
+            @TableField("DieRef")
             private String DieRef;
 
         /**
         * 
         */
-        @TableField("PAngle")
+            @TableField("PAngle")
             private Double PAngle;
 
         /**
         * 
         */
-        @TableField("IsUsed")
+            @TableField("IsUsed")
             private Byte IsUsed;
 
         /**
         * 
         */
-        @TableField("NumOpN")
+            @TableField("NumOpN")
             private Integer NumOpN;
 
         /**
         * 
         */
-        @TableField("NumOpR")
+            @TableField("NumOpR")
             private Integer NumOpR;
 
         /**
         * 
         */
-        @TableField("ToolClass")
+            @TableField("ToolClass")
             private Integer ToolClass;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

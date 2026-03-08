@@ -38,6 +38,8 @@ public class DisNestNest00000100Controller extends BaseController implements IDi
         LambdaQueryWrapper<DisNestNest00000100> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
+        wrapper.orderByAsc(DisNestNest00000100::getRecID);
+
         Page<DisNestNest00000100> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper
@@ -93,5 +95,16 @@ public class DisNestNest00000100Controller extends BaseController implements IDi
                                           <Long> ids) {
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
+    }
+    @Override
+    public ApiResponse<DisNestNest00000100VO> details(DisNestNest00000100DTO query) {
+        Integer recID = query.getRecID();
+
+        if (recID == null){
+            return ApiResponse.fail("套料ID不能为空");
+        }
+
+        DisNestNest00000100VO details = service.details(recID);
+        return ApiResponse.success(details);
     }
 }

@@ -42,6 +42,8 @@ public ApiResponse
     LambdaQueryWrapper<${entity}> wrapper =
     Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
+    wrapper.orderByAsc(${entity}::<#if importLantekBaseEntity>getRecID<#else>getCreateTime</#if>);
+
     Page<${entity}> page = service.page(
     PageFactory.build(pageQuery),
     wrapper

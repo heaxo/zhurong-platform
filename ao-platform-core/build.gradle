@@ -43,6 +43,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+    implementation "com.baomidou:mybatis-plus-jsqlparser"
 
     compileOnly 'org.projectlombok:lombok'
     // PostgreSQL

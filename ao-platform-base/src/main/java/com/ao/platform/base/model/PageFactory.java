@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public final class PageFactory {
 
-    private static final long MAX_PAGE_SIZE = 200;
+    private static final long MAX_PAGE_SIZE = 500;
 
     private PageFactory() {
     }
@@ -20,10 +20,6 @@ public final class PageFactory {
 
         if (page <= 0) {
             page = 1;
-        }
-
-        if (size <= 0) {
-            size = 10;
         }
 
         if (size > MAX_PAGE_SIZE) {

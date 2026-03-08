@@ -1,6 +1,8 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,138 +29,138 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("MatRef")
+            @TableField("MatRef")
             private String MatRef;
 
         /**
         * 
         */
-        @TableField("Density")
+            @TableField("Density")
             private Double Density;
 
         /**
         * 
         */
-        @TableField("Strength")
+            @TableField("Strength")
             private Double Strength;
 
         /**
         * 
         */
-        @TableField("MFactor")
+            @TableField("MFactor")
             private Double MFactor;
 
         /**
         * 
         */
-        @TableField("Price")
+            @TableField("Price")
             private Double Price;
 
         /**
         * 
         */
-        @TableField("IsMain")
+            @TableField("IsMain")
             private Byte IsMain;
 
         /**
         * 
         */
-        @TableField("IntRef")
+            @TableField("IntRef")
             private String IntRef;
 
         /**
         * 
         */
-        @TableField("Descrip")
+            @TableField("Descrip")
             private String Descrip;
 
         /**
         * 
         */
-        @TableField("PriceDate")
+            @TableField("PriceDate")
             private LocalDateTime PriceDate;
 
         /**
         * 
         */
-        @TableField("CGroup")
+            @TableField("CGroup")
             private String CGroup;
 
         /**
         * 
         */
-        @TableField("ScrapPrice")
+            @TableField("ScrapPrice")
             private Double ScrapPrice;
 
         /**
         * 
         */
-        @TableField("ScrapPriceDate")
+            @TableField("ScrapPriceDate")
             private LocalDateTime ScrapPriceDate;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

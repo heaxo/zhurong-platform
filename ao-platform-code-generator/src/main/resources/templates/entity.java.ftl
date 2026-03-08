@@ -9,6 +9,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 <#if importLantekBaseEntity>
 import ${package.Entity}.BaseEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 <#else>
 import com.ao.platform.base.model.BaseEntity;
 </#if>
@@ -39,7 +41,11 @@ private static final long serialVersionUID = 1L;
         /**
         * ${field.comment!}
         */
-        @TableField("${field.name}")
+        <#if importLantekBaseEntity && field.name?lower_case == "recid">
+            @TableId(value = "RecID",type = IdType.AUTO)
+        <#else>
+            @TableField("${field.name}")
+        </#if>
         <#if useDbColumnName>
             private ${field.propertyType} ${field.name};
         <#else>

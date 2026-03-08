@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-06T15:33:07+0800",
+    date = "2026-03-08T17:13:33+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -31,6 +31,7 @@ public class DisNestNest00000500ConvertImpl implements DisNestNest00000500Conver
         disNestNest00000500VO.setPrdRefDst( entity.getPrdRefDst() );
         disNestNest00000500VO.setPIndex( entity.getPIndex() );
         disNestNest00000500VO.setQuantity( entity.getQuantity() );
+        disNestNest00000500VO.setMQ( entity.getMQ() );
         disNestNest00000500VO.setCostMat( entity.getCostMat() );
         disNestNest00000500VO.setCostMachTime( entity.getCostMachTime() );
         disNestNest00000500VO.setCostConsum( entity.getCostConsum() );
@@ -77,6 +78,7 @@ public class DisNestNest00000500ConvertImpl implements DisNestNest00000500Conver
         disNestNest00000500.setPrdRefDst( dto.getPrdRefDst() );
         disNestNest00000500.setPIndex( dto.getPIndex() );
         disNestNest00000500.setQuantity( dto.getQuantity() );
+        disNestNest00000500.setMQ( dto.getMQ() );
         disNestNest00000500.setCostMat( dto.getCostMat() );
         disNestNest00000500.setCostMachTime( dto.getCostMachTime() );
         disNestNest00000500.setCostConsum( dto.getCostConsum() );
@@ -150,6 +152,9 @@ public class DisNestNest00000500ConvertImpl implements DisNestNest00000500Conver
         }
         if ( dto.getQuantity() != null ) {
             entity.setQuantity( dto.getQuantity() );
+        }
+        if ( dto.getMQ() != null ) {
+            entity.setMQ( dto.getMQ() );
         }
         if ( dto.getCostMat() != null ) {
             entity.setCostMat( dto.getCostMat() );

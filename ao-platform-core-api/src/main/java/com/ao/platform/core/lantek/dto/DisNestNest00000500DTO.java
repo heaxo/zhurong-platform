@@ -10,26 +10,26 @@ import java.time.LocalDateTime;
 @Data
 public class DisNestNest00000500DTO implements Serializable {
 
-    private String nstRef;
-    private String mnORef;
-    private Integer oprID;
-    private String prdRefDst;
-    private Integer pIndex;
-    private Integer quantity;
-    private Integer mq;
-    private Double costMat;
-    private Double costMachTime;
-    private Double costConsum;
-    private Integer recState;
-    private LocalDateTime crtDate;
-    private LocalDateTime lastDate;
-    private String crtUser;
-    private String lastUser;
-    private String owner;
-    private String recEnt;
-    private String recOU;
-    private Integer recSec;
-    private Integer cntID;
-    private Integer recID;
+    private String NstRef;
+    private String MnORef;
+    private Integer OprID;
+    private String PrdRefDst;
+    private Integer PIndex;
+    private Integer Quantity;
+    private Integer MQ;
+    private Double CostMat;
+    private Double CostMachTime;
+    private Double CostConsum;
+    private Integer RecState;
+    private LocalDateTime CrtDate;
+    private LocalDateTime LastDate;
+    private String CrtUser;
+    private String LastUser;
+    private String Owner;
+    private String RecEnt;
+    private String RecOU;
+    private Integer RecSec;
+    private Integer CntID;
+    private Integer RecID;
 
 }

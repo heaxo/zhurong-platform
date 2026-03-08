@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
 * ${table.comment!} 服务接口
 */
-public interface ${table.serviceName} extends IService<${entity}> {
+public interface ${table.serviceName} extends <#if importLantekBaseEntity>BaseIService<#else>IService</#if><${entity}> {
 ${entity}VO getVOById(Long id);
 
 Long saveFromDTO(${entity}DTO dto);

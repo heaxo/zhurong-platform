@@ -1,19 +1,21 @@
 package com.ao.platform.core.lantek.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import com.ao.platform.core.lantek.entity.BaseEntity;
 
 /**
 * 
 *
 * @author heao
-* @since 2026-03-04
+* @since 2026-03-08
 */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -27,588 +29,588 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-        @TableField("MnORef")
+            @TableField("MnORef")
             private String MnORef;
 
         /**
         * 
         */
-        @TableField("OprID")
+            @TableField("OprID")
             private Integer OprID;
 
         /**
         * 
         */
-        @TableField("NextOprID")
+            @TableField("NextOprID")
             private Integer NextOprID;
 
         /**
         * 
         */
-        @TableField("RouID")
+            @TableField("RouID")
             private Integer RouID;
 
         /**
         * 
         */
-        @TableField("NextRouID")
+            @TableField("NextRouID")
             private Integer NextRouID;
 
         /**
         * 
         */
-        @TableField("PrdRef")
+            @TableField("PrdRef")
             private String PrdRef;
 
         /**
         * 
         */
-        @TableField("PrdRefOrg")
+            @TableField("PrdRefOrg")
             private String PrdRefOrg;
 
         /**
         * 
         */
-        @TableField("NComp")
+            @TableField("NComp")
             private Integer NComp;
 
         /**
         * 
         */
-        @TableField("PrdRefDst")
+            @TableField("PrdRefDst")
             private String PrdRefDst;
 
         /**
         * 
         */
-        @TableField("PrdNameDst")
+            @TableField("PrdNameDst")
             private String PrdNameDst;
 
         /**
         * 
         */
-        @TableField("RouRef")
+            @TableField("RouRef")
             private String RouRef;
 
         /**
         * 
         */
-        @TableField("OOrder")
+            @TableField("OOrder")
             private Integer OOrder;
 
         /**
         * 
         */
-        @TableField("WrkRef")
+            @TableField("WrkRef")
             private String WrkRef;
 
         /**
         * 
         */
-        @TableField("OprRef")
+            @TableField("OprRef")
             private String OprRef;
 
         /**
         * 
         */
-        @TableField("PPriority")
+            @TableField("PPriority")
             private Integer PPriority;
 
         /**
         * 
         */
-        @TableField("Origin")
+            @TableField("Origin")
             private Integer Origin;
 
         /**
         * 
         */
-        @TableField("OrdRef")
+            @TableField("OrdRef")
             private String OrdRef;
 
         /**
         * 
         */
-        @TableField("OLineNum")
+            @TableField("OLineNum")
             private String OLineNum;
 
         /**
         * 
         */
-        @TableField("CusRef")
+            @TableField("CusRef")
             private String CusRef;
 
         /**
         * 
         */
-        @TableField("CusName")
+            @TableField("CusName")
             private String CusName;
 
         /**
         * 
         */
-        @TableField("CDate")
+            @TableField("CDate")
             private LocalDateTime CDate;
 
         /**
         * 
         */
-        @TableField("RDate")
+            @TableField("RDate")
             private LocalDateTime RDate;
 
         /**
         * 
         */
-        @TableField("IsEnd")
+            @TableField("IsEnd")
             private Byte IsEnd;
 
         /**
         * 
         */
-        @TableField("UCtName")
+            @TableField("UCtName")
             private String UCtName;
 
         /**
         * 
         */
-        @TableField("UntName")
+            @TableField("UntName")
             private String UntName;
 
         /**
         * 
         */
-        @TableField("Quantity")
+            @TableField("Quantity")
             private Double Quantity;
 
         /**
         * 
         */
-        @TableField("AQ")
+            @TableField("AQ")
             private Double AQ;
 
         /**
         * 
         */
-        @TableField("MQ")
+            @TableField("MQ")
             private Double MQ;
 
         /**
         * 
         */
-        @TableField("LQ")
+            @TableField("LQ")
             private Double LQ;
 
         /**
         * 
         */
-        @TableField("ToOutQ")
+            @TableField("ToOutQ")
             private Double ToOutQ;
 
         /**
         * 
         */
-        @TableField("OutQ")
+            @TableField("OutQ")
             private Double OutQ;
 
         /**
         * 
         */
-        @TableField("MState")
+            @TableField("MState")
             private Integer MState;
 
         /**
         * 
         */
-        @TableField("RQ")
+            @TableField("RQ")
             private Double RQ;
 
         /**
         * 
         */
-        @TableField("OState")
+            @TableField("OState")
             private Integer OState;
 
         /**
         * 
         */
-        @TableField("EDuration")
+            @TableField("EDuration")
             private Double EDuration;
 
         /**
         * 
         */
-        @TableField("IOrder")
+            @TableField("IOrder")
             private Integer IOrder;
 
         /**
         * 
         */
-        @TableField("SDate")
+            @TableField("SDate")
             private LocalDateTime SDate;
 
         /**
         * 
         */
-        @TableField("EDate")
+            @TableField("EDate")
             private LocalDateTime EDate;
 
         /**
         * 
         */
-        @TableField("PartialSDate")
+            @TableField("PartialSDate")
             private LocalDateTime PartialSDate;
 
         /**
         * 
         */
-        @TableField("ESDate")
+            @TableField("ESDate")
             private LocalDateTime ESDate;
 
         /**
         * 
         */
-        @TableField("EEDate")
+            @TableField("EEDate")
             private LocalDateTime EEDate;
 
         /**
         * 
         */
-        @TableField("Descrip")
+            @TableField("Descrip")
             private String Descrip;
 
         /**
         * 
         */
-        @TableField("StdTime")
+            @TableField("StdTime")
             private Double StdTime;
 
         /**
         * 
         */
-        @TableField("RunTime")
+            @TableField("RunTime")
             private Double RunTime;
 
         /**
         * 
         */
-        @TableField("CurTime")
+            @TableField("CurTime")
             private Double CurTime;
 
         /**
         * 
         */
-        @TableField("WrkTime")
+            @TableField("WrkTime")
             private Double WrkTime;
 
         /**
         * 
         */
-        @TableField("WrkCap")
+            @TableField("WrkCap")
             private Double WrkCap;
 
         /**
         * 
         */
-        @TableField("StdCostU")
+            @TableField("StdCostU")
             private Double StdCostU;
 
         /**
         * 
         */
-        @TableField("CurCostU")
+            @TableField("CurCostU")
             private Double CurCostU;
 
         /**
         * 
         */
-        @TableField("StdCostT")
+            @TableField("StdCostT")
             private Double StdCostT;
 
         /**
         * 
         */
-        @TableField("CurCostT")
+            @TableField("CurCostT")
             private Double CurCostT;
 
         /**
         * 
         */
-        @TableField("MainOpr")
+            @TableField("MainOpr")
             private Integer MainOpr;
 
         /**
         * 
         */
-        @TableField("ParallelOpr")
+            @TableField("ParallelOpr")
             private Byte ParallelOpr;
 
         /**
         * 
         */
-        @TableField("WrhRefSM")
+            @TableField("WrhRefSM")
             private String WrhRefSM;
 
         /**
         * 
         */
-        @TableField("LineNumSM")
+            @TableField("LineNumSM")
             private String LineNumSM;
 
         /**
         * 
         */
-        @TableField("OutOrdRef")
+            @TableField("OutOrdRef")
             private String OutOrdRef;
 
         /**
         * 
         */
-        @TableField("OutLineNum")
+            @TableField("OutLineNum")
             private String OutLineNum;
 
         /**
         * 
         */
-        @TableField("SuppRef")
+            @TableField("SuppRef")
             private String SuppRef;
 
         /**
         * 
         */
-        @TableField("SuppName")
+            @TableField("SuppName")
             private String SuppName;
 
         /**
         * 
         */
-        @TableField("CurName")
+            @TableField("CurName")
             private String CurName;
 
         /**
         * 
         */
-        @TableField("TarRef")
+            @TableField("TarRef")
             private String TarRef;
 
         /**
         * 
         */
-        @TableField("MinQuan")
+            @TableField("MinQuan")
             private Double MinQuan;
 
         /**
         * 
         */
-        @TableField("IsOutsourcing")
+            @TableField("IsOutsourcing")
             private Byte IsOutsourcing;
 
         /**
         * 
         */
-        @TableField("CurCostA")
+            @TableField("CurCostA")
             private Double CurCostA;
 
         /**
         * 
         */
-        @TableField("MainOriginFilter")
+            @TableField("MainOriginFilter")
             private String MainOriginFilter;
 
         /**
         * 
         */
-        @TableField("MainOriginNameFilter")
+            @TableField("MainOriginNameFilter")
             private String MainOriginNameFilter;
 
         /**
         * 
         */
-        @TableField("WorkPackageFilter")
+            @TableField("WorkPackageFilter")
             private String WorkPackageFilter;
 
         /**
         * 
         */
-        @TableField("WorkPackageNameFilter")
+            @TableField("WorkPackageNameFilter")
             private String WorkPackageNameFilter;
 
         /**
         * 
         */
-        @TableField("MainOriginTypeFilter")
+            @TableField("MainOriginTypeFilter")
             private Integer MainOriginTypeFilter;
 
         /**
         * 
         */
-        @TableField("MainPackage")
+            @TableField("MainPackage")
             private String MainPackage;
 
         /**
         * 
         */
-        @TableField("MainPackageName")
+            @TableField("MainPackageName")
             private String MainPackageName;
 
         /**
         * 
         */
-        @TableField("DIS_PGroup")
+            @TableField("DIS_PGroup")
             private String DIS_PGroup;
 
         /**
         * 
         */
-        @TableField("DIS_MatRef")
+            @TableField("DIS_MatRef")
             private String DIS_MatRef;
 
         /**
         * 
         */
-        @TableField("DIS_Thickness")
+            @TableField("DIS_Thickness")
             private Double DIS_Thickness;
 
         /**
         * 
         */
-        @TableField("DIS_JobRef")
+            @TableField("DIS_JobRef")
             private String DIS_JobRef;
 
         /**
         * 
         */
-        @TableField("DIS_FPosition")
+            @TableField("DIS_FPosition")
             private String DIS_FPosition;
 
         /**
         * 
         */
-        @TableField("DIS_NQ")
+            @TableField("DIS_NQ")
             private Double DIS_NQ;
 
         /**
         * 
         */
-        @TableField("DIS_IsChanged")
+            @TableField("DIS_IsChanged")
             private Byte DIS_IsChanged;
 
         /**
         * 
         */
-        @TableField("DIS_IsDuct")
+            @TableField("DIS_IsDuct")
             private Byte DIS_IsDuct;
 
         /**
         * 
         */
-        @TableField("DIS_Is2DSOp")
+            @TableField("DIS_Is2DSOp")
             private Byte DIS_Is2DSOp;
 
         /**
         * 
         */
-        @TableField("DIS_Is3DSOp")
+            @TableField("DIS_Is3DSOp")
             private Byte DIS_Is3DSOp;
 
         /**
         * 
         */
-        @TableField("DIS_IsQuote")
+            @TableField("DIS_IsQuote")
             private Byte DIS_IsQuote;
 
         /**
         * 
         */
-        @TableField("DIS_WrkCfg")
+            @TableField("DIS_WrkCfg")
             private String DIS_WrkCfg;
 
         /**
         * 
         */
-        @TableField("WosStatus")
+            @TableField("WosStatus")
             private Integer WosStatus;
 
         /**
         * 
         */
-        @TableField("DIS_NonCuttingJob")
+            @TableField("DIS_NonCuttingJob")
             private String DIS_NonCuttingJob;
 
         /**
         * 
         */
-        @TableField("DIS_OrgOprID")
+            @TableField("DIS_OrgOprID")
             private Integer DIS_OrgOprID;
 
         /**
         * 
         */
-        @TableField("DIS_MStateCloudStatus")
+            @TableField("DIS_MStateCloudStatus")
             private Integer DIS_MStateCloudStatus;
 
         /**
         * 
         */
-        @TableField("RecState")
+            @TableField("RecState")
             private Integer RecState;
 
         /**
         * 
         */
-        @TableField("CrtDate")
+            @TableField("CrtDate")
             private LocalDateTime CrtDate;
 
         /**
         * 
         */
-        @TableField("LastDate")
+            @TableField("LastDate")
             private LocalDateTime LastDate;
 
         /**
         * 
         */
-        @TableField("CrtUser")
+            @TableField("CrtUser")
             private String CrtUser;
 
         /**
         * 
         */
-        @TableField("LastUser")
+            @TableField("LastUser")
             private String LastUser;
 
         /**
         * 
         */
-        @TableField("Owner")
+            @TableField("Owner")
             private String Owner;
 
         /**
         * 
         */
-        @TableField("RecEnt")
+            @TableField("RecEnt")
             private String RecEnt;
 
         /**
         * 
         */
-        @TableField("RecOU")
+            @TableField("RecOU")
             private String RecOU;
 
         /**
         * 
         */
-        @TableField("RecSec")
+            @TableField("RecSec")
             private Integer RecSec;
 
         /**
         * 
         */
-        @TableField("CntID")
+            @TableField("CntID")
             private Integer CntID;
 
         /**
         * 
         */
-        @TableField("RecID")
+            @TableId(value = "RecID",type = IdType.AUTO)
             private Integer RecID;
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-03-06T15:33:07+0800",
+    date = "2026-03-08T17:13:31+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -38,6 +38,7 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         disNestNest00000100VO.setNCategory( entity.getNCategory() );
         disNestNest00000100VO.setMState( entity.getMState() );
         disNestNest00000100VO.setWosStatus( entity.getWosStatus() );
+        disNestNest00000100VO.setCNC( entity.getCNC() );
         disNestNest00000100VO.setShtRef( entity.getShtRef() );
         disNestNest00000100VO.setShtRefOrg( entity.getShtRefOrg() );
         disNestNest00000100VO.setRealSht( entity.getRealSht() );
@@ -57,6 +58,7 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         disNestNest00000100VO.setSMSQuant( entity.getSMSQuant() );
         disNestNest00000100VO.setETime( entity.getETime() );
         disNestNest00000100VO.setQuantity( entity.getQuantity() );
+        disNestNest00000100VO.setMQ( entity.getMQ() );
         disNestNest00000100VO.setRTime( entity.getRTime() );
         disNestNest00000100VO.setSDate( entity.getSDate() );
         disNestNest00000100VO.setEDate( entity.getEDate() );
@@ -140,6 +142,7 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         disNestNest00000100.setNCategory( dto.getNCategory() );
         disNestNest00000100.setMState( dto.getMState() );
         disNestNest00000100.setWosStatus( dto.getWosStatus() );
+        disNestNest00000100.setCNC( dto.getCNC() );
         disNestNest00000100.setShtRef( dto.getShtRef() );
         disNestNest00000100.setShtRefOrg( dto.getShtRefOrg() );
         disNestNest00000100.setRealSht( dto.getRealSht() );
@@ -159,6 +162,7 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         disNestNest00000100.setSMSQuant( dto.getSMSQuant() );
         disNestNest00000100.setETime( dto.getETime() );
         disNestNest00000100.setQuantity( dto.getQuantity() );
+        disNestNest00000100.setMQ( dto.getMQ() );
         disNestNest00000100.setRTime( dto.getRTime() );
         disNestNest00000100.setSDate( dto.getSDate() );
         disNestNest00000100.setEDate( dto.getEDate() );
@@ -340,6 +344,9 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         if ( dto.getWosStatus() != null ) {
             entity.setWosStatus( dto.getWosStatus() );
         }
+        if ( dto.getCNC() != null ) {
+            entity.setCNC( dto.getCNC() );
+        }
         if ( dto.getShtRef() != null ) {
             entity.setShtRef( dto.getShtRef() );
         }
@@ -396,6 +403,9 @@ public class DisNestNest00000100ConvertImpl implements DisNestNest00000100Conver
         }
         if ( dto.getQuantity() != null ) {
             entity.setQuantity( dto.getQuantity() );
+        }
+        if ( dto.getMQ() != null ) {
+            entity.setMQ( dto.getMQ() );
         }
         if ( dto.getRTime() != null ) {
             entity.setRTime( dto.getRTime() );

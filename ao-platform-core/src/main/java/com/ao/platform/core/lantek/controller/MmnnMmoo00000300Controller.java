@@ -38,6 +38,8 @@ public class MmnnMmoo00000300Controller extends BaseController implements IMmnnM
         LambdaQueryWrapper<MmnnMmoo00000300> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
+        wrapper.orderByAsc(MmnnMmoo00000300::getRecID);
+
         Page<MmnnMmoo00000300> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ${entity}DTO implements Serializable {
 
 <#list table.fields as field>
-    private ${field.propertyType} ${field.propertyName};
+    private ${field.propertyType} <#if useDbColumnName>${field.name};<#else>${field.propertyName};</#if>
 </#list>
 
 }
