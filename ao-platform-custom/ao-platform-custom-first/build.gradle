@@ -29,10 +29,12 @@ dependencies {
     implementation project(':ao-platform-base')
     implementation project(':ao-platform-security')
     implementation project(':ao-platform-core-api')
+    implementation project(':ao-platform-custom-api')
 
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
 
     implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
     implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
@@ -41,12 +43,14 @@ dependencies {
 
     implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
 
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+
     runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
 
     compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

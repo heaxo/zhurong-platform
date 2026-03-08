@@ -33,4 +33,6 @@ public class DisNestNest00000500VO implements Serializable {
         private Integer RecID;
         
         private String WMFPath;
+
+        private PprrPprr00000100VO meta;
 }

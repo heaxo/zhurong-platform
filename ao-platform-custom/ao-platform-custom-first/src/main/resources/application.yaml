@@ -6,6 +6,25 @@ spring:
     active: dev
   application:
     name: ao-platform-custom
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 10
+        concurrency: 5
+        max-concurrency: 10
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+          multiplier: 2
+          max-interval: 10000ms
   datasource:
     url: jdbc:sqlserver://localhost:1433;databaseName=LSystemDB;encrypt=false
     username: sa

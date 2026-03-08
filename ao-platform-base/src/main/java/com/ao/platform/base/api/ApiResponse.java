@@ -1,5 +1,6 @@
 package com.ao.platform.base.api;
 
+import com.ao.platform.base.exception.BusinessException;
 import com.ao.platform.base.exception.GlobalErrorCode;
 import com.ao.platform.base.exception.IErrorCode;
 
@@ -29,5 +30,24 @@ public record ApiResponse<T>(
         return new ApiResponse<>(GlobalErrorCode.SYSTEM_ERROR.getCode(),
                 message,
                 null);
+    }
+
+    public T getData(){
+        return data;
+    }
+    public String getMessage(){
+        return message;
+    }
+    public int getCode(){
+        return code;
+    }
+
+    public T unwrap() {
+
+        if (code != 0) {
+            throw new BusinessException(message);
+        }
+
+        return data;
     }
 }

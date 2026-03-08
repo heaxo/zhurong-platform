@@ -24,3 +24,4 @@ include 'ao-platform-security'
 
 
 include 'ao-platform-custom:ao-platform-custom-first'
+include 'ao-platform-custom-api'

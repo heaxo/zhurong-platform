@@ -5,7 +5,7 @@ package com.ao.platform.base.constant;
  * @Description TblRef
  * @Date 2026/3/8 15:25
  **/
-public class Ownd {
+public class OwndConstant {
 
     public static class TblRef {
         public static String NEST = "DIS_NEST_NEST_00000100";

@@ -1,13 +1,13 @@
 package com.ao.platform.core.lantek.configuration;
 
 import com.ao.platform.core.lantek.constants.NestMqConstants;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class RabbitConfig {
@@ -19,15 +19,38 @@ public class RabbitConfig {
 
     @Bean
     public Queue nestQueue() {
-        return new Queue(NestMqConstants.Queue.CUSTOM_STATE);
+
+        Map<String, Object> args = new HashMap<>();
+
+        args.put("x-dead-letter-exchange", "ao.nest.dlx");
+        args.put("x-dead-letter-routing-key", "dlq");
+
+        return new Queue(
+                NestMqConstants.Queue.CUSTOM_STATE,
+                true,
+                false,
+                false,
+                args
+        );
+
     }
 
     @Bean
-    public Binding binding(Queue nestQueue, TopicExchange nestExchange) {
+    public DirectExchange deadLetterExchange() {
+        return new DirectExchange("ao.nest.dlx");
+    }
+
+    @Bean
+    public Queue deadLetterQueue() {
+        return new Queue("ao.nest.state.dlq");
+    }
+
+    @Bean
+    public Binding dlqBinding() {
         return BindingBuilder
-                .bind(nestQueue)
-                .to(nestExchange)
-                .with(NestMqConstants.RoutingKey.STATE_CHANGED);
+                .bind(deadLetterQueue())
+                .to(deadLetterExchange())
+                .with("dlq");
     }
 
     @Bean
