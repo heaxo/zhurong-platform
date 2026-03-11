@@ -2,7 +2,7 @@ package com.ao.platform.custom.httpclient;
 
 import com.ao.platform.base.api.ApiResponse;
 import com.ao.platform.custom.base.BaseApiClient;
-import com.ao.platform.custom.dto.AcceptOrderRequestDTO;
+import com.ao.platform.custom.dto.OrderNestingRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,7 +18,7 @@ public class CcsApiClient extends BaseApiClient {
         super(builder, baseUrl);
     }
 
-    public ApiResponse requestAcceptOrder(AcceptOrderRequestDTO dto) {
+    public ApiResponse requestAcceptOrder(OrderNestingRequest dto) {
         return post(acceptOrderUrl, dto, ApiResponse.class);
     }
 }

@@ -23,6 +23,11 @@ public class MmnnMmoo00000300ServiceImpl
 
 
     @Override
+    public MmnnMmoo00000300Convert getConvert() {
+        return convert;
+    }
+
+    @Override
     public MmnnMmoo00000300VO getVOById(Long id) {
         MmnnMmoo00000300 entity = this.getById(id);
         return convert.toVO(entity);

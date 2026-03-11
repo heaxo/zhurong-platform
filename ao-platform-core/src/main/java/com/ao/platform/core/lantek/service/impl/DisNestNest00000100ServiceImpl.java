@@ -6,17 +6,12 @@ import com.ao.platform.core.lantek.convert.DisNestNest00000100Convert;
 import com.ao.platform.core.lantek.convert.DisNestNest00000500Convert;
 import com.ao.platform.core.lantek.convert.PprrPprr00000100Convert;
 import com.ao.platform.core.lantek.dto.DisNestNest00000100DTO;
-import com.ao.platform.core.lantek.entity.DisNestNest00000100;
-import com.ao.platform.core.lantek.entity.DisNestNest00000500;
-import com.ao.platform.core.lantek.entity.PprrPprr00000100;
-import com.ao.platform.core.lantek.entity.SystOwnd00000100;
+import com.ao.platform.core.lantek.entity.*;
 import com.ao.platform.core.lantek.mapper.DisNestNest00000100Mapper;
-import com.ao.platform.core.lantek.service.IDisNestNest00000100Service;
-import com.ao.platform.core.lantek.service.IDisNestNest00000500Service;
-import com.ao.platform.core.lantek.service.IPprrPprr00000100Service;
-import com.ao.platform.core.lantek.service.ISystOwnd00000100Service;
+import com.ao.platform.core.lantek.service.*;
 import com.ao.platform.core.lantek.vo.DisNestNest00000100VO;
 import com.ao.platform.core.lantek.vo.DisNestNest00000500VO;
+import com.ao.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -24,7 +19,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +42,7 @@ public class DisNestNest00000100ServiceImpl
     private final IDisNestNest00000500Service disNestNest00000500Service;
     private final ISystOwnd00000100Service systOwnd00000100Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
+    private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
 
 
     @Override
@@ -76,14 +75,18 @@ public class DisNestNest00000100ServiceImpl
 
         DisNestNest00000100VO vo = convert.toVO(entity);
 
-        List<DisNestNest00000500> list = disNestNest00000500Service.list(Wrappers.lambdaUpdate(DisNestNest00000500.class)
+        List<DisNestNest00000500> nest500S = disNestNest00000500Service.list(Wrappers.lambdaUpdate(DisNestNest00000500.class)
                 .eq(DisNestNest00000500::getNstRef, entity.getNstRef()));
-        List<DisNestNest00000500VO> nestParts = disNestNest00000500Convert.toVOList(list);
+        List<DisNestNest00000500VO> nestParts = disNestNest00000500Convert.toVOList(nest500S);
         vo.setNestParts(nestParts);
 
-        if (CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(nest500S)) {
             throw new BusinessException("套料程序零件为空异常");
         }
+
+        List<String> mnoRefs = nest500S.stream().map(DisNestNest00000500::getMnORef).distinct().toList();
+        List<String> prdRefs = nest500S.stream().map(DisNestNest00000500::getPrdRefDst).distinct().toList();
+
 
         List<SystOwnd00000100> nestDocs = systOwnd00000100Service.list(Wrappers.lambdaUpdate(SystOwnd00000100.class)
                 .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.NEST)
@@ -105,7 +108,6 @@ public class DisNestNest00000100ServiceImpl
         log.info("程序WMFPath路径：{}，{}", entity.getNstRef(), nestWmfOwnd.getFFName());
         vo.setWMFPath(nestWmfOwnd.getFFName());
 
-        List<String> prdRefs = list.stream().map(DisNestNest00000500::getPrdRefDst).distinct().toList();
 
         List<PprrPprr00000100> parts = pprrPprr00000100Service.listByIn(
                 Wrappers.lambdaQuery(PprrPprr00000100.class),
@@ -128,13 +130,13 @@ public class DisNestNest00000100ServiceImpl
 
             PprrPprr00000100 pprr = partMap.get(it.getPrdRefDst());
             if (pprr == null) {
-                log.warn("零件档案空值警告，{}",it.getPrdRefDst());
+                log.warn("零件档案空值警告，{}", it.getPrdRefDst());
                 return;
             }
             it.setMeta(pprrPprr00000100Convert.toVO(pprr));
             List<SystOwnd00000100> docs = partDocMap.get(pprr.getRecID());
 
-            if (docs != null){
+            if (docs != null) {
                 Optional<SystOwnd00000100> partWmfOwnd = docs.stream()
                         .filter(f -> OwndConstant.FFtype.WMF.equals(f.getFFType()))
                         .findFirst();
@@ -143,6 +145,13 @@ public class DisNestNest00000100ServiceImpl
                 partWmfOwnd.ifPresent(systOwnd00000100 -> it.setWMFPath(systOwnd00000100.getFFName()));
             }
         });
+
+        //获取生产计划零件信息
+        List<MmnnMmoo00000300> mmnnMmoo00000300S = mmnnMmoo00000300Service.listByIn(Wrappers.lambdaQuery(MmnnMmoo00000300.class),
+                MmnnMmoo00000300::getMnORef, mnoRefs);
+        List<MmnnMmoo00000300VO> jobParts = mmnnMmoo00000300Service.getConvert()
+                .toVOList(mmnnMmoo00000300S);
+        vo.setJobParts(jobParts);
 
         return vo;
     }

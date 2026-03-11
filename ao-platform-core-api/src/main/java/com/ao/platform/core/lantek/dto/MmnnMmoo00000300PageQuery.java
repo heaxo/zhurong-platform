@@ -5,609 +5,613 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
-*  分页查询对象
-*/
+ * 分页查询对象
+ */
 @Getter
 @Setter
 public class MmnnMmoo00000300PageQuery extends BasePageQuery {
 
 
-        /**
-        * 
-        */
-        private String mnORef;
+    /**
+     *
+     */
+    private String mnORef;
 
 
-        /**
-        * 
-        */
-        private Integer oprID;
+    /**
+     *
+     */
+    private Integer oprID;
 
 
-        /**
-        * 
-        */
-        private Integer nextOprID;
+    /**
+     *
+     */
+    private Integer nextOprID;
 
 
-        /**
-        * 
-        */
-        private Integer rouID;
+    /**
+     *
+     */
+    private Integer rouID;
 
 
-        /**
-        * 
-        */
-        private Integer nextRouID;
+    /**
+     *
+     */
+    private Integer nextRouID;
 
 
-        /**
-        * 
-        */
-        private String prdRef;
+    /**
+     *
+     */
+    private String prdRef;
 
 
-        /**
-        * 
-        */
-        private String prdRefOrg;
+    /**
+     *
+     */
+    private String prdRefOrg;
 
 
-        /**
-        * 
-        */
-        private Integer nComp;
+    /**
+     *
+     */
+    private Integer nComp;
 
 
-        /**
-        * 
-        */
-        private String prdRefDst;
+    /**
+     *
+     */
+    private String prdRefDst;
 
 
-        /**
-        * 
-        */
-        private String prdNameDst;
+    /**
+     *
+     */
+    private String prdNameDst;
 
 
-        /**
-        * 
-        */
-        private String rouRef;
+    /**
+     *
+     */
+    private String rouRef;
 
 
-        /**
-        * 
-        */
-        private Integer oOrder;
+    /**
+     *
+     */
+    private Integer oOrder;
 
 
-        /**
-        * 
-        */
-        private String wrkRef;
+    /**
+     *
+     */
+    private String wrkRef;
 
 
-        /**
-        * 
-        */
-        private String oprRef;
+    /**
+     *
+     */
+    private String oprRef;
 
 
-        /**
-        * 
-        */
-        private Integer pPriority;
+    /**
+     *
+     */
+    private Integer pPriority;
 
 
-        /**
-        * 
-        */
-        private Integer origin;
+    /**
+     *
+     */
+    private Integer origin;
 
 
-        /**
-        * 
-        */
-        private String ordRef;
+    /**
+     *
+     */
+    private String ordRef;
 
 
-        /**
-        * 
-        */
-        private String oLineNum;
+    /**
+     *
+     */
+    private String oLineNum;
 
 
-        /**
-        * 
-        */
-        private String cusRef;
+    /**
+     *
+     */
+    private String cusRef;
 
 
-        /**
-        * 
-        */
-        private String cusName;
+    /**
+     *
+     */
+    private String cusName;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime cDate;
+    /**
+     *
+     */
+    private LocalDateTime cDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime rDate;
+    /**
+     *
+     */
+    private LocalDateTime rDate;
 
 
-        /**
-        * 
-        */
-        private Byte isEnd;
+    /**
+     *
+     */
+    private Byte isEnd;
 
 
-        /**
-        * 
-        */
-        private String uCtName;
+    /**
+     *
+     */
+    private String uCtName;
 
 
-        /**
-        * 
-        */
-        private String untName;
+    /**
+     *
+     */
+    private String untName;
 
 
-        /**
-        * 
-        */
-        private Double quantity;
+    /**
+     *
+     */
+    private Double quantity;
 
 
-        /**
-        * 
-        */
-        private Double aq;
+    /**
+     *
+     */
+    private Double aq;
 
 
-        /**
-        * 
-        */
-        private Double mq;
+    /**
+     *
+     */
+    private Double mq;
 
 
-        /**
-        * 
-        */
-        private Double lq;
+    /**
+     *
+     */
+    private Double lq;
 
 
-        /**
-        * 
-        */
-        private Double toOutQ;
+    /**
+     *
+     */
+    private Double toOutQ;
 
 
-        /**
-        * 
-        */
-        private Double outQ;
+    /**
+     *
+     */
+    private Double outQ;
 
 
-        /**
-        * 
-        */
-        private Integer mState;
+    /**
+     *
+     */
+    private Integer mState;
 
 
-        /**
-        * 
-        */
-        private Double rq;
+    /**
+     *
+     */
+    private Double rq;
 
 
-        /**
-        * 
-        */
-        private Integer oState;
+    /**
+     *
+     */
+    private Integer oState;
 
 
-        /**
-        * 
-        */
-        private Double eDuration;
+    /**
+     *
+     */
+    private Double eDuration;
 
 
-        /**
-        * 
-        */
-        private Integer iOrder;
+    /**
+     *
+     */
+    private Integer iOrder;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime sDate;
+    /**
+     *
+     */
+    private LocalDateTime sDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime eDate;
+    /**
+     *
+     */
+    private LocalDateTime eDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime partialSDate;
+    /**
+     *
+     */
+    private LocalDateTime partialSDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime eSDate;
+    /**
+     *
+     */
+    private LocalDateTime eSDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime eEDate;
+    /**
+     *
+     */
+    private LocalDateTime eEDate;
 
 
-        /**
-        * 
-        */
-        private String descrip;
+    /**
+     *
+     */
+    private String descrip;
 
 
-        /**
-        * 
-        */
-        private Double stdTime;
+    /**
+     *
+     */
+    private Double stdTime;
 
 
-        /**
-        * 
-        */
-        private Double runTime;
+    /**
+     *
+     */
+    private Double runTime;
 
 
-        /**
-        * 
-        */
-        private Double curTime;
+    /**
+     *
+     */
+    private Double curTime;
 
 
-        /**
-        * 
-        */
-        private Double wrkTime;
+    /**
+     *
+     */
+    private Double wrkTime;
 
 
-        /**
-        * 
-        */
-        private Double wrkCap;
+    /**
+     *
+     */
+    private Double wrkCap;
 
 
-        /**
-        * 
-        */
-        private Double stdCostU;
+    /**
+     *
+     */
+    private Double stdCostU;
 
 
-        /**
-        * 
-        */
-        private Double curCostU;
+    /**
+     *
+     */
+    private Double curCostU;
 
 
-        /**
-        * 
-        */
-        private Double stdCostT;
+    /**
+     *
+     */
+    private Double stdCostT;
 
 
-        /**
-        * 
-        */
-        private Double curCostT;
+    /**
+     *
+     */
+    private Double curCostT;
 
 
-        /**
-        * 
-        */
-        private Integer mainOpr;
+    /**
+     *
+     */
+    private Integer mainOpr;
 
 
-        /**
-        * 
-        */
-        private Byte parallelOpr;
+    /**
+     *
+     */
+    private Byte parallelOpr;
 
 
-        /**
-        * 
-        */
-        private String wrhRefSM;
+    /**
+     *
+     */
+    private String wrhRefSM;
 
 
-        /**
-        * 
-        */
-        private String lineNumSM;
+    /**
+     *
+     */
+    private String lineNumSM;
 
 
-        /**
-        * 
-        */
-        private String outOrdRef;
+    /**
+     *
+     */
+    private String outOrdRef;
 
 
-        /**
-        * 
-        */
-        private String outLineNum;
+    /**
+     *
+     */
+    private String outLineNum;
 
 
-        /**
-        * 
-        */
-        private String suppRef;
+    /**
+     *
+     */
+    private String suppRef;
 
 
-        /**
-        * 
-        */
-        private String suppName;
+    /**
+     *
+     */
+    private String suppName;
 
 
-        /**
-        * 
-        */
-        private String curName;
+    /**
+     *
+     */
+    private String curName;
 
 
-        /**
-        * 
-        */
-        private String tarRef;
+    /**
+     *
+     */
+    private String tarRef;
 
 
-        /**
-        * 
-        */
-        private Double minQuan;
+    /**
+     *
+     */
+    private Double minQuan;
 
 
-        /**
-        * 
-        */
-        private Byte isOutsourcing;
+    /**
+     *
+     */
+    private Byte isOutsourcing;
 
 
-        /**
-        * 
-        */
-        private Double curCostA;
+    /**
+     *
+     */
+    private Double curCostA;
 
 
-        /**
-        * 
-        */
-        private String mainOriginFilter;
+    /**
+     *
+     */
+    private String mainOriginFilter;
 
 
-        /**
-        * 
-        */
-        private String mainOriginNameFilter;
+    /**
+     *
+     */
+    private String mainOriginNameFilter;
 
 
-        /**
-        * 
-        */
-        private String workPackageFilter;
+    /**
+     *
+     */
+    private String workPackageFilter;
 
 
-        /**
-        * 
-        */
-        private String workPackageNameFilter;
+    /**
+     *
+     */
+    private String workPackageNameFilter;
 
 
-        /**
-        * 
-        */
-        private Integer mainOriginTypeFilter;
+    /**
+     *
+     */
+    private Integer mainOriginTypeFilter;
 
 
-        /**
-        * 
-        */
-        private String mainPackage;
+    /**
+     *
+     */
+    private String mainPackage;
 
 
-        /**
-        * 
-        */
-        private String mainPackageName;
+    /**
+     *
+     */
+    private String mainPackageName;
 
 
-        /**
-        * 
-        */
-        private String disPgroup;
+    /**
+     *
+     */
+    private String disPgroup;
 
 
-        /**
-        * 
-        */
-        private String disMatref;
+    /**
+     *
+     */
+    private String disMatref;
 
 
-        /**
-        * 
-        */
-        private Double disThickness;
+    /**
+     *
+     */
+    private Double disThickness;
 
 
-        /**
-        * 
-        */
-        private String disJobref;
+    /**
+     *
+     */
+    private String disJobref;
 
 
-        /**
-        * 
-        */
-        private String disFposition;
+    /**
+     *
+     */
+    private String disFposition;
 
 
-        /**
-        * 
-        */
-        private Double disNq;
+    /**
+     *
+     */
+    private Double disNq;
 
 
-        /**
-        * 
-        */
-        private Byte disIschanged;
+    /**
+     *
+     */
+    private Byte disIschanged;
 
 
-        /**
-        * 
-        */
-        private Byte disIsduct;
+    /**
+     *
+     */
+    private Byte disIsduct;
 
 
-        /**
-        * 
-        */
-        private Byte disIs2dsop;
+    /**
+     *
+     */
+    private Byte disIs2dsop;
 
 
-        /**
-        * 
-        */
-        private Byte disIs3dsop;
+    /**
+     *
+     */
+    private Byte disIs3dsop;
 
 
-        /**
-        * 
-        */
-        private Byte disIsquote;
+    /**
+     *
+     */
+    private Byte disIsquote;
 
 
-        /**
-        * 
-        */
-        private String disWrkcfg;
+    /**
+     *
+     */
+    private String disWrkcfg;
 
 
-        /**
-        * 
-        */
-        private Integer wosStatus;
+    /**
+     *
+     */
+    private Integer wosStatus;
 
 
-        /**
-        * 
-        */
-        private String disNoncuttingjob;
+    /**
+     *
+     */
+    private String disNoncuttingjob;
 
 
-        /**
-        * 
-        */
-        private Integer disOrgoprid;
+    /**
+     *
+     */
+    private Integer disOrgoprid;
 
 
-        /**
-        * 
-        */
-        private Integer disMstatecloudstatus;
+    /**
+     *
+     */
+    private Integer disMstatecloudstatus;
 
 
-        /**
-        * 
-        */
-        private Integer recState;
+    /**
+     *
+     */
+    private Integer recState;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime crtDate;
+    /**
+     *
+     */
+    private LocalDateTime crtDate;
 
 
-        /**
-        * 
-        */
-        private LocalDateTime lastDate;
+    /**
+     *
+     */
+    private LocalDateTime lastDate;
 
 
-        /**
-        * 
-        */
-        private String crtUser;
+    /**
+     *
+     */
+    private String crtUser;
 
 
-        /**
-        * 
-        */
-        private String lastUser;
+    /**
+     *
+     */
+    private String lastUser;
 
 
-        /**
-        * 
-        */
-        private String owner;
+    /**
+     *
+     */
+    private String owner;
 
 
-        /**
-        * 
-        */
-        private String recEnt;
+    /**
+     *
+     */
+    private String recEnt;
 
 
-        /**
-        * 
-        */
-        private String recOU;
+    /**
+     *
+     */
+    private String recOU;
 
 
-        /**
-        * 
-        */
-        private Integer recSec;
+    /**
+     *
+     */
+    private Integer recSec;
 
 
-        /**
-        * 
-        */
-        private Integer cntID;
+    /**
+     *
+     */
+    private Integer cntID;
 
 
-        /**
-        * 
-        */
-        private Integer recID;
+    /**
+     *
+     */
+    private Integer recID;
 
-/**
-* 创建时间开始
-*/
-private LocalDateTime beginCreateTime;
+    /**
+     * 创建时间开始
+     */
+    private LocalDateTime beginCreateTime;
 
-/**
-* 创建时间结束
-*/
-private LocalDateTime endCreateTime;
+    /**
+     * 创建时间结束
+     */
+    private LocalDateTime endCreateTime;
+
+    private List<String> ordRefs;
+    private List<String> mnoRefs;
 }

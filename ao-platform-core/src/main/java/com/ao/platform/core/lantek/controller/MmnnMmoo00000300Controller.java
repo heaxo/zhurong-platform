@@ -12,6 +12,7 @@ import com.ao.platform.core.lantek.service.IMmnnMmoo00000300Service;
 import com.ao.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.ao.platform.core.web.BaseController;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
@@ -41,6 +42,13 @@ public class MmnnMmoo00000300Controller extends BaseController implements IMmnnM
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
         wrapper.orderByAsc(MmnnMmoo00000300::getRecID);
+
+        if (CollectionUtils.isNotEmpty(pageQuery.getOrdRefs())){
+            wrapper.in(MmnnMmoo00000300::getOrdRef,pageQuery.getOrdRefs());
+        }
+        if (CollectionUtils.isNotEmpty(pageQuery.getMnoRefs())){
+            wrapper.in(MmnnMmoo00000300::getMnORef,pageQuery.getMnoRefs());
+        }
 
         Page<MmnnMmoo00000300> page = service.page(
                 PageFactory.build(pageQuery),
