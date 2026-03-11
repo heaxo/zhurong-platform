@@ -1,5 +1,6 @@
 package com.ao.platform.custom.base;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -8,11 +9,25 @@ import org.springframework.web.reactive.function.client.WebClient;
 public abstract class BaseApiClient {
 
     protected final WebClient webClient;
+    protected final ObjectMapper objectMapper;
 
-    protected BaseApiClient(WebClient.Builder builder, String baseUrl) {
+    protected BaseApiClient(WebClient.Builder builder, ObjectMapper objectMapper, String baseUrl) {
         this.webClient = builder
                 .baseUrl(baseUrl)
                 .build();
+        this.objectMapper = objectMapper;
+    }
+
+    protected String toJson(Object obj) {
+        if (obj == null) {
+            return "null";
+        }
+        try {
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            log.warn("JSON serialize error: {}", obj, e);
+            return String.valueOf(obj);
+        }
     }
 
     protected <T> T get(String uri, Class<T> clazz) {
@@ -32,7 +47,7 @@ public abstract class BaseApiClient {
 
     protected <T> T post(String uri, Object body, Class<T> clazz) {
 
-        log.debug("HTTP POST {}", uri);
+        log.info("HTTP POST {} body={}", uri, toJson(body));
 
         return webClient.post()
                 .uri(uri)
