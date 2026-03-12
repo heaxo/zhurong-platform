@@ -36,6 +36,8 @@ services:
       - "9000:9000"
     depends_on:
       - nacos
+    volumes:
+      - ./logs/gateway:/app/logs
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
@@ -52,6 +54,8 @@ services:
       - "9100:9100"
     depends_on:
       - nacos
+    volumes:
+      - ./logs/auth:/app/logs
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
@@ -69,6 +73,8 @@ services:
     depends_on:
       - nacos
       - rabbitmq
+    volumes:
+      - ./logs/core:/app/logs
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
@@ -86,6 +92,8 @@ services:
     depends_on:
       - nacos
       - rabbitmq
+    volumes:
+      - ./logs/custom:/app/logs
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848

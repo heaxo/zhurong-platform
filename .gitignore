@@ -39,6 +39,8 @@ out/
 docker/data
 docker/mysql
 docker/standalone-logs
+docker/logs
+docker/publish
 
 ao-platform-code-generator/src/main/generated
 
