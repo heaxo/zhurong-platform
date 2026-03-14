@@ -22,166 +22,71 @@ docker compose version
 
 ------------------------------------------------------------------------
 
-# 2. 部署包目录结构
+# 2. 执行镜像拉取命令（前提已安装docker和docekr-compose）
 
-部署目录如下：
+```shell
+docker-compose up -d
+```
+等待镜像下载完成并运行
 
-    deploy
-    │
-    ├─ docker-compose.yml
-    ├─ standalone-mysql.yaml
-    │
-    ├─ images
-    │   ├─ ao-platform-gateway.tar
-    │   ├─ ao-platform-auth.tar
-    │   ├─ ao-platform-core.tar
-    │   └─ ao-platform-custom-first.tar
-    │
-    ├─ import-images.ps1
-    ├─ deploy.ps1
+![img.png](img.png)
 
 ------------------------------------------------------------------------
 
-# 3. 导入 Docker 镜像
+# 3. 导入配置
 
-进入部署目录：
+打开DockerDesktop找到已运行的容器：
+![img_1.png](img_1.png)
 
-``` powershell
-cd deploy
+点击8080端口进入NACOS控制台
+
+![img_2.png](img_2.png)
+
+登录NACOS
+- 用户名：nacos
+- 密&emsp;码：nacos
+![img_3.png](img_3.png)
+
+导入配置文件
+
+![img_4.png](img_4.png)
+
+# 4. 修改接口地址和套料软件数据库参数 
+编辑 `ao-platform-custom-dev` 修改如下参数，并发布
+![img_5.png](img_5.png)
+![img_6.png](img_6.png)
+编辑 `ao-platform-core-dev` 修改数据库，服务地址，用户名，密码，并发布
+![img_7.png](img_7.png)
+
+# 5. 配置文件如有修改的情况，需要重启相关服务
+![img_8.png](img_8.png)
+
+# 6. 如果需要验证部署后服务是否正常工作
+可以使用这个公网接口服务做测试
+```http
+https://webhook.site/
 ```
+设置接口响应报文
 
-执行导入脚本：
+1. Content type: `application/json`
 
-``` powershell
-.\import-images.ps1
-```
+2. Content
 
-如果需要手动导入镜像，可执行：
+   ```json
+   {
+   "code":0,
+   "message":"",
+   "data":true
+   }
+   ```
 
-``` powershell
-docker load -i images/ao-platform-gateway.tar
-docker load -i images/ao-platform-auth.tar
-docker load -i images/ao-platform-core.tar
-docker load -i images/ao-platform-custom-first.tar
-```
+![image-20260314193836677](C:\Users\heao99\AppData\Roaming\Typora\typora-user-images\image-20260314193836677.png)
 
-查看镜像：
+![img_9.png](img_9.png)
 
-``` powershell
-docker images
-```
+- 复制截图中的接口，然后配置到`ao-platform-custom-dev`服务中，并重启服务
+- 打开套料软件，并将某个程序另存为送车间（差不多30秒内，刷新截图中的webhook.site网址）
+- 正常情况下就能看到请求发送的报文
+- ![img_10.png](img_10.png)
 
-应看到：
-
-    a.he/ao-platform-gateway
-    a.he/ao-platform-auth
-    a.he/ao-platform-core
-    a.he/ao-platform-custom-first
-
-------------------------------------------------------------------------
-
-# 4. 启动系统
-
-启动全部服务：
-
-``` powershell
-docker compose up -d
-```
-
-查看服务状态：
-
-``` powershell
-docker compose ps
-```
-
-------------------------------------------------------------------------
-
-# 5. 查看日志
-
-查看 Gateway 日志：
-
-``` powershell
-docker logs -f ao-platform-gateway
-```
-
-查看 Auth 日志：
-
-``` powershell
-docker logs -f ao-platform-auth
-```
-
-查看 Core 日志：
-
-``` powershell
-docker logs -f ao-platform-core
-```
-
-------------------------------------------------------------------------
-
-# 6. 服务访问地址
-
-服务                地址
-------------------- -----------------------
-Gateway             http://服务器IP:9000
-Auth                http://服务器IP:9100
-Core                http://服务器IP:9200
-Custom              http://服务器IP:9300
-Nacos               http://服务器IP:8848
-RabbitMQ 管理后台   http://服务器IP:15672
-
-RabbitMQ 默认账号：
-
-    admin
-    admin
-
-------------------------------------------------------------------------
-
-# 7. 停止系统
-
-``` powershell
-docker compose down
-```
-
-------------------------------------------------------------------------
-
-# 8. 重启系统
-
-``` powershell
-docker compose restart
-```
-
-------------------------------------------------------------------------
-
-# 9. 常见问题
-
-## 端口被占用
-
-查看端口：
-
-``` powershell
-netstat -ano
-```
-
-修改 `docker-compose.yml` 中的端口映射。
-
-------------------------------------------------------------------------
-
-## 查看所有容器
-
-``` powershell
-docker ps
-```
-
-------------------------------------------------------------------------
-
-## 查看容器日志
-
-``` powershell
-docker logs -f 容器名
-```
-
-示例：
-
-``` powershell
-docker logs -f ao-platform-gateway
-```
+> 注意：这个 `https://webhook.site/`网站中接口请求次数有限制，只能测试几次。
