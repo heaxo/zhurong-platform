@@ -28,7 +28,9 @@ public class AoPlatformNest100StateSnapshotServiceImpl
         implements IAoPlatformNest100StateSnapshotService {
 
     private final AoPlatformNest100StateSnapshotConvert convert;
-
+    private final AoPlatformNest100StateSnapshotMapper nest100StateSnapshotMapper;
+    private final IDisNestNest00000100Service disNestNest00000100Service;
+    private final NestEventPublisher eventPublisher;
 
     @Override
     public AoPlatformNest100StateSnapshotVO getVOById(Long id) {
@@ -49,9 +51,6 @@ public class AoPlatformNest100StateSnapshotServiceImpl
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);
     }
-    private final AoPlatformNest100StateSnapshotMapper nest100StateSnapshotMapper;
-    private final IDisNestNest00000100Service disNestNest00000100Service;
-    private final NestEventPublisher eventPublisher;
 
     @Transactional
     public void syncState() {
@@ -63,7 +62,7 @@ public class AoPlatformNest100StateSnapshotServiceImpl
                                 LocalDateTime.now().minusDays(3))
                         .list();
 
-        if(records.isEmpty()){
+        if (records.isEmpty()) {
             return;
         }
 
@@ -77,7 +76,7 @@ public class AoPlatformNest100StateSnapshotServiceImpl
                     nest100StateSnapshotMapper.selectById(recId);
 
             // 如果 snapshot 不存在 -> 初始化
-            if(snapshot == null){
+            if (snapshot == null) {
 
                 AoPlatformNest100StateSnapshot newSnapshot =
                         new AoPlatformNest100StateSnapshot();
@@ -95,7 +94,7 @@ public class AoPlatformNest100StateSnapshotServiceImpl
             Integer oldState = snapshot.getMState();
 
             // 状态发生变化
-            if(!Objects.equals(oldState, newState)){
+            if (!Objects.equals(oldState, newState)) {
 
                 // 发布事件
                 eventPublisher.publish(

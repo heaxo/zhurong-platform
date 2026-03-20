@@ -15,6 +15,6 @@ docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/
 ```
 
 ```shell
-docker tag a.he/ao-platform-custom:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/ao-platform-custom:0.0.1
-docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/ao-platform-custom:0.0.1
+docker tag a.he/ao-platform-custom-first:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/ao-platform-custom-first:0.0.1
+docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/ao-platform-custom-first:0.0.1
 ```

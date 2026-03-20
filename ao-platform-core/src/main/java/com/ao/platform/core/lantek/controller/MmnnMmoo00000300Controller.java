@@ -43,11 +43,11 @@ public class MmnnMmoo00000300Controller extends BaseController implements IMmnnM
 
         wrapper.orderByAsc(MmnnMmoo00000300::getRecID);
 
-        if (CollectionUtils.isNotEmpty(pageQuery.getOrdRefs())){
-            wrapper.in(MmnnMmoo00000300::getOrdRef,pageQuery.getOrdRefs());
+        if (CollectionUtils.isNotEmpty(pageQuery.getOrdRefs())) {
+            wrapper.in(MmnnMmoo00000300::getOrdRef, pageQuery.getOrdRefs());
         }
-        if (CollectionUtils.isNotEmpty(pageQuery.getMnoRefs())){
-            wrapper.in(MmnnMmoo00000300::getMnORef,pageQuery.getMnoRefs());
+        if (CollectionUtils.isNotEmpty(pageQuery.getMnoRefs())) {
+            wrapper.in(MmnnMmoo00000300::getMnORef, pageQuery.getMnoRefs());
         }
 
         Page<MmnnMmoo00000300> page = service.page(

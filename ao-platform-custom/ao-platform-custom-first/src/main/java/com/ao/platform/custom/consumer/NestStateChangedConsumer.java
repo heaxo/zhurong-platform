@@ -112,7 +112,7 @@ public class NestStateChangedConsumer {
                     .runCount(nest.getQuantity())
                     .parameter("")
                     .programPath(nest.getCNCPath())
-                    .pickPath(nest.getWMFPath())
+                    .pickPath(nest.getFullWMFPath())
                     .nestingDetails(nestParts.stream().map(it -> NestingDetail.builder()
                             .orderCode(ordRefMap.get(it.getMnORef()))
                             .partCode(it.getPrdRefDst())
@@ -122,7 +122,7 @@ public class NestStateChangedConsumer {
                             .partHeight(nest.getSThickness())
                             .partMaterial(nest.getMatRef())
                             .partNum(it.getQuantity())
-                            .partPath(it.getWMFPath())
+                            .partPath(it.getFullWMFPath())
                             .build()
                     ).toList())
                     .build();

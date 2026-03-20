@@ -12,185 +12,185 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-* 
-*
-* @author heao
-* @since 2026-03-08
-*/
+ *
+ *
+ * @author heao
+ * @since 2026-03-08
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("DIS_PPTT_TTRR_00000800")
 public class DisPpttTtrr00000800 extends BaseEntity implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-        /**
-        * 
-        */
-            @TableField("TurrRef")
-            private String TurrRef;
+    /**
+     *
+     */
+    @TableField("TurrRef")
+    private String TurrRef;
 
-        /**
-        * 
-        */
-            @TableField("TPosition")
-            private Integer TPosition;
+    /**
+     *
+     */
+    @TableField("TPosition")
+    private Integer TPosition;
 
-        /**
-        * 
-        */
-            @TableField("TNumber")
-            private Integer TNumber;
+    /**
+     *
+     */
+    @TableField("TNumber")
+    private Integer TNumber;
 
-        /**
-        * 
-        */
-            @TableField("MltRef")
-            private String MltRef;
+    /**
+     *
+     */
+    @TableField("MltRef")
+    private String MltRef;
 
-        /**
-        * 
-        */
-            @TableField("StTRef")
-            private String StTRef;
+    /**
+     *
+     */
+    @TableField("StTRef")
+    private String StTRef;
 
-        /**
-        * 
-        */
-            @TableField("Autoindex")
-            private Byte Autoindex;
+    /**
+     *
+     */
+    @TableField("Autoindex")
+    private Byte Autoindex;
 
-        /**
-        * 
-        */
-            @TableField("DMin")
-            private Double DMin;
+    /**
+     *
+     */
+    @TableField("DMin")
+    private Double DMin;
 
-        /**
-        * 
-        */
-            @TableField("DMax")
-            private Double DMax;
+    /**
+     *
+     */
+    @TableField("DMax")
+    private Double DMax;
 
-        /**
-        * 
-        */
-            @TableField("ZClamp")
-            private Integer ZClamp;
+    /**
+     *
+     */
+    @TableField("ZClamp")
+    private Integer ZClamp;
 
-        /**
-        * 
-        */
-            @TableField("ZLeft")
-            private Double ZLeft;
+    /**
+     *
+     */
+    @TableField("ZLeft")
+    private Double ZLeft;
 
-        /**
-        * 
-        */
-            @TableField("ZRight")
-            private Double ZRight;
+    /**
+     *
+     */
+    @TableField("ZRight")
+    private Double ZRight;
 
-        /**
-        * 
-        */
-            @TableField("ZTop")
-            private Double ZTop;
+    /**
+     *
+     */
+    @TableField("ZTop")
+    private Double ZTop;
 
-        /**
-        * 
-        */
-            @TableField("OffsetXMin")
-            private Double OffsetXMin;
+    /**
+     *
+     */
+    @TableField("OffsetXMin")
+    private Double OffsetXMin;
 
-        /**
-        * 
-        */
-            @TableField("OffsetXMax")
-            private Double OffsetXMax;
+    /**
+     *
+     */
+    @TableField("OffsetXMax")
+    private Double OffsetXMax;
 
-        /**
-        * 
-        */
-            @TableField("OffsetYMin")
-            private Double OffsetYMin;
+    /**
+     *
+     */
+    @TableField("OffsetYMin")
+    private Double OffsetYMin;
 
-        /**
-        * 
-        */
-            @TableField("OffsetYMax")
-            private Double OffsetYMax;
+    /**
+     *
+     */
+    @TableField("OffsetYMax")
+    private Double OffsetYMax;
 
-        /**
-        * 
-        */
-            @TableField("Plane")
-            private Integer Plane;
+    /**
+     *
+     */
+    @TableField("Plane")
+    private Integer Plane;
 
-        /**
-        * 
-        */
-            @TableField("RecState")
-            private Integer RecState;
+    /**
+     *
+     */
+    @TableField("RecState")
+    private Integer RecState;
 
-        /**
-        * 
-        */
-            @TableField("CrtDate")
-            private LocalDateTime CrtDate;
+    /**
+     *
+     */
+    @TableField("CrtDate")
+    private LocalDateTime CrtDate;
 
-        /**
-        * 
-        */
-            @TableField("LastDate")
-            private LocalDateTime LastDate;
+    /**
+     *
+     */
+    @TableField("LastDate")
+    private LocalDateTime LastDate;
 
-        /**
-        * 
-        */
-            @TableField("CrtUser")
-            private String CrtUser;
+    /**
+     *
+     */
+    @TableField("CrtUser")
+    private String CrtUser;
 
-        /**
-        * 
-        */
-            @TableField("LastUser")
-            private String LastUser;
+    /**
+     *
+     */
+    @TableField("LastUser")
+    private String LastUser;
 
-        /**
-        * 
-        */
-            @TableField("Owner")
-            private String Owner;
+    /**
+     *
+     */
+    @TableField("Owner")
+    private String Owner;
 
-        /**
-        * 
-        */
-            @TableField("RecEnt")
-            private String RecEnt;
+    /**
+     *
+     */
+    @TableField("RecEnt")
+    private String RecEnt;
 
-        /**
-        * 
-        */
-            @TableField("RecOU")
-            private String RecOU;
+    /**
+     *
+     */
+    @TableField("RecOU")
+    private String RecOU;
 
-        /**
-        * 
-        */
-            @TableField("RecSec")
-            private Integer RecSec;
+    /**
+     *
+     */
+    @TableField("RecSec")
+    private Integer RecSec;
 
-        /**
-        * 
-        */
-            @TableField("CntID")
-            private Integer CntID;
+    /**
+     *
+     */
+    @TableField("CntID")
+    private Integer CntID;
 
-        /**
-        * 
-        */
-            @TableId(value = "RecID",type = IdType.AUTO)
-            private Integer RecID;
+    /**
+     *
+     */
+    @TableId(value = "RecID", type = IdType.AUTO)
+    private Integer RecID;
 }

@@ -93,6 +93,7 @@ public class DisNestNest00000100VO implements Serializable {
 
     private String CNCPath;
     private String WMFPath;
+    private String fullWMFPath;
     private List<DisNestNest00000500VO> nestParts;
     private List<MmnnMmoo00000300VO> jobParts;
 }

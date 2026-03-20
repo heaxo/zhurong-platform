@@ -6,12 +6,12 @@ import com.ao.platform.core.lantek.vo.AoPlatformNest100StateSnapshotVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
-*  服务接口
-*/
+ * 服务接口
+ */
 public interface IAoPlatformNest100StateSnapshotService extends IService<AoPlatformNest100StateSnapshot> {
-AoPlatformNest100StateSnapshotVO getVOById(Long id);
+    AoPlatformNest100StateSnapshotVO getVOById(Long id);
 
-Long saveFromDTO(AoPlatformNest100StateSnapshotDTO dto);
+    Long saveFromDTO(AoPlatformNest100StateSnapshotDTO dto);
 
-Boolean updateFromDTO(Long id, AoPlatformNest100StateSnapshotDTO dto);
+    Boolean updateFromDTO(Long id, AoPlatformNest100StateSnapshotDTO dto);
 }

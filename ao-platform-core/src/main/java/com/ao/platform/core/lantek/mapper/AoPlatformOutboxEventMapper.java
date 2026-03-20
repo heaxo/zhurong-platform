@@ -1,16 +1,16 @@
 package com.ao.platform.core.lantek.mapper;
 
-    import com.ao.platform.core.lantek.entity.AoPlatformOutboxEvent;
-    import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.ao.platform.core.lantek.entity.AoPlatformOutboxEvent;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* <p>
-    *  Mapper 接口
-    * </p>
-*
-* @author heao
-* @since 2026-03-05
-*/
-    public interface AoPlatformOutboxEventMapper extends BaseMapper<AoPlatformOutboxEvent> {
+ * <p>
+ * Mapper 接口
+ * </p>
+ *
+ * @author heao
+ * @since 2026-03-05
+ */
+public interface AoPlatformOutboxEventMapper extends BaseMapper<AoPlatformOutboxEvent> {
 
 }

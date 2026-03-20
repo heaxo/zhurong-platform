@@ -10,29 +10,29 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-* 
-*
-* @author heao
-* @since 2026-03-05
-*/
+ *
+ *
+ * @author heao
+ * @since 2026-03-05
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("AO_PLATFORM_JOB_CURSOR")
 public class AoPlatformJobCursor extends BaseEntity implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-        /**
-        * 
-        */
-        @TableField("JobName")
-            private String JobName;
+    /**
+     *
+     */
+    @TableField("JobName")
+    private String JobName;
 
-        /**
-        * 
-        */
-        @TableField("CursorTime")
-            private LocalDateTime CursorTime;
+    /**
+     *
+     */
+    @TableField("CursorTime")
+    private LocalDateTime CursorTime;
 }

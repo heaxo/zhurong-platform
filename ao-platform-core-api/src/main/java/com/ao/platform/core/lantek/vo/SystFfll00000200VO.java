@@ -1,6 +1,7 @@
 package com.ao.platform.core.lantek.vo;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -8,18 +9,13 @@ import java.time.LocalDateTime;
 *  VO
 */
 @Data
-public class DisNestNest00000500VO implements Serializable {
+public class SystFfll00000200VO implements Serializable {
 
-        private String NstRef;
-        private String MnORef;
-        private Integer OprID;
-        private String PrdRefDst;
-        private Integer PIndex;
-        private Integer Quantity;
-        private Integer MQ;
-        private Double CostMat;
-        private Double CostMachTime;
-        private Double CostConsum;
+        private String VltName;
+        private Integer VltType;
+        private String VltFld;
+        private Integer FileSave;
+        private String SvrName;
         private Integer RecState;
         private LocalDateTime CrtDate;
         private LocalDateTime LastDate;
@@ -31,9 +27,4 @@ public class DisNestNest00000500VO implements Serializable {
         private Integer RecSec;
         private Integer CntID;
         private Integer RecID;
-        
-        private String WMFPath;
-        private String fullWMFPath;
-
-        private PprrPprr00000100VO meta;
 }

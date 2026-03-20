@@ -98,11 +98,12 @@ public class DisNestNest00000100Controller extends BaseController implements IDi
         boolean remove = service.removeByIds(ids);
         return ApiResponse.success(remove);
     }
+
     @Override
     public ApiResponse<DisNestNest00000100VO> details(DisNestNest00000100DTO query) {
         Integer recID = query.getRecID();
 
-        if (recID == null){
+        if (recID == null) {
             return ApiResponse.fail("套料ID不能为空");
         }
 

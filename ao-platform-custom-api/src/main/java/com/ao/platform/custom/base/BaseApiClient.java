@@ -49,15 +49,23 @@ public abstract class BaseApiClient {
 
         log.info("HTTP POST {} body={}", uri, toJson(body));
 
-        return webClient.post()
+        String responseBody = webClient.post()
                 .uri(uri)
                 .bodyValue(body)
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, resp ->
                         resp.bodyToMono(String.class)
+                                .doOnNext(err -> log.error("HTTP ERROR BODY: {}", err))
                                 .map(msg -> new RuntimeException("HTTP error: " + msg))
                 )
-                .bodyToMono(clazz)
+                .bodyToMono(String.class)
+                .doOnNext(resp -> log.info("RAW RESPONSE: {}", resp))
                 .block();
+
+        try {
+            return objectMapper.readValue(responseBody, clazz);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Deserialize error", e);
+        }
     }
 }

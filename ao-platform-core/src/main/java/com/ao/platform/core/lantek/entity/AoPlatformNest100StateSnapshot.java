@@ -12,41 +12,41 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-* 
-*
-* @author heao
-* @since 2026-03-05
-*/
+ *
+ *
+ * @author heao
+ * @since 2026-03-05
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("AO_PLATFORM_NEST100_STATE_SNAPSHOT")
 public class AoPlatformNest100StateSnapshot extends BaseEntity implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-        /**
-        * 
-        */
-        @TableId(value = "RecID",type = IdType.INPUT)
-            private Integer RecID;
+    /**
+     *
+     */
+    @TableId(value = "RecID", type = IdType.INPUT)
+    private Integer RecID;
 
-        /**
-        * 
-        */
-        @TableField("MState")
-            private Integer MState;
+    /**
+     *
+     */
+    @TableField("MState")
+    private Integer MState;
 
-        /**
-        * 
-        */
-        @TableField("LastDate")
-            private LocalDateTime LastDate;
+    /**
+     *
+     */
+    @TableField("LastDate")
+    private LocalDateTime LastDate;
 
-        /**
-        * 
-        */
-        @TableField("SyncTime")
-            private LocalDateTime SyncTime;
+    /**
+     *
+     */
+    @TableField("SyncTime")
+    private LocalDateTime SyncTime;
 }

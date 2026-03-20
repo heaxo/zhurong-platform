@@ -29,6 +29,7 @@ services:
       --collation-server=utf8mb4_unicode_ci
     ports:
       - "3306:3306"
+    restart: always
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       interval: 5s

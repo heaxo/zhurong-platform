@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,6 +45,7 @@ public class DisNestNest00000100ServiceImpl
     private final ISystOwnd00000100Service systOwnd00000100Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
+    private final ISystFfll00000200Service systFfll00000200Service;
 
 
     @Override
@@ -84,6 +87,8 @@ public class DisNestNest00000100ServiceImpl
             throw new BusinessException("套料程序零件为空异常");
         }
 
+        String systemVaultPath = systFfll00000200Service.getSystemVaultPath();
+
         List<String> mnoRefs = nest500S.stream().map(DisNestNest00000500::getMnORef).distinct().toList();
         List<String> prdRefs = nest500S.stream().map(DisNestNest00000500::getPrdRefDst).distinct().toList();
 
@@ -106,7 +111,17 @@ public class DisNestNest00000100ServiceImpl
         ).findFirst();
         SystOwnd00000100 nestWmfOwnd = wmfOption.orElseGet(SystOwnd00000100::new);
         log.info("程序WMFPath路径：{}，{}", entity.getNstRef(), nestWmfOwnd.getFFName());
-        vo.setWMFPath(nestWmfOwnd.getFFName());
+
+        String nestWmfFFName = nestWmfOwnd.getFFName();
+        Path nestFPath = Paths.get(nestWmfFFName);
+
+        String fullNestWMFPath = (nestFPath.isAbsolute()
+                ? nestFPath
+                : Paths.get(systemVaultPath, nestWmfFFName).toAbsolutePath())
+                .toString();
+
+        vo.setWMFPath(nestWmfFFName);
+        vo.setFullWMFPath(fullNestWMFPath);
 
 
         List<PprrPprr00000100> parts = pprrPprr00000100Service.listByIn(
@@ -142,7 +157,16 @@ public class DisNestNest00000100ServiceImpl
                         .findFirst();
 
                 log.info("程序零件WMFPath路径：{}，{}", it.getPrdRefDst(), partWmfOwnd.orElseGet(SystOwnd00000100::new).getFFName());
-                partWmfOwnd.ifPresent(systOwnd00000100 -> it.setWMFPath(systOwnd00000100.getFFName()));
+                partWmfOwnd.ifPresent(systOwnd00000100 -> {
+                    String partWmfFFName = systOwnd00000100.getFFName();
+                    Path partFPath = Paths.get(partWmfFFName);
+                    String fullPartWMFPath = (partFPath.isAbsolute()
+                            ? partFPath
+                            : Paths.get(systemVaultPath, partWmfFFName).toAbsolutePath())
+                            .toString();
+                    it.setWMFPath(partWmfFFName);
+                    it.setFullWMFPath(fullPartWMFPath);
+                });
             }
         });
 

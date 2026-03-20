@@ -37,6 +37,7 @@ public class CodeGenerator {
                         "MMNN_MMOO_00000300",
                         "PPRR_PPRR_00000100",
                         "SYST_OWND_00000100",
+                        "SYST_FFLL_00000200",
                         "WWCC_WWCC_00000100"
                 },
                 true,

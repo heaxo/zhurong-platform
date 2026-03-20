@@ -15,13 +15,13 @@ import java.time.LocalDateTime;
  *
  *
  * @author heao
- * @since 2026-03-08
+ * @since 2026-03-20
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("DIS_NEST_NEST_00000200")
-public class DisNestNest00000200 extends BaseEntity implements Serializable {
+@TableName("SYST_FFLL_00000200")
+public class SystFfll00000200 extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,56 +29,32 @@ public class DisNestNest00000200 extends BaseEntity implements Serializable {
     /**
      *
      */
-    @TableField("NstRef")
-    private String NstRef;
+    @TableField("VltName")
+    private String VltName;
 
     /**
      *
      */
-    @TableField("MCode")
-    private String MCode;
+    @TableField("VltType")
+    private Integer VltType;
 
     /**
      *
      */
-    @TableField("MsgDesc")
-    private String MsgDesc;
+    @TableField("VltFld")
+    private String VltFld;
 
     /**
      *
      */
-    @TableField("MsgNum")
-    private Integer MsgNum;
+    @TableField("FileSave")
+    private Integer FileSave;
 
     /**
      *
      */
-    @TableField("ValType")
-    private Integer ValType;
-
-    /**
-     *
-     */
-    @TableField("UCtName")
-    private String UCtName;
-
-    /**
-     *
-     */
-    @TableField("UntName")
-    private String UntName;
-
-    /**
-     *
-     */
-    @TableField("DValue")
-    private Double DValue;
-
-    /**
-     *
-     */
-    @TableField("CValue")
-    private Double CValue;
+    @TableField("SvrName")
+    private String SvrName;
 
     /**
      *
