@@ -2,6 +2,7 @@ package com.ao.platform.core.lantek.service.impl;
 
 import com.ao.platform.base.constant.OwndConstant;
 import com.ao.platform.base.exception.BusinessException;
+import com.ao.platform.base.util.PathResolver;
 import com.ao.platform.core.lantek.convert.DisNestNest00000100Convert;
 import com.ao.platform.core.lantek.convert.DisNestNest00000500Convert;
 import com.ao.platform.core.lantek.convert.PprrPprr00000100Convert;
@@ -19,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -113,12 +112,11 @@ public class DisNestNest00000100ServiceImpl
         log.info("程序WMFPath路径：{}，{}", entity.getNstRef(), nestWmfOwnd.getFFName());
 
         String nestWmfFFName = nestWmfOwnd.getFFName();
-        Path nestFPath = Paths.get(nestWmfFFName);
 
-        String fullNestWMFPath = (nestFPath.isAbsolute()
-                ? nestFPath
-                : Paths.get(systemVaultPath, nestWmfFFName).toAbsolutePath())
-                .toString();
+        String fullNestWMFPath = PathResolver.resolve(
+                systemVaultPath,
+                nestWmfFFName
+        );
 
         vo.setWMFPath(nestWmfFFName);
         vo.setFullWMFPath(fullNestWMFPath);
@@ -159,11 +157,11 @@ public class DisNestNest00000100ServiceImpl
                 log.info("程序零件WMFPath路径：{}，{}", it.getPrdRefDst(), partWmfOwnd.orElseGet(SystOwnd00000100::new).getFFName());
                 partWmfOwnd.ifPresent(systOwnd00000100 -> {
                     String partWmfFFName = systOwnd00000100.getFFName();
-                    Path partFPath = Paths.get(partWmfFFName);
-                    String fullPartWMFPath = (partFPath.isAbsolute()
-                            ? partFPath
-                            : Paths.get(systemVaultPath, partWmfFFName).toAbsolutePath())
-                            .toString();
+
+                    String fullPartWMFPath = PathResolver.resolve(
+                            systemVaultPath,
+                            partWmfFFName
+                    );
                     it.setWMFPath(partWmfFFName);
                     it.setFullWMFPath(fullPartWMFPath);
                 });

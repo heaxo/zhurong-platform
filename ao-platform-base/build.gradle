@@ -14,6 +14,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation "com.baomidou:mybatis-plus-boot-starter"
     annotationProcessor "com.baomidou:mybatis-plus-annotation:${mybatisPlusVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
 }
 
 test {

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.ao'
-version = '0.0.2'
+version = '0.0.3'
 description = 'ao-platform-core'
 
 java {

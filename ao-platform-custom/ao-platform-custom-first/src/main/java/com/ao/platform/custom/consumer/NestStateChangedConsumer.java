@@ -16,6 +16,7 @@ import com.ao.platform.custom.dto.*;
 import com.ao.platform.custom.feign.DisNestNest00000100FeignClient;
 import com.ao.platform.custom.feign.MmnnMmoo00000300FeignClient;
 import com.ao.platform.custom.httpclient.CcsApiClient;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,17 +64,22 @@ public class NestStateChangedConsumer {
             List<DisNestNest00000500VO> nestParts = nest.getNestParts();
             List<MmnnMmoo00000300VO> jobParts = nest.getJobParts();
 
+            List<MmnnMmoo00000300VO> ordParts = new ArrayList<>();
+
             List<String> ordRefs = jobParts.stream().map(MmnnMmoo00000300VO::getOrdRef).distinct()
                     .filter(StringUtils::isNotBlank).toList();
 
             OrderNestingRequest orderNestingRequest = new OrderNestingRequest();
             List<NestingMain> nestingMains = new ArrayList<>();
 
-            MmnnMmoo00000300PageQuery mmoo00000300PageQuery = new MmnnMmoo00000300PageQuery();
-            mmoo00000300PageQuery.setOrdRefs(ordRefs);
-            mmoo00000300PageQuery.setPageSize(-1L);
-            PageResponse<MmnnMmoo00000300VO> ordPartPageResponse = mmnnMmoo00000300FeignClient.page(mmoo00000300PageQuery).unwrap();
-            List<MmnnMmoo00000300VO> ordParts = ordPartPageResponse.items();
+            if (CollectionUtils.isNotEmpty(ordParts)){
+                MmnnMmoo00000300PageQuery mmoo00000300PageQuery = new MmnnMmoo00000300PageQuery();
+                mmoo00000300PageQuery.setOrdRefs(ordRefs);
+                mmoo00000300PageQuery.setPageSize(-1L);
+                PageResponse<MmnnMmoo00000300VO> ordPartPageResponse = mmnnMmoo00000300FeignClient.page(mmoo00000300PageQuery).unwrap();
+                ordParts = ordPartPageResponse.items();
+            }
+
             Map<String, MmnnMmoo00000300VO> ordCrtDateMap = ordParts.stream().collect(Collectors.toMap(MmnnMmoo00000300VO::getOrdRef,
                     Function.identity(),
                     BinaryOperator.minBy(Comparator.comparing(MmnnMmoo00000300VO::getCrtDate))
