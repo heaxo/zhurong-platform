@@ -1,0 +1,20 @@
+services:
+  # zhurong-platform-custom 服务
+  zhurong-platform-custom-crun:
+    image: zhurong-platform/custom-crun
+    container_name: zhurong-platform-custom-crun
+    profiles: ["prod"]
+    ports:
+      - "9300:9300"
+    depends_on:
+      - nacos
+      - rabbitmq
+    volumes:
+      - ./logs/custom:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network

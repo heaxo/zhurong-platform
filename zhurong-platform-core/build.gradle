@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'com.bmuschko.docker-spring-boot-application'
+}
+
+group = 'com.zhurong'
+version = '0.0.3'
+description = 'zhurong-platform-core'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+ext {
+}
+
+dependencies {
+
+    implementation project(':zhurong-platform-base')
+    implementation project(':zhurong-platform-security')
+    implementation project(':zhurong-platform-core-api')
+
+    implementation 'org.mapstruct:mapstruct'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding'
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    implementation "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+    implementation "com.baomidou:mybatis-plus-jsqlparser"
+
+    compileOnly 'org.projectlombok:lombok'
+    // PostgreSQL
+    //    runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
+
+    // Flyway
+    implementation "org.flywaydb:flyway-core"
+    implementation "org.flywaydb:flyway-sqlserver"
+
+    implementation "net.javacrumbs.shedlock:shedlock-spring:${shedlockSpringVersio}"
+
+    implementation "org.springframework.boot:spring-boot-starter-amqp"
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+tasks.register('printVersion') {
+    doLast {
+        println "Current version: ${project.version}"
+    }
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
+        images = ['zhurong-platform/core']
+        ports = [9200]
+    }
+}

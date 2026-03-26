@@ -4,7 +4,7 @@ plugins {
     id 'com.bmuschko.docker-spring-boot-application' version '10.0.0'
 }
 
-group = 'com.ao'
+group = 'com.zhurong'
 version = '0.0.1'
 
 ext {

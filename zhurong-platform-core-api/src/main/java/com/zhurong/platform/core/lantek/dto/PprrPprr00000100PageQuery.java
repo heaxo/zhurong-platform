@@ -1,0 +1,925 @@
+package com.zhurong.platform.core.lantek.dto;
+
+import com.zhurong.platform.base.model.BasePageQuery;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+
+/**
+*  分页查询对象
+*/
+@Getter
+@Setter
+public class PprrPprr00000100PageQuery extends BasePageQuery {
+
+
+        /**
+        * 
+        */
+        private String prdRef;
+
+
+        /**
+        * 
+        */
+        private String prdName;
+
+
+        /**
+        * 
+        */
+        private String prdIntName;
+
+
+        /**
+        * 
+        */
+        private String pGroup;
+
+
+        /**
+        * 
+        */
+        private String barCode;
+
+
+        /**
+        * 
+        */
+        private Byte isActive;
+
+
+        /**
+        * 
+        */
+        private Byte realPrd;
+
+
+        /**
+        * 
+        */
+        private Byte assembly;
+
+
+        /**
+        * 
+        */
+        private Byte forSale;
+
+
+        /**
+        * 
+        */
+        private Integer pType;
+
+
+        /**
+        * 
+        */
+        private Byte cstRanges;
+
+
+        /**
+        * 
+        */
+        private Byte fixPrice;
+
+
+        /**
+        * 
+        */
+        private Double stdCost;
+
+
+        /**
+        * 
+        */
+        private Double curCost;
+
+
+        /**
+        * 
+        */
+        private Integer prcMethod;
+
+
+        /**
+        * 
+        */
+        private Integer cstMethod;
+
+
+        /**
+        * 
+        */
+        private String uCtName;
+
+
+        /**
+        * 
+        */
+        private String untName;
+
+
+        /**
+        * 
+        */
+        private Double curQuan;
+
+
+        /**
+        * 
+        */
+        private LocalDateTime cDate;
+
+
+        /**
+        * 
+        */
+        private String keyWords;
+
+
+        /**
+        * 
+        */
+        private String descrip;
+
+
+        /**
+        * 
+        */
+        private String image;
+
+
+        /**
+        * 
+        */
+        private Double weight;
+
+
+        /**
+        * 
+        */
+        private Double leadTime;
+
+
+        /**
+        * 
+        */
+        private String leadUCtName;
+
+
+        /**
+        * 
+        */
+        private String leadUntName;
+
+
+        /**
+        * 
+        */
+        private Integer leadUpdateMethod;
+
+
+        /**
+        * 
+        */
+        private String commCode;
+
+
+        /**
+        * 
+        */
+        private String oCountry;
+
+
+        /**
+        * 
+        */
+        private String cGroup;
+
+
+        /**
+        * 
+        */
+        private String accConItemRef;
+
+
+        /**
+        * 
+        */
+        private String glsVarref1;
+
+
+        /**
+        * 
+        */
+        private String glsUntname1;
+
+
+        /**
+        * 
+        */
+        private String glsVarref2;
+
+
+        /**
+        * 
+        */
+        private String glsUntname2;
+
+
+        /**
+        * 
+        */
+        private String glsVarref3;
+
+
+        /**
+        * 
+        */
+        private String glsUntname3;
+
+
+        /**
+        * 
+        */
+        private String glsVarref4;
+
+
+        /**
+        * 
+        */
+        private String glsUntname4;
+
+
+        /**
+        * 
+        */
+        private String glsVarref5;
+
+
+        /**
+        * 
+        */
+        private String glsUntname5;
+
+
+        /**
+        * 
+        */
+        private String glsUctname1;
+
+
+        /**
+        * 
+        */
+        private String glsUctname2;
+
+
+        /**
+        * 
+        */
+        private String glsUctname3;
+
+
+        /**
+        * 
+        */
+        private String glsUctname4;
+
+
+        /**
+        * 
+        */
+        private String glsUctname5;
+
+
+        /**
+        * 
+        */
+        private String glsAtrnameserial;
+
+
+        /**
+        * 
+        */
+        private String glsAtrnamebatch;
+
+
+        /**
+        * 
+        */
+        private String glsTblref;
+
+
+        /**
+        * 
+        */
+        private String disMatref;
+
+
+        /**
+        * 
+        */
+        private Double disLength;
+
+
+        /**
+        * 
+        */
+        private Double disWidth;
+
+
+        /**
+        * 
+        */
+        private Double disThickness;
+
+
+        /**
+        * 
+        */
+        private Double disArea;
+
+
+        /**
+        * 
+        */
+        private String disCreationm;
+
+
+        /**
+        * 
+        */
+        private Byte disIscanal;
+
+
+        /**
+        * 
+        */
+        private String disShtref;
+
+
+        /**
+        * 
+        */
+        private String disRotations;
+
+
+        /**
+        * 
+        */
+        private Integer disFillerpart;
+
+
+        /**
+        * 
+        */
+        private Byte disCanquote;
+
+
+        /**
+        * 
+        */
+        private String disSide;
+
+
+        /**
+        * 
+        */
+        private Double disCutperim;
+
+
+        /**
+        * 
+        */
+        private Double disMrkperim;
+
+
+        /**
+        * 
+        */
+        private Double disExtarea;
+
+
+        /**
+        * 
+        */
+        private Double disRectarea;
+
+
+        /**
+        * 
+        */
+        private Integer disTypearea;
+
+
+        /**
+        * 
+        */
+        private Double disExtweight;
+
+
+        /**
+        * 
+        */
+        private Double disRectweight;
+
+
+        /**
+        * 
+        */
+        private Byte disIsductpart;
+
+
+        /**
+        * 
+        */
+        private String disUdata1Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata2Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata3Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata4Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata5Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata6Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata7Prt;
+
+
+        /**
+        * 
+        */
+        private String disUdata8Prt;
+
+
+        /**
+        * 
+        */
+        private Byte disIsdraft;
+
+
+        /**
+        * 
+        */
+        private Integer disDuctdincode;
+
+
+        /**
+        * 
+        */
+        private String disDuctdinref;
+
+
+        /**
+        * 
+        */
+        private Double disSeaml;
+
+
+        /**
+        * 
+        */
+        private Double disCnnl;
+
+
+        /**
+        * 
+        */
+        private String disFposition;
+
+
+        /**
+        * 
+        */
+        private Double disCarea;
+
+
+        /**
+        * 
+        */
+        private Double disUmax;
+
+
+        /**
+        * 
+        */
+        private Double disLmax;
+
+
+        /**
+        * 
+        */
+        private Double disSmax;
+
+
+        /**
+        * 
+        */
+        private Integer disPrssindex;
+
+
+        /**
+        * 
+        */
+        private Byte disIsremnant;
+
+
+        /**
+        * 
+        */
+        private Double disPrcrmntprice;
+
+
+        /**
+        * 
+        */
+        private Double disScrpprice;
+
+
+        /**
+        * 
+        */
+        private Double disPrcscrpprice;
+
+
+        /**
+        * 
+        */
+        private Integer disRpriority;
+
+
+        /**
+        * 
+        */
+        private Byte disIslocked;
+
+
+        /**
+        * 
+        */
+        private Integer disCamquan;
+
+
+        /**
+        * 
+        */
+        private String disShtreforg;
+
+
+        /**
+        * 
+        */
+        private String disUdata1Sht;
+
+
+        /**
+        * 
+        */
+        private String disUdata2Sht;
+
+
+        /**
+        * 
+        */
+        private String disUdata3Sht;
+
+
+        /**
+        * 
+        */
+        private Double disPrice;
+
+
+        /**
+        * 
+        */
+        private Integer disInprogress;
+
+
+        /**
+        * 
+        */
+        private Double disFactor;
+
+
+        /**
+        * 
+        */
+        private Double disVl;
+
+
+        /**
+        * 
+        */
+        private Double disVh;
+
+
+        /**
+        * 
+        */
+        private Double disVg;
+
+
+        /**
+        * 
+        */
+        private Double disVp;
+
+
+        /**
+        * 
+        */
+        private Double disBprice;
+
+
+        /**
+        * 
+        */
+        private Double disCprice;
+
+
+        /**
+        * 
+        */
+        private Double disAprice;
+
+
+        /**
+        * 
+        */
+        private String disFormatref;
+
+
+        /**
+        * 
+        */
+        private String disProfileref;
+
+
+        /**
+        * 
+        */
+        private Double disWsa;
+
+
+        /**
+        * 
+        */
+        private Double disWea;
+
+
+        /**
+        * 
+        */
+        private Double disFsa;
+
+
+        /**
+        * 
+        */
+        private Double disFea;
+
+
+        /**
+        * 
+        */
+        private Integer disPclass;
+
+
+        /**
+        * 
+        */
+        private Byte disIsquote;
+
+
+        /**
+        * 
+        */
+        private Double disVolume;
+
+
+        /**
+        * 
+        */
+        private Byte disCommonpartini;
+
+
+        /**
+        * 
+        */
+        private Byte disCommonpartend;
+
+
+        /**
+        * 
+        */
+        private Byte disCommonprofileini;
+
+
+        /**
+        * 
+        */
+        private Byte disCommonprofileend;
+
+
+        /**
+        * 
+        */
+        private String disJobref;
+
+
+        /**
+        * 
+        */
+        private Integer disChecked;
+
+
+        /**
+        * 
+        */
+        private Byte disCansplit;
+
+
+        /**
+        * 
+        */
+        private LocalDateTime disPricedate;
+
+
+        /**
+        * 
+        */
+        private Double disNestseparation;
+
+
+        /**
+        * 
+        */
+        private Double disAreabylength;
+
+
+        /**
+        * 
+        */
+        private Double disWeightbylength;
+
+
+        /**
+        * 
+        */
+        private Integer disModelingby;
+
+
+        /**
+        * 
+        */
+        private String disModelingbyid;
+
+
+        /**
+        * 
+        */
+        private Double disStrength;
+
+
+        /**
+        * 
+        */
+        private Integer disSimplebends;
+
+
+        /**
+        * 
+        */
+        private Integer disSpecialbends;
+
+
+        /**
+        * 
+        */
+        private Integer disBendingtoolchanges;
+
+
+        /**
+        * 
+        */
+        private Integer disBendingrotations;
+
+
+        /**
+        * 
+        */
+        private String disRouteabbreviation;
+
+
+        /**
+        * 
+        */
+        private String disExternalkey;
+
+
+        /**
+        * 
+        */
+        private Integer recState;
+
+
+        /**
+        * 
+        */
+        private LocalDateTime crtDate;
+
+
+        /**
+        * 
+        */
+        private LocalDateTime lastDate;
+
+
+        /**
+        * 
+        */
+        private String crtUser;
+
+
+        /**
+        * 
+        */
+        private String lastUser;
+
+
+        /**
+        * 
+        */
+        private String owner;
+
+
+        /**
+        * 
+        */
+        private String recEnt;
+
+
+        /**
+        * 
+        */
+        private String recOU;
+
+
+        /**
+        * 
+        */
+        private Integer recSec;
+
+
+        /**
+        * 
+        */
+        private Integer cntID;
+
+
+        /**
+        * 
+        */
+        private Integer recID;
+
+/**
+* 创建时间开始
+*/
+private LocalDateTime beginCreateTime;
+
+/**
+* 创建时间结束
+*/
+private LocalDateTime endCreateTime;
+}

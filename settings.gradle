@@ -10,18 +10,18 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'ao-platform'
+rootProject.name = 'zhurong-platform'
 
-include 'ao-platform-gateway'
-include 'ao-platform-auth'
-include 'ao-platform-core'
-include 'ao-platform-code-generator'
+include 'zhurong-platform-gateway'
+include 'zhurong-platform-auth'
+include 'zhurong-platform-core'
+include 'zhurong-platform-code-generator'
 
-include 'ao-platform-base'
-include 'ao-platform-core-api'
-include 'ao-platform-auth-api'
-include 'ao-platform-security'
+include 'zhurong-platform-base'
+include 'zhurong-platform-core-api'
+include 'zhurong-platform-auth-api'
+include 'zhurong-platform-security'
 
 
-include 'ao-platform-custom:ao-platform-custom-first'
-include 'ao-platform-custom-api'
+include 'zhurong-platform-custom:zhurong-platform-custom-crun'
+include 'zhurong-platform-custom-api'

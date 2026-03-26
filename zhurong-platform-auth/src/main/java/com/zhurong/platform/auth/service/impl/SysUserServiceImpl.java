@@ -1,0 +1,129 @@
+package com.zhurong.platform.auth.service.impl;
+
+import com.zhurong.platform.auth.convert.SysUserConvert;
+import com.zhurong.platform.auth.dto.SysUserDTO;
+import com.zhurong.platform.auth.entity.SysRole;
+import com.zhurong.platform.auth.entity.SysUser;
+import com.zhurong.platform.auth.entity.SysUserRole;
+import com.zhurong.platform.auth.mapper.SysUserMapper;
+import com.zhurong.platform.auth.service.ISysRoleService;
+import com.zhurong.platform.auth.service.ISysUserRoleService;
+import com.zhurong.platform.auth.service.ISysUserService;
+import com.zhurong.platform.auth.vo.SysUserVO;
+import com.zhurong.platform.base.exception.BusinessException;
+import com.zhurong.platform.base.model.BaseEntity;
+import com.zhurong.platform.security.model.JwtUserDetails;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * 服务实现类
+ */
+@Service
+@RequiredArgsConstructor
+public class SysUserServiceImpl
+        extends ServiceImpl<SysUserMapper, SysUser>
+        implements ISysUserService {
+
+    private final ISysUserRoleService sysUserRoleService;
+    private final ISysRoleService sysRoleService;
+    private final SysUserConvert convert;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public SysUserVO getVOById(Long id) {
+        SysUser entity = this.getById(id);
+        SysUserVO vo = convert.toVO(entity);
+        List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserId, id));
+        List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+        List<SysRole> roles = sysRoleService.list(Wrappers.lambdaQuery(SysRole.class).in(BaseEntity::getId, roleIds));
+        vo.setRoles(roles.stream().map(SysRole::getCode).toList());
+        return vo;
+    }
+
+    @Override
+    public Long saveFromDTO(SysUserDTO dto) {
+        SysUser entity = convert.toEntity(dto);
+        if (entity.getTenantId() == null){
+            entity.setTenantId(0L);
+        }
+        this.save(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Boolean updateFromDTO(Long id, SysUserDTO dto) {
+        SysUser entity = this.getById(id);
+        convert.updateFromDTO(dto, entity);
+        return this.updateById(entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean createUser(SysUserDTO request) {
+
+        Long tenantId = getCurrentTenantId();
+
+        // 校验租户内用户名唯一
+        long count = count(
+                Wrappers.lambdaQuery(SysUser.class)
+                        .eq(SysUser::getTenantId, tenantId)
+                        .eq(SysUser::getUsername, request.getUsername())
+        );
+
+        if (count > 0) {
+            throw new BusinessException("用户名已存在");
+        }
+
+        // 构建用户
+        SysUser user = new SysUser()
+                .setTenantId(tenantId)
+                .setUsername(request.getUsername())
+                .setPassword(passwordEncoder.encode(request.getPassword()))
+                .setRealName(request.getRealName())
+                .setDeptId(request.getDeptId())
+                .setStatus(request.getStatus())
+                .setRemark(request.getRemark());
+
+        boolean save = save(user);
+
+        if (!save) {
+            throw new BusinessException("用户创建失败");
+        }
+
+        // 绑定角色
+        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
+            List<SysUserRole> userRoles = request.getRoleIds()
+                    .stream()
+                    .map(roleId -> new SysUserRole()
+                            .setTenantId(tenantId)
+                            .setUserId(user.getId())
+                            .setRoleId(roleId)
+                    ).toList();
+            return save && sysUserRoleService.saveBatch(userRoles);
+        }
+        return false;
+    }
+
+    private Long getCurrentTenantId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return 0L;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal == null) {
+            return 0L;
+        }
+        JwtUserDetails user = (JwtUserDetails) principal;
+        return user.getTenantId();
+    }
+
+}

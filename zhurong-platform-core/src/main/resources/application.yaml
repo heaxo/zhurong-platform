@@ -1,0 +1,46 @@
+server:
+  port: 9200
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: zhurong-platform-core
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+    connection-timeout: 10s
+    publisher-confirm-type: correlated
+    publisher-returns: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  datasource:
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=LSystemDB;encrypt=false
+    username: sa
+    password:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  mybatis-plus:
+    mapper-locations: classpath*:/mapper/**/*.xml
+    type-aliases-package: com.zhurong.platform.core.entity
+    configuration:
+      map-underscore-to-camel-case: false
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+  config:
+    import:
+      - nacos:zhurong-platform-core
+      - nacos:zhurong-platform-core-${spring.profiles.active}
+      - nacos:zhurong-platform-security-${spring.profiles.active}

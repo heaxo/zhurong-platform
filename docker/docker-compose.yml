@@ -1,10 +1,12 @@
 include:
   - standalone-mysql.yaml
+  - custom-crun.yml
 
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: ao-rabbitmq
+    container_name: zhurong-rabbitmq
+    restart: always
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -12,10 +14,10 @@ services:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
     networks:
-      - ao-network
-  ao-postgres:
+      - zhurong-network
+  zhurong-postgres:
     image: postgres:16
-    container_name: ao-postgres
+    container_name: zhurong-postgres
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -26,12 +28,12 @@ services:
       - ./data/postgres:/var/lib/postgresql/data
       - ./postgres-init:/docker-entrypoint-initdb.d
     networks:
-      - ao-network
+      - zhurong-network
 
-  # ao-platform-gateway 服务
-  ao-platform-gateway:
-    image: a.he/ao-platform-gateway  # 使用你打包的 Spring Boot 镜像
-    container_name: ao-platform-gateway
+  # zhurong-platform-gateway 服务
+  zhurong-platform-gateway:
+    image: zhurong-platform/gateway  # 使用你打包的 Spring Boot 镜像
+    container_name: zhurong-platform-gateway
     ports:
       - "9000:9000"
     depends_on:
@@ -44,12 +46,12 @@ services:
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
     restart: always
     networks:
-      - ao-network
+      - zhurong-network
 
-  # ao-platform-auth 服务
-  ao-platform-auth:
-    image: a.he/ao-platform-auth
-    container_name: ao-platform-auth
+  # zhurong-platform-auth 服务
+  zhurong-platform-auth:
+    image: zhurong-platform/auth
+    container_name: zhurong-platform-auth
     ports:
       - "9100:9100"
     depends_on:
@@ -62,12 +64,13 @@ services:
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
     restart: always
     networks:
-      - ao-network
+      - zhurong-network
 
-  # ao-platform-core 服务
-  ao-platform-core:
-    image: a.he/ao-platform-core
-    container_name: ao-platform-core
+  # zhurong-platform-core 服务
+  zhurong-platform-core:
+    image: zhurong-platform/core
+    container_name: zhurong-platform-core
+    profiles: ["prod"]
     ports:
       - "9200:9200"
     depends_on:
@@ -81,27 +84,8 @@ services:
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
     restart: always
     networks:
-      - ao-network
-
-  # ao-platform-custom 服务
-  ao-platform-custom:
-    image: a.he/ao-platform-custom-first
-    container_name: ao-platform-custom-first
-    ports:
-      - "9300:9300"
-    depends_on:
-      - nacos
-      - rabbitmq
-    volumes:
-      - ./logs/custom:/app/logs
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
-      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
-    restart: always
-    networks:
-      - ao-network
+      - zhurong-network
 
 networks:
-  ao-network:
+  zhurong-network:
     driver: bridge

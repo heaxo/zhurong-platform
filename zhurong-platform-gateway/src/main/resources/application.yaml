@@ -1,0 +1,60 @@
+server:
+  port: 9000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    gateway:
+      enabled: true
+spring:
+  profiles:
+    active: dev
+  application:
+    name: zhurong-platform-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+      config:
+        server-addr: localhost:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+        - id: auth-service
+#          uri: http://localhost:9100
+          uri: lb://zhurong-platform-auth
+          predicates:
+            - Path=/api/auth/**,/api/user/**
+          filters:
+            - StripPrefix=2
+
+        - id: core-service
+#          uri: http://localhost:9200
+          uri: lb://zhurong-platform-core
+          predicates:
+            - Path=/api/system/**,/api/core/**
+          filters:
+            - StripPrefix=2
+
+        - id: custom-service
+          uri: lb://zhurong-platform-custom
+          predicates:
+            - Path=/api/custom/**
+          filters:
+            - StripPrefix=2
+  config:
+    import:
+      - nacos:zhurong-platform-gateway
+      - nacos:zhurong-platform-gateway-${spring.profiles.active}
+      - nacos:zhurong-platform-security-${spring.profiles.active}

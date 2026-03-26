@@ -52,10 +52,10 @@ docker-compose up -d
 ![img_4.png](img_4.png)
 
 # 4. 修改接口地址和套料软件数据库参数 
-编辑 `ao-platform-custom-dev` 修改如下参数，并发布
+编辑 `zhurong-platform-custom-dev` 修改如下参数，并发布
 ![img_5.png](img_5.png)
 ![img_6.png](img_6.png)
-编辑 `ao-platform-core-dev` 修改数据库，服务地址，用户名，密码，并发布
+编辑 `zhurong-platform-core-dev` 修改数据库，服务地址，用户名，密码，并发布
 ![img_7.png](img_7.png)
 
 # 5. 配置文件如有修改的情况，需要重启相关服务
@@ -84,7 +84,7 @@ https://webhook.site/
 
 ![img_9.png](img_9.png)
 
-- 复制截图中的接口，然后配置到`ao-platform-custom-dev`服务中，并重启服务
+- 复制截图中的接口，然后配置到`zhurong-platform-custom-dev`服务中，并重启服务
 - 打开套料软件，并将某个程序另存为送车间（差不多30秒内，刷新截图中的webhook.site网址）
 - 正常情况下就能看到请求发送的报文
 - ![img_10.png](img_10.png)

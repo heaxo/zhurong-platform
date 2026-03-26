@@ -1,0 +1,112 @@
+package com.zhurong.platform.core.lantek.dto;
+
+import lombok.Data;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+*  DTO
+*/
+@Data
+public class MmnnMmoo00000300DTO implements Serializable {
+
+    private String MnORef;
+    private Integer OprID;
+    private Integer NextOprID;
+    private Integer RouID;
+    private Integer NextRouID;
+    private String PrdRef;
+    private String PrdRefOrg;
+    private Integer NComp;
+    private String PrdRefDst;
+    private String PrdNameDst;
+    private String RouRef;
+    private Integer OOrder;
+    private String WrkRef;
+    private String OprRef;
+    private Integer PPriority;
+    private Integer Origin;
+    private String OrdRef;
+    private String OLineNum;
+    private String CusRef;
+    private String CusName;
+    private LocalDateTime CDate;
+    private LocalDateTime RDate;
+    private Byte IsEnd;
+    private String UCtName;
+    private String UntName;
+    private Double Quantity;
+    private Double AQ;
+    private Double MQ;
+    private Double LQ;
+    private Double ToOutQ;
+    private Double OutQ;
+    private Integer MState;
+    private Double RQ;
+    private Integer OState;
+    private Double EDuration;
+    private Integer IOrder;
+    private LocalDateTime SDate;
+    private LocalDateTime EDate;
+    private LocalDateTime PartialSDate;
+    private LocalDateTime ESDate;
+    private LocalDateTime EEDate;
+    private String Descrip;
+    private Double StdTime;
+    private Double RunTime;
+    private Double CurTime;
+    private Double WrkTime;
+    private Double WrkCap;
+    private Double StdCostU;
+    private Double CurCostU;
+    private Double StdCostT;
+    private Double CurCostT;
+    private Integer MainOpr;
+    private Byte ParallelOpr;
+    private String WrhRefSM;
+    private String LineNumSM;
+    private String OutOrdRef;
+    private String OutLineNum;
+    private String SuppRef;
+    private String SuppName;
+    private String CurName;
+    private String TarRef;
+    private Double MinQuan;
+    private Byte IsOutsourcing;
+    private Double CurCostA;
+    private String MainOriginFilter;
+    private String MainOriginNameFilter;
+    private String WorkPackageFilter;
+    private String WorkPackageNameFilter;
+    private Integer MainOriginTypeFilter;
+    private String MainPackage;
+    private String MainPackageName;
+    private String DIS_PGroup;
+    private String DIS_MatRef;
+    private Double DIS_Thickness;
+    private String DIS_JobRef;
+    private String DIS_FPosition;
+    private Double DIS_NQ;
+    private Byte DIS_IsChanged;
+    private Byte DIS_IsDuct;
+    private Byte DIS_Is2DSOp;
+    private Byte DIS_Is3DSOp;
+    private Byte DIS_IsQuote;
+    private String DIS_WrkCfg;
+    private Integer WosStatus;
+    private String DIS_NonCuttingJob;
+    private Integer DIS_OrgOprID;
+    private Integer DIS_MStateCloudStatus;
+    private Integer RecState;
+    private LocalDateTime CrtDate;
+    private LocalDateTime LastDate;
+    private String CrtUser;
+    private String LastUser;
+    private String Owner;
+    private String RecEnt;
+    private String RecOU;
+    private Integer RecSec;
+    private Integer CntID;
+    private Integer RecID;
+
+}

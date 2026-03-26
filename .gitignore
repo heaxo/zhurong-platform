@@ -42,6 +42,6 @@ docker/standalone-logs
 docker/logs
 docker/publish
 
-ao-platform-code-generator/src/main/generated
+zhurong-platform-code-generator/src/main/generated
 
 logs
