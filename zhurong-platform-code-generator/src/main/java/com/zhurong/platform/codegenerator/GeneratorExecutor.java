@@ -32,7 +32,7 @@ public class GeneratorExecutor {
                 )
                 .globalConfig(builder ->
                         builder
-                                .author("heao")
+                                .author("me")
                                 .outputDir(outputDir)
                                 .disableOpenDir()
                 )

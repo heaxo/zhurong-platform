@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * Mapper 接口
  * </p>
  *
- * @author heao
+ * @author me
  * @since 2026-03-05
  */
 public interface ZhurongPlatformJobCursorMapper extends BaseMapper<ZhurongPlatformJobCursor> {

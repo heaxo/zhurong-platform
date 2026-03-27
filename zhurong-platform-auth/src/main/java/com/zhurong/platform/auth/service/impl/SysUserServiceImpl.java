@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 服务实现类
@@ -123,7 +124,7 @@ public class SysUserServiceImpl
             return 0L;
         }
         JwtUserDetails user = (JwtUserDetails) principal;
-        return user.getTenantId();
+        return Optional.ofNullable(user.getTenantId()).orElse(0L);
     }
 
 }

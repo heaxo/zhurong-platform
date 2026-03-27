@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * Mapper 接口
  * </p>
  *
- * @author heao
+ * @author me
  * @since 2026-03-20
  */
 public interface SystFfll00000200Mapper extends BaseMapper<SystFfll00000200> {
