@@ -1,0 +1,61 @@
+server:
+  port: 9300
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: zhurong-platform-custom
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+
+    listener:
+      simple:
+        acknowledge-mode: auto
+        concurrency: 3
+        max-concurrency: 10
+        prefetch: 10
+  datasource:
+    dynamic:
+      primary: lantek
+      strict: false
+      datasource:
+        lantek: # SQL Server（主库）
+          url: jdbc:sqlserver://localhost:1433;databaseName=LSystemDB;encrypt=false
+          username: sa
+          password:
+          driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+        sap:
+          url: jdbc:sap://192.168.30.210:30015/?databaseName=SAP_HDB
+          username: SYSTEM
+          password: Butit2019
+          driver-class-name: com.sap.db.jdbc.Driver
+
+        erp:
+          url: jdbc:oracle:thin:@192.168.30.210:1521:butorcl2
+          username: butcqpt2
+          password: 123
+          driver-class-name: oracle.jdbc.OracleDriver
+  mybatis-plus:
+    mapper-locations: classpath*:/mapper/**/*.xml
+    type-aliases-package: com.zhurong.platform.custom.entity
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: lantekha:8848
+      config:
+        server-addr: lantekha:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+  config:
+    import:
+      - nacos:zhurong-platform-custom
+      - nacos:zhurong-platform-custom-but-${spring.profiles.active}
+      - nacos:zhurong-platform-security-${spring.profiles.active}

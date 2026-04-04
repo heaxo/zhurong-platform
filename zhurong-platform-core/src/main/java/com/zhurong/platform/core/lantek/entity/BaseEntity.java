@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 
 /*
- * @Author a.he@lantek.com
+ * @Author zhurong
  * @Description BaseEntity
  * @Date 2026/3/4 21:45
  **/

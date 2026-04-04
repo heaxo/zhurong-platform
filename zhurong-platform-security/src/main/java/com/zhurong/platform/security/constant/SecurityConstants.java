@@ -1,7 +1,7 @@
 package com.zhurong.platform.security.constant;
 
 /*
- * @Author a.he@lantek.com
+ * @Author zhurong
  * @Description SecurityConstants
  * @Date 2026/2/22 13:35
  **/

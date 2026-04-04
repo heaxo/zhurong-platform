@@ -1,7 +1,7 @@
 package com.zhurong.platform.codegenerator;
 
 /*
- * @Author a.he@lantek.com
+ * @Author zhurong
  * @Description CodeGenerator
  * @Date 2026/2/17 21:36
  **/
@@ -23,6 +23,8 @@ public class CodeGenerator {
                         "AO_PLATFORM_OUTBOX_EVENT",
                         "AO_PLATFORM_NEST100_STATE_SNAPSHOT",
                         "DIS_MMNN_MMOO_00000200",
+                        "DIS_MMNN_BWSR_00000100",
+                        "DIS_MMNN_BWSR_00000200",
                         "DIS_MMTT_MMTT_00000100",
                         "DIS_NEST_NEST_00000100",
                         "DIS_NEST_NEST_00000200",

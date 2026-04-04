@@ -1,7 +1,7 @@
 package com.zhurong.platform.base.constant;
 
 /*
- * @Author a.he@lantek.com
+ * @Author zhurong
  * @Description FfllConstant
  * @Date 2026/3/20 19:46
  **/

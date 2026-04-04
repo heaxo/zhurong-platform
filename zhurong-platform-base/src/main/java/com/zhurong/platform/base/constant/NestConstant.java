@@ -1,7 +1,7 @@
 package com.zhurong.platform.base.constant;
 
 /*
- * @Author a.he@lantek.com
+ * @Author zhurong
  * @Description NestMState
  * @Date 2026/3/8 18:05
  **/
