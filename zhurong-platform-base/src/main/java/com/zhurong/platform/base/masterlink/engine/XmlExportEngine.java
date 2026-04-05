@@ -9,6 +9,8 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 public class XmlExportEngine {
@@ -34,6 +36,13 @@ public class XmlExportEngine {
             writer.flush();
             writer.close();
         }
+    }
+    public String export(List<IXmlCommand> commands) throws Exception {
+        Path tempFile = Files.createTempFile("masterlink_", ".xml");
+        // 转成字符串路径
+        String filePath = tempFile.toAbsolutePath().toString();
+        export(filePath, commands);
+        return filePath;
     }
     private boolean isEmptyField(XmlField field) {
         return true;

@@ -2,6 +2,8 @@ package com.zhurong.platform.custom.sap.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /*
  * @Author zhurong
  * @Description AvaInventoyrQtyDTO
@@ -28,4 +30,6 @@ public class AvaInventoryQtyDTO {
     private String whsName;
 
     private Double weight;
+
+    private List<String> itemCodes;
 }

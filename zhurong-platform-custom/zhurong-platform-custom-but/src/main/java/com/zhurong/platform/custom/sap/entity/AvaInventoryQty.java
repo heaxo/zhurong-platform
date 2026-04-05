@@ -3,9 +3,11 @@ package com.zhurong.platform.custom.sap.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
 @TableName("SBO_BUT.AVA_INVENTOYR_QTY")
+@Accessors(chain = true)
 public class AvaInventoryQty {
 
     @TableField("\"ItemCode\"")
