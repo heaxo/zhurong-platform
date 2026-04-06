@@ -2,7 +2,7 @@ package com.zhurong.platform.custom.httpclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.api.ApiResponse;
-import com.zhurong.platform.custom.base.BaseApiClient;
+import com.zhurong.platform.custom.web.BaseApiClient;
 import com.zhurong.platform.custom.dto.OrderNestingRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -3,6 +3,7 @@ package com.zhurong.platform.custom.erp.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ViPmOrderlDTO {
@@ -36,4 +37,9 @@ public class ViPmOrderlDTO {
     private String vversion;
 
     private String icadproduct;
+
+    private List<String> belposIds;
+    private String jobRef;
+    private String matRef;
+    private String wrkRef;
 }

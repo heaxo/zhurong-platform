@@ -15,7 +15,7 @@ import java.util.List;
 
 public class XmlExportEngine {
 
-    public void export(String filePath, List<IXmlCommand> commands) throws Exception {
+    public void export(String filePath, List<? extends IXmlCommand> commands) throws Exception {
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
 
@@ -37,7 +37,7 @@ public class XmlExportEngine {
             writer.close();
         }
     }
-    public String export(List<IXmlCommand> commands) throws Exception {
+    public String export(List<? extends IXmlCommand> commands) throws Exception {
         Path tempFile = Files.createTempFile("masterlink_", ".xml");
         // 转成字符串路径
         String filePath = tempFile.toAbsolutePath().toString();

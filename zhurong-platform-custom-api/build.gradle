@@ -8,9 +8,24 @@ description = 'zhurong-platform-custom-api'
 
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-webflux"
     implementation "net.java.dev.jna:jna-platform:5.14.0"
+    api project(':zhurong-platform-base')
+    api project(':zhurong-platform-security')
+    api project(':zhurong-platform-core-api')
+
+    api "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api "org.springframework.boot:spring-boot-starter-webflux"
+    api "org.springframework.boot:spring-boot-starter-amqp"
+    api 'org.springframework.cloud:spring-cloud-starter-openfeign'
     api 'com.google.guava:guava:33.2.1-jre'
+
+
+    api 'org.mapstruct:mapstruct'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
 }

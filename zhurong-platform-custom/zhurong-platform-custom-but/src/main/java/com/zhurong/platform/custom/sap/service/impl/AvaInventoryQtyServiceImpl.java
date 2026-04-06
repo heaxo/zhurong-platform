@@ -6,18 +6,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Sets;
 import com.zhurong.platform.base.exception.BusinessException;
-import com.zhurong.platform.base.masterlink.builders.SheetCommandBuilder;
 import com.zhurong.platform.base.masterlink.commands.SheetsCommand;
-import com.zhurong.platform.base.masterlink.core.IXmlCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
-import com.zhurong.platform.custom.base.exception.MasterlinkImportException;
-import com.zhurong.platform.custom.base.util.MasterlinkTool;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
+import com.zhurong.platform.custom.exception.MasterlinkImportException;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
+import com.zhurong.platform.custom.util.MasterlinkTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -106,11 +104,8 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .setDisLength(Float.parseFloat(it.getLength()))
                         .setDisWidth(Float.parseFloat(it.getWidth()))
                         .setDisUData2Sht(it.getWhsName())).toList();
-                SheetCommandBuilder builder = new SheetCommandBuilder()
-                        .with(sheets);
-                List<IXmlCommand> build = builder.build();
                 XmlExportEngine engine = new XmlExportEngine();
-                String xmlPath = engine.export(build);
+                String xmlPath = engine.export(sheets);
                 //执行导入
                 MasterlinkTool.ExecResult execResult = MasterlinkTool.executeImport(xmlPath);
 
