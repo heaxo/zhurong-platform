@@ -1,6 +1,9 @@
 package com.zhurong.platform.core.lantek.vo;
 
+import com.zhurong.platform.core.lantek.dto.ItemsDocument;
+import com.zhurong.platform.core.lantek.dto.SheetPartsAuxiliaryData;
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -9,6 +12,9 @@ import java.time.LocalDateTime;
 */
 @Data
 public class PprrPprr00000100VO implements Serializable {
+
+        private ItemsDocument itemsDocument;
+        private SheetPartsAuxiliaryData sheetPartsAuxiliaryData;
 
         private String PrdRef;
         private String PrdName;

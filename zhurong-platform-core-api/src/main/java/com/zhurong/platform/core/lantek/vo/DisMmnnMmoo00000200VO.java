@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Data
 public class DisMmnnMmoo00000200VO implements Serializable {
 
+        private String jobFullPath;
+
         private String JobRef;
         private Integer MState;
         private LocalDateTime CDate;

@@ -1,6 +1,8 @@
 package com.zhurong.platform.core.lantek.service;
 
+import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.core.lantek.dto.DisNestNest00000100DTO;
+import com.zhurong.platform.core.lantek.dto.DisNestNest00000100PageQuery;
 import com.zhurong.platform.core.lantek.entity.DisNestNest00000100;
 import com.zhurong.platform.core.lantek.vo.DisNestNest00000100VO;
 
@@ -16,4 +18,9 @@ public interface IDisNestNest00000100Service extends BaseIService<DisNestNest000
 
     //明细
     DisNestNest00000100VO details(Integer recID);
+
+    /**
+     * 套料富分页查询
+     */
+    PageResponse<DisNestNest00000100VO> pageNestOverview(DisNestNest00000100PageQuery req);
 }

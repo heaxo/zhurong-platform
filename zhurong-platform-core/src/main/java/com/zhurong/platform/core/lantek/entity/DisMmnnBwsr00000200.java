@@ -107,6 +107,6 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-            @TableId(value = "RecID",type = IdType.AUTO)
+            @TableId(value = "RecID",type = IdType.ASSIGN_ID)
             private Integer RecID;
 }

@@ -359,6 +359,6 @@ public class MmnnMmoo00000100 extends BaseEntity implements Serializable {
     /**
      *
      */
-    @TableId(value = "RecID", type = IdType.AUTO)
+    @TableId(value = "RecID", type = IdType.ASSIGN_ID)
     private Integer RecID;
 }

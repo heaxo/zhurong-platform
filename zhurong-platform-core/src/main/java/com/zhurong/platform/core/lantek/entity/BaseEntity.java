@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
  **/
 @Slf4j
 public class BaseEntity {
-    //兼容非lantek实体
+    //兼容lantek实体
     public Long getId() {
         try {
             Field field = this.getClass().getDeclaredField("RecID");

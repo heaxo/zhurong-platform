@@ -191,6 +191,6 @@ public class DisPpttTtrr00000800 extends BaseEntity implements Serializable {
     /**
      *
      */
-    @TableId(value = "RecID", type = IdType.AUTO)
+    @TableId(value = "RecID", type = IdType.ASSIGN_ID)
     private Integer RecID;
 }

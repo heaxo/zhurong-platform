@@ -28,6 +28,7 @@ public class AvaInventoryQtyDTO {
     private String length;
 
     private String whsName;
+    private String locName;
 
     private Double weight;
 

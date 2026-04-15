@@ -50,6 +50,8 @@ spring:
       password: nacos
       discovery:
         server-addr: lantekha:8848
+        ip: 192.168.1.76
+        port: ${server.port}
       config:
         server-addr: lantekha:8848
         file-extension: yaml

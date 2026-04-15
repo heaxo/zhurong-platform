@@ -5,11 +5,16 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Sets;
+import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.exception.BusinessException;
 import com.zhurong.platform.base.masterlink.commands.SheetsCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
+import com.zhurong.platform.core.lantek.dto.WwhhIivv00000100DTO;
+import com.zhurong.platform.core.lantek.dto.WwhhWwhh00000100DTO;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
+import com.zhurong.platform.custom.feign.WwhhIivv00000100FeignClient;
+import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
@@ -40,6 +45,8 @@ import java.util.stream.Collectors;
 public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMapper, AvaInventoryQty> implements IAvaInventoryQtyService {
 
     private final IPprrPprr00000100Service pprrPprr00000100Service;
+    private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
+    private final WwhhIivv00000100FeignClient wwhhIivv00000100FeignClient;
 
     private final ReentrantLock exeLock = new ReentrantLock();
 
@@ -135,6 +142,40 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                             failedItems
                     ));
                 }
+
+                //创建仓库和库位
+                record WarehouserGroupKey(String whsName,String locName){}
+                Map<WarehouserGroupKey, List<AvaInventoryQty>> createWarehousers = list.stream()
+                        .collect(Collectors.groupingBy(it -> new WarehouserGroupKey(it.getWhsName(), it.getLocName())));
+                List<WarehouserGroupKey> warehouserGroupKeys = createWarehousers.keySet().stream().toList();
+                warehouserGroupKeys.forEach(it -> {
+                    WwhhWwhh00000100DTO wwhhWwhh00000100DTO = new WwhhWwhh00000100DTO();
+                    wwhhWwhh00000100DTO.setWrhRef(it.whsName);
+                    wwhhWwhh00000100DTO.setLocRef(it.locName);
+                    ApiResponse<Boolean> apiResponse = wwhhWwhh00000100FeignClient.createWarehouseAndLocation(wwhhWwhh00000100DTO);
+                    if (apiResponse.data() == null || !apiResponse.data()){
+                        log.warn("库存库位创建失败：{}-{}，{}",it.whsName, it.locName, apiResponse.message());
+                        return;
+                    }
+                    log.info("库存库位创建成功：{}-{}",it.whsName, it.locName);
+                });
+                list.forEach(it -> {
+                    //钢板绑定库存
+                    WwhhIivv00000100DTO wwhhIivv00000100DTO = new WwhhIivv00000100DTO();
+                    wwhhIivv00000100DTO.setWrhRef(it.getWhsName());
+                    wwhhIivv00000100DTO.setLocDefault(it.getLocName());
+                    wwhhIivv00000100DTO.setPrdRef(it.getItemCode());
+                    wwhhIivv00000100DTO.setAllocatedQ(it.getQuantity());
+                    ApiResponse<Boolean> apiResponse = wwhhIivv00000100FeignClient.sheetMetalBinding(wwhhIivv00000100DTO);
+
+                    if (apiResponse.data() == null || !apiResponse.data()){
+                        log.warn("钢板库存库位绑定失败：{}-{}，{}，{}",it.getWhsName(), it.getLocName(), it.getItemCode(), apiResponse.message());
+                        return;
+                    }
+                    log.info("钢板库存库位绑定成功：{}-{}，{}",it.getWhsName(), it.getLocName(), it.getItemCode());
+                });
+
+
                 return true;
             }
 

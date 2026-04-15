@@ -44,3 +44,6 @@ spring:
       - nacos:zhurong-platform-core
       - nacos:zhurong-platform-core-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
+
+lantek-config:
+  install: C:/Lantek

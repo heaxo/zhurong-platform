@@ -34,6 +34,12 @@ public interface IDisNestNest00000100Api {
             <DisNestNest00000100VO> getById(@PathVariable("id") Long id);
 
     /**
+     * 套料富分页查询
+     */
+    @GetMapping("/pageNestOverview")
+    ApiResponse<PageResponse<DisNestNest00000100VO>> pageNestOverview(DisNestNest00000100PageQuery req);
+
+    /**
      * 新增
      */
     @PostMapping

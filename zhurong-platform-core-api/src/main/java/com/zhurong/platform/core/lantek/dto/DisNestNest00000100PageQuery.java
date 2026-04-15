@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 public class DisNestNest00000100PageQuery extends BasePageQuery {
 
 
+        private RelationLoadPlan loadPlan;
+
         /**
         * 
         */

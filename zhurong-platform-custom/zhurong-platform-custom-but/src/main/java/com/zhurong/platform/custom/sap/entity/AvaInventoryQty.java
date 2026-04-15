@@ -42,4 +42,7 @@ public class AvaInventoryQty {
 
     @TableField("\"weight\"")
     private Double weight;
+
+    @TableField("\"LocName\"")
+    private String locName;
 }

@@ -89,4 +89,6 @@ public class DisNestNest00000100DTO implements Serializable {
     private Integer CntID;
     private Integer RecID;
 
+    private RelationLoadPlan loadPlan;
+
 }

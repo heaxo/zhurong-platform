@@ -1,5 +1,7 @@
 package com.zhurong.platform.core.lantek.vo;
 
+import com.zhurong.platform.core.lantek.dto.NestingAuxiliaryProperties;
+import com.zhurong.platform.core.lantek.dto.NestingDocument;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +13,11 @@ import java.util.List;
  */
 @Data
 public class DisNestNest00000100VO implements Serializable {
+
+    private List<DisNestNest00000300VO> nestRemnant;
+    private DisMmnnMmoo00000200VO job;
+    private NestingAuxiliaryProperties nestingAuxiliaryProperties;
+    private NestingDocument nestingDocument;
 
     private String NstRef;
     private String NestMainRef;

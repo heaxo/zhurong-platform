@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Data
 public class DisNestNest00000300VO implements Serializable {
 
+        private PprrPprr00000100VO item;
+
         private String NstRef;
         private String ShtRef;
         private Integer RIndex;
