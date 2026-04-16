@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -13,14 +14,20 @@ public abstract class BasePageQuery implements Serializable {
     /**
      * 当前页
      */
-    private Long current = 1L;
+    private Long current;
+    public Long getCurrent(){
+        return Optional.ofNullable(current).orElse(page);
+    }
     private Long page = 1L;
 
     /**
      * 每页条数
      */
-    private Long size = 10L;
+    private Long size;
     private Long pageSize = 10L;
+    public Long getPageSize(){
+        return Optional.ofNullable(size).orElse(pageSize);
+    }
 
     /**
      * 排序字段

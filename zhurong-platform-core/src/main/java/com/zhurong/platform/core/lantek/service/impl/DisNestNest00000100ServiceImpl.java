@@ -1,6 +1,7 @@
 package com.zhurong.platform.core.lantek.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -22,6 +23,7 @@ import com.zhurong.platform.core.lantek.service.*;
 import com.zhurong.platform.core.lantek.util.LantekFilePathBuilder;
 import com.zhurong.platform.core.lantek.vo.*;
 import com.zhurong.platform.core.properties.LantekConfigProperties;
+import com.zhurong.platform.core.util.OrderByAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -188,7 +190,9 @@ public class DisNestNest00000100ServiceImpl
 
     @Override
     public PageResponse<DisNestNest00000100VO> pageNestOverview(DisNestNest00000100PageQuery req){
-        LambdaQueryWrapper<DisNestNest00000100> wrapper = Wrappers.lambdaQuery();
+
+        QueryWrapper<DisNestNest00000100> rootWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<DisNestNest00000100> wrapper = rootWrapper.lambda();
 
         if (req.getRecID() != null) {
             wrapper.eq(DisNestNest00000100::getRecID, req.getRecID());
@@ -209,8 +213,14 @@ public class DisNestNest00000100ServiceImpl
             wrapper.eq(DisNestNest00000100::getSThickness, req.getSThickness());
         }
 
-        // 这里如果你项目里已有 QueryOrders 排序工具，直接替换掉下面这行
-        wrapper.orderByDesc(DisNestNest00000100::getRecID);
+        // ===== 动态排序 =====
+        OrderByAssembler.applySorts(
+                rootWrapper,
+                DisNestNest00000100.class,
+                req.getSortRules(),
+                "recID",
+                false
+        );
 
         Page<DisNestNest00000100> page = this.page(
                 new Page<>(req.getCurrent(), req.getPageSize()),

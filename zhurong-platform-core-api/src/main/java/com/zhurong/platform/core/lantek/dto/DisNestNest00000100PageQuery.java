@@ -1,10 +1,12 @@
 package com.zhurong.platform.core.lantek.dto;
 
 import com.zhurong.platform.base.model.BasePageQuery;
+import com.zhurong.platform.core.dto.SortInstructionDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 *  分页查询对象
@@ -13,7 +15,10 @@ import java.time.LocalDateTime;
 @Setter
 public class DisNestNest00000100PageQuery extends BasePageQuery {
 
-
+        /**
+         * 动态多字段排序
+         */
+        private List<SortInstructionDTO> sortRules;
         private RelationLoadPlan loadPlan;
 
         /**

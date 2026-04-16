@@ -15,9 +15,41 @@ import java.util.List;
 public class DisNestNest00000100VO implements Serializable {
 
     private List<DisNestNest00000300VO> nestRemnant;
+    private List<DisNestNest00000500VO> nestParts;
+    private List<MmnnMmoo00000300VO> jobParts;
     private DisMmnnMmoo00000200VO job;
     private NestingAuxiliaryProperties nestingAuxiliaryProperties;
     private NestingDocument nestingDocument;
+    private Double partWeight;
+    private Double partArea;
+
+    private String CNCPath;
+    private String WMFPath;
+    private String fullWMFPath;
+    public Double getPartWeight(){
+        if (nestParts == null || nestParts.isEmpty()){
+            return 0D;
+        }
+        return nestParts.stream().mapToDouble(it -> {
+            if (it.getItem() != null){
+                return it.getQuantity() * it.getItem().getWeight();
+            }
+            return 0D;
+        }).sum();
+    }
+    public Double getPartArea(){
+        if (nestParts == null || nestParts.isEmpty()){
+            return 0D;
+        }
+        return nestParts.stream().mapToDouble(it -> {
+            if (it.getItem() != null){
+                return it.getQuantity() * it.getItem().getDIS_Area();
+            }
+            return 0D;
+        }).sum();
+    }
+
+
 
     private String NstRef;
     private String NestMainRef;
@@ -97,10 +129,4 @@ public class DisNestNest00000100VO implements Serializable {
     private Integer RecSec;
     private Integer CntID;
     private Integer RecID;
-
-    private String CNCPath;
-    private String WMFPath;
-    private String fullWMFPath;
-    private List<DisNestNest00000500VO> nestParts;
-    private List<MmnnMmoo00000300VO> jobParts;
 }
