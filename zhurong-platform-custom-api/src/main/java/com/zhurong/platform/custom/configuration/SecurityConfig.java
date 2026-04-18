@@ -23,6 +23,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 //必须放行error，不然gateway响应的异常是403（500返回403）
                                 "/error",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
                                 "/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )

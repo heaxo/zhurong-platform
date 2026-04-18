@@ -15,4 +15,5 @@ public interface IWwhhIivv00000100Service extends BaseIService<WwhhIivv00000100>
     Boolean updateFromDTO(Long id, WwhhIivv00000100DTO dto);
 
     Boolean forceSheetMetalBinding(WwhhIivv00000100DTO dto);
+    Boolean forceSheetMetalBindingUpdate(WwhhIivv00000100DTO dto);
 }

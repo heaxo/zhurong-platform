@@ -36,12 +36,14 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 
-    implementation "com.baomidou:dynamic-datasource-spring-boot3-starter:4.3.1"
+    implementation 'com.baomidou:dynamic-datasource-spring-boot3-starter:4.3.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17'
 
 
     runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
     implementation "com.oracle.database.jdbc:ojdbc8:21.9.0.0"
     implementation "com.sap.cloud.db.jdbc:ngdbc:2.27.7"
+
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }

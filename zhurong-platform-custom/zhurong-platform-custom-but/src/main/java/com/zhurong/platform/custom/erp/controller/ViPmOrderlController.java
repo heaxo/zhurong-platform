@@ -7,6 +7,7 @@ import com.zhurong.platform.custom.erp.entity.ViPmOrderl;
 import com.zhurong.platform.custom.erp.service.IViPmOrderlService;
 import com.zhurong.platform.custom.erp.vo.ViPmOrderlVO;
 import com.zhurong.platform.custom.web.BaseController;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/erp/vi/pm/orderl")
+@Hidden
 public class ViPmOrderlController extends BaseController {
 
     private final ViPmOrderlConvert viPmOrderlConvert;

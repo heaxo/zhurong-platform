@@ -94,6 +94,19 @@ public class WwhhIivv00000100Controller extends BaseController implements IWwhhI
         }
         return ApiResponse.success(service.forceSheetMetalBinding(dto));
     }
+    @Override
+    public ApiResponse<Boolean> sheetMetalBindingUpdate(WwhhIivv00000100DTO dto) {
+        if (StringUtils.isBlank(dto.getWrhRef())){
+            return ApiResponse.fail("仓库编码不能为空");
+        }
+        if (StringUtils.isBlank(dto.getLocDefault())){
+            return ApiResponse.fail("库位编码不能为空");
+        }
+        if (StringUtils.isBlank(dto.getPrdRef())){
+            return ApiResponse.fail("单项编码不能为空");
+        }
+        return ApiResponse.success(service.forceSheetMetalBindingUpdate(dto));
+    }
 
     @Override
     public ApiResponse

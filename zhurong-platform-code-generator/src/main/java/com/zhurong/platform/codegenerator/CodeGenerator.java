@@ -26,6 +26,7 @@ public class CodeGenerator {
                         "WWHH_WWHH_00000100",
                         "WWHH_WWHH_00000200",
                         "WWHH_IIVV_00000100",
+                        "WWHH_IIVV_00000200",
                         "PPBB_PPBB_00000100",
                         "DIS_MMNN_MMOO_00000200",
                         "DIS_MMNN_BWSR_00000100",

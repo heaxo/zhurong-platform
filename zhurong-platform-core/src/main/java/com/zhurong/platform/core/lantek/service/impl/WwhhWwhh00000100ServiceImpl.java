@@ -63,7 +63,7 @@ public class WwhhWwhh00000100ServiceImpl
 
         //检查是否已开启库存模块
         SystCcpp00000100 disWhmSheetManagement = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
-                .eq(SystCcpp00000100::getParName, "DIS_WHM_SheetManagement"));
+                .eq(SystCcpp00000100::getParName, "DIS_WHM_SheetManagement"), false);
 
         if (disWhmSheetManagement == null){
             //开启库存模块
@@ -83,7 +83,12 @@ public class WwhhWwhh00000100ServiceImpl
                     .setRecSec(0)
                     .setCntID(-1);
             SystCcpp00000100 last = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
-                    .orderByDesc(SystCcpp00000100::getRecID));
+                            .select(SystCcpp00000100::getRecID)
+                    .orderByDesc(SystCcpp00000100::getRecID), false);
+            if (last == null){
+                last = new SystCcpp00000100();
+                last.setRecID(0);
+            }
             systCcpp00000100.setRecID(last.getRecID() + 1);
             if (!systCcpp00000100Service.save(systCcpp00000100)){
                 throw new BusinessException("库存管理模块【DIS_WHM_SheetManagement】开启失败，请重新提交");
@@ -91,7 +96,7 @@ public class WwhhWwhh00000100ServiceImpl
         }
         SystCcpp00000100 disWhmSheetWarehouse = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
                 .eq(SystCcpp00000100::getParName, "DIS_WHM_SheetWarehouse")
-                .eq(SystCcpp00000100::getParValue, warehouse));
+                .eq(SystCcpp00000100::getParValue, warehouse), false);
         if (disWhmSheetWarehouse == null){
             SystCcpp00000100 systCcpp00000100 = new SystCcpp00000100()
                     .setEType(-1)
@@ -109,7 +114,11 @@ public class WwhhWwhh00000100ServiceImpl
                     .setRecSec(0)
                     .setCntID(-1);
             SystCcpp00000100 last = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
-                    .orderByDesc(SystCcpp00000100::getRecID));
+                    .orderByDesc(SystCcpp00000100::getRecID), false);
+            if (last == null){
+                last = new SystCcpp00000100();
+                last.setRecID(0);
+            }
             systCcpp00000100.setRecID(last.getRecID() + 1);
             if (!systCcpp00000100Service.save(systCcpp00000100)){
                 throw new BusinessException("库存模块【DIS_WHM_SheetWarehouse】开启失败，请重新提交");
@@ -117,7 +126,7 @@ public class WwhhWwhh00000100ServiceImpl
         }
 
         WwhhWwhh00000100 wwhhWwhh00000100 = getOne(Wrappers.lambdaQuery(WwhhWwhh00000100.class)
-                .eq(WwhhWwhh00000100::getWrhRef, warehouse));
+                .eq(WwhhWwhh00000100::getWrhRef, warehouse), false);
 
         if (wwhhWwhh00000100 == null){
             WwhhWwhh00000100 save = new WwhhWwhh00000100()
@@ -132,7 +141,11 @@ public class WwhhWwhh00000100ServiceImpl
                     .setRecOU(LantekTableDefaultValue.Ment)
                     .setCntID(-1);
             WwhhWwhh00000100 last = getOne(Wrappers.lambdaQuery(WwhhWwhh00000100.class)
-                    .orderByDesc(WwhhWwhh00000100::getRecID));
+                    .orderByDesc(WwhhWwhh00000100::getRecID), false);
+            if (last == null){
+                last = new WwhhWwhh00000100();
+                last.setRecID(0);
+            }
             save.setRecID(last.getRecID() + 1);
             if (!save(save)){
                 throw new BusinessException("库存模块：仓库创建失败，请重新提交");
@@ -152,7 +165,7 @@ public class WwhhWwhh00000100ServiceImpl
     public Boolean forceTheCreationOfStorageLocations(String warehouse,String location){
         //检查是否已开启库存库位模块
         SystCcpp00000100 disWhmSheetManagement = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
-                .eq(SystCcpp00000100::getParName, "DIS_WHM_SheetLocation"));
+                .eq(SystCcpp00000100::getParName, "DIS_WHM_SheetLocation"), false);
 
         if (disWhmSheetManagement == null){
             //开启库存模块
@@ -172,7 +185,11 @@ public class WwhhWwhh00000100ServiceImpl
                     .setRecSec(0)
                     .setCntID(-1);
             SystCcpp00000100 last = systCcpp00000100Service.getOne(Wrappers.lambdaQuery(SystCcpp00000100.class)
-                    .orderByDesc(SystCcpp00000100::getRecID));
+                    .orderByDesc(SystCcpp00000100::getRecID), false);
+            if (last == null){
+                last = new SystCcpp00000100();
+                last.setRecID(0);
+            }
             systCcpp00000100.setRecID(last.getRecID() + 1);
             if (!systCcpp00000100Service.save(systCcpp00000100)){
                 throw new BusinessException("库存库位模块【DIS_WHM_SheetLocation】开启失败，请重新提交");
@@ -181,7 +198,7 @@ public class WwhhWwhh00000100ServiceImpl
 
         WwhhWwhh00000200 wwhh00000200 = wwhhWwhh00000200Service.getOne(Wrappers.lambdaQuery(WwhhWwhh00000200.class)
                 .eq(WwhhWwhh00000200::getWrhRef, warehouse)
-                .eq(WwhhWwhh00000200::getLocRef, location));
+                .eq(WwhhWwhh00000200::getLocRef, location), false);
 
         if (wwhh00000200 == null){
             WwhhWwhh00000200 save = new WwhhWwhh00000200()
@@ -207,7 +224,11 @@ public class WwhhWwhh00000100ServiceImpl
                     .setRecSec(0)
                     .setCntID(-1);
             WwhhWwhh00000200 last = wwhhWwhh00000200Service.getOne(Wrappers.lambdaQuery(WwhhWwhh00000200.class)
-                    .orderByDesc(WwhhWwhh00000200::getRecID));
+                    .orderByDesc(WwhhWwhh00000200::getRecID), false);
+            if (last == null){
+                last = new WwhhWwhh00000200();
+                last.setRecID(0);
+            }
             save.setRecID(last.getRecID() + 1);
             if (!wwhhWwhh00000200Service.save(save)){
                 throw new BusinessException("库存模块：库位创建失败，请重新提交");

@@ -7,6 +7,7 @@ import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
 import com.zhurong.platform.custom.sap.vo.AvaInventoryQtyVO;
 import com.zhurong.platform.custom.web.BaseController;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/sap/ava/inventoyrQty")
+@Hidden
 public class AvaInventoryQtyController extends BaseController {
 
     private final AvaInventoryQtyConvert avaInventoryQtyConvert;

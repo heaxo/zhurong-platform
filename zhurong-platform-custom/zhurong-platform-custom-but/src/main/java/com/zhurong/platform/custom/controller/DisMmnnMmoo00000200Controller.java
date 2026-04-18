@@ -12,6 +12,7 @@ import com.zhurong.platform.custom.convert.DisMmnnMmoo00000200Convert;
 import com.zhurong.platform.custom.entity.DisMmnnMmoo00000200;
 import com.zhurong.platform.custom.service.IDisMmnnMmoo00000200Service;
 import com.zhurong.platform.custom.web.BaseController;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/job")
+@Hidden
 public class DisMmnnMmoo00000200Controller extends BaseController {
 
     private final DisMmnnMmoo00000200Convert convert;
