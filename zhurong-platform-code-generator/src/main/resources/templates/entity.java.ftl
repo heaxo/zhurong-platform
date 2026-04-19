@@ -32,11 +32,18 @@ private static final long serialVersionUID = 1L;
 <#list table.fields as field>
     <#if field.propertyName != "id"
     && field.propertyName != "deleted"
+    && field.propertyName != "isDeleted"
     && field.propertyName != "version"
     && field.propertyName != "createBy"
+    && field.propertyName != "createdBy"
+    && field.propertyName != "createdAt"
     && field.propertyName != "createTime"
     && field.propertyName != "updateBy"
-    && field.propertyName != "updateTime">
+    && field.propertyName != "updatedBy"
+    && field.propertyName != "updatedAt"
+    && field.propertyName != "updateTime"
+    && field.propertyName != "isRead"
+    && field.propertyName != "isReviewed">
 
         /**
         * ${field.comment!}

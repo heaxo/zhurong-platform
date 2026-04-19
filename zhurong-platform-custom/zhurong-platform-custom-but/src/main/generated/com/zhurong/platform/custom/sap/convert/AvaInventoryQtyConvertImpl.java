@@ -1,0 +1,53 @@
+package com.zhurong.platform.custom.sap.convert;
+
+import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
+import com.zhurong.platform.custom.sap.vo.AvaInventoryQtyVO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2026-04-19T15:28:46+0800",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
+)
+@Component
+public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
+
+    @Override
+    public AvaInventoryQtyVO toVO(AvaInventoryQty entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        AvaInventoryQtyVO avaInventoryQtyVO = new AvaInventoryQtyVO();
+
+        avaInventoryQtyVO.setItemCode( entity.getItemCode() );
+        avaInventoryQtyVO.setItemName( entity.getItemName() );
+        avaInventoryQtyVO.setUBeasZnr( entity.getUBeasZnr() );
+        avaInventoryQtyVO.setUHd( entity.getUHd() );
+        avaInventoryQtyVO.setBatchNum( entity.getBatchNum() );
+        avaInventoryQtyVO.setQuantity( entity.getQuantity() );
+        avaInventoryQtyVO.setWidth( entity.getWidth() );
+        avaInventoryQtyVO.setLength( entity.getLength() );
+        avaInventoryQtyVO.setWhsName( entity.getWhsName() );
+        avaInventoryQtyVO.setWeight( entity.getWeight() );
+
+        return avaInventoryQtyVO;
+    }
+
+    @Override
+    public List<AvaInventoryQtyVO> toVO(List<AvaInventoryQty> entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        List<AvaInventoryQtyVO> list = new ArrayList<AvaInventoryQtyVO>( entity.size() );
+        for ( AvaInventoryQty avaInventoryQty : entity ) {
+            list.add( toVO( avaInventoryQty ) );
+        }
+
+        return list;
+    }
+}

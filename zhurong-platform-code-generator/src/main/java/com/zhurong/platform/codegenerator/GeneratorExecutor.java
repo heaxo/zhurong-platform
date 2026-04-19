@@ -70,6 +70,7 @@ public class GeneratorExecutor {
                     Map<String, Object> customMap = new HashMap<>();
                     customMap.put("useDbColumnName", config.useDbColumnName());
                     customMap.put("importLantekBaseEntity", config.importLantekBaseEntity());
+                    customMap.put("moduleName", config.moduleName());
 
                     builder.customMap(customMap);
                     builder.customFile(new CustomFile.Builder()
@@ -102,6 +103,36 @@ public class GeneratorExecutor {
                             .fileName("PageQuery.java")
                             .templatePath("/templates/pageQuery.java.ftl")
                             .packageName("dto")
+                            .enableFileOverride()
+                            .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("Data.ts")
+                            .templatePath("/templates/data.vue.ftl")
+                            .packageName("vue")
+                            .enableFileOverride()
+                            .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("Index.vue")
+                            .templatePath("/templates/index.vue.ftl")
+                            .packageName("vue")
+                            .enableFileOverride()
+                            .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("Request.ts")
+                            .templatePath("/templates/request.ts.ftl")
+                            .packageName("vue")
+                            .enableFileOverride()
+                            .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("Typing.ts")
+                            .templatePath("/templates/typing.ts.ftl")
+                            .packageName("vue")
+                            .enableFileOverride()
+                            .build());
+                    builder.customFile(new CustomFile.Builder()
+                            .fileName("Form.vue")
+                            .templatePath("/templates/form.vue.ftl")
+                            .packageName("vue")
                             .enableFileOverride()
                             .build());
                 })
