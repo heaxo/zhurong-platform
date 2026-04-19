@@ -19,19 +19,19 @@ import java.time.LocalDateTime;
  */
 public interface ZhurongPlatformJobCursorMapper extends BaseMapper<ZhurongPlatformJobCursor> {
     // 读游标时间
-    @Select("SELECT CursorTime FROM AO_PLATFORM_JOB_CURSOR WHERE JobName = #{JobName}")
+    @Select("SELECT CursorTime FROM ZHURONG_PLATFORM_JOB_CURSOR WHERE JobName = #{JobName}")
     LocalDateTime getCursorTime(@Param("JobName") String JobName);
 
     // 初始化游标（不存在则插入）
     @Insert("""
-            INSERT INTO AO_PLATFORM_JOB_CURSOR(JobName, CursorTime, UpdateTime)
+            INSERT INTO ZHURONG_PLATFORM_JOB_CURSOR(JobName, CursorTime, UpdateTime)
             VALUES (#{JobName}, #{CursorTime}, GETDATE())
             """)
     int initCursor(@Param("JobName") String JobName, @Param("CursorTime") LocalDateTime CursorTime);
 
     // 更新游标
     @Update("""
-            UPDATE AO_PLATFORM_JOB_CURSOR
+            UPDATE ZHURONG_PLATFORM_JOB_CURSOR
             SET CursorTime = #{CursorTime}, UpdateTime = GETDATE()
             WHERE JobName = #{JobName}
             """)

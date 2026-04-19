@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("AO_PLATFORM_NEST100_STATE_SNAPSHOT")
+@TableName("ZHURONG_PLATFORM_NEST100_STATE_SNAPSHOT")
 public class ZhurongPlatformNest100StateSnapshot extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

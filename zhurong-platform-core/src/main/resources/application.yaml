@@ -19,6 +19,9 @@ spring:
     enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
+    table: flyway_schema_core_history
+    schemas: flyway_schema_core
+    default-schema: flyway_schema_core
   datasource:
     url: jdbc:sqlserver://127.0.0.1:1433;databaseName=LSystemDB;encrypt=false
     username: sa

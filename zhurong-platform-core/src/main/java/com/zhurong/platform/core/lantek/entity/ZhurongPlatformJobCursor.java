@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("AO_PLATFORM_JOB_CURSOR")
-public class ZhurongPlatformJobCursor extends BaseEntity implements Serializable {
+@TableName("ZHURONG_PLATFORM_JOB_CURSOR")
+public class ZhurongPlatformJobCursor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("AO_PLATFORM_OUTBOX_EVENT")
-public class ZhurongPlatformOutboxEvent extends BaseEntity implements Serializable {
+@TableName("ZHURONG_PLATFORM_OUTBOX_EVENT")
+public class ZhurongPlatformOutboxEvent extends com.zhurong.platform.base.model.BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
