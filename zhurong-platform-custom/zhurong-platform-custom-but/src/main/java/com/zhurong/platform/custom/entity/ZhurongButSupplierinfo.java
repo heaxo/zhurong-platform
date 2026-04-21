@@ -26,14 +26,32 @@ public class ZhurongButSupplierinfo extends BaseEntity implements Serializable {
     /**
      *
      */
-    @TableField("nst_ref")
-    private String nstRef;
+    @TableField("cnc")
+    private String cnc;
 
     /**
      *
      */
-    @TableField("supplier_name")
-    private String supplierName;
+    @TableField("loc_name")
+    private String locName;
+
+    /**
+     *
+     */
+    @TableField("sht_ref")
+    private String shtRef;
+
+    /**
+     *
+     */
+    @TableField("sht_name")
+    private String shtName;
+
+    /**
+     *
+     */
+    @TableField("quantity")
+    private Integer quantity;
 
     /**
      *
@@ -44,18 +62,24 @@ public class ZhurongButSupplierinfo extends BaseEntity implements Serializable {
     /**
      *
      */
-    @TableField("udata1")
-    private String udata1;
+    @TableField("batch_number")
+    private String batchNumber;
 
     /**
      *
      */
-    @TableField("udata2")
-    private String udata2;
+    @TableField("weight")
+    private Float weight;
 
     /**
      *
      */
-    @TableField("udata3")
-    private String udata3;
+    @TableField("unit")
+    private String unit;
+
+    /**
+     *
+     */
+    @TableField("business_type")
+    private String businessType;
 }

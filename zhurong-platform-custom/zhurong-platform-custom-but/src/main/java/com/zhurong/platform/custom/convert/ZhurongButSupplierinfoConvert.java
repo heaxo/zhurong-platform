@@ -3,6 +3,7 @@ package com.zhurong.platform.custom.convert;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoDTO;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
+import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
 import com.zhurong.platform.custom.vo.ZhurongButSupplierinfoVO;
 import org.mapstruct.*;
 
@@ -39,6 +40,7 @@ public interface ZhurongButSupplierinfoConvert {
     ZhurongButSupplierinfo toEntity(ZhurongButSupplierinfoDTO dto);
 
     ZhurongButSupplierinfo toEntity(ZhurongButSupplierinfoPageQuery dto);
+    ZhurongButSupplierinfo toEntity(ViPmPrjplanLantek entity);
 
     /**
      * 更新时 DTO → Entity（忽略 null）

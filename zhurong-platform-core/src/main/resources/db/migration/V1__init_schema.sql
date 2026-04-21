@@ -24,7 +24,7 @@ INSERT INTO ZHURONG_PLATFORM_JOB_CURSOR(JobName, CursorTime) VALUES ('nest100_st
 
 --Outbox 事件表（可靠投递）
 CREATE TABLE ZHURONG_PLATFORM_OUTBOX_EVENT (
-                                               Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+                                               Id BIGINT NOT NULL PRIMARY KEY,
                                                EventId UNIQUEIDENTIFIER NOT NULL,       -- 全局唯一事件ID（幂等关键）
                                                EventType VARCHAR(64) NOT NULL,          -- NEST100_STATE_CHANGED
                                                AggregateId INT NOT NULL,                -- RecID

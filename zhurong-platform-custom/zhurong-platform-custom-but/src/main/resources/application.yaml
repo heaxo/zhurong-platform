@@ -68,3 +68,6 @@ spring:
       - nacos:zhurong-platform-custom
       - nacos:zhurong-platform-custom-but-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
+
+but-config:
+  sync-nesting-reporting-maximum-days: 30

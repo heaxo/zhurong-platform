@@ -11,7 +11,9 @@ import com.zhurong.platform.base.masterlink.commands.SheetsCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
 import com.zhurong.platform.core.lantek.dto.WwhhIivv00000100DTO;
 import com.zhurong.platform.core.lantek.dto.WwhhWwhh00000100DTO;
+import com.zhurong.platform.custom.entity.PpbbPpbb00000100;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
+import com.zhurong.platform.custom.entity.WwhhIivv00000200;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
 import com.zhurong.platform.custom.feign.WwhhIivv00000100FeignClient;
 import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
@@ -19,7 +21,9 @@ import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
+import com.zhurong.platform.custom.service.IPpbbPpbb00000100Service;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
+import com.zhurong.platform.custom.service.IWwhhIivv00000200Service;
 import com.zhurong.platform.custom.util.MasterlinkTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +49,10 @@ import java.util.stream.Collectors;
 public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMapper, AvaInventoryQty> implements IAvaInventoryQtyService {
 
     private final IPprrPprr00000100Service pprrPprr00000100Service;
+    private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
     private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
     private final WwhhIivv00000100FeignClient wwhhIivv00000100FeignClient;
+    private final IWwhhIivv00000200Service wwhhIivv00000200Service;
 
     private final ReentrantLock exeLock = new ReentrantLock();
 
@@ -93,10 +99,27 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .collect(Collectors.toMap(AvaInventoryQty::getItemCode, AvaInventoryQty::getQuantity));
                 existsing.forEach(it -> {
                     Double qty = qtyMap.get(it.getPrdRef());
-                    boolean update = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
-                            .set(PprrPprr00000100::getDIS_CamQuan, qty + it.getCurQuan())
-                            .eq(PprrPprr00000100::getPrdRef, it.getPrdRef()));
-                    log.info("库存更新，钢板编码：{}，原库存数量：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), it.getCurQuan(), qty + it.getCurQuan(), update);
+//                    boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
+//                            .set(PprrPprr00000100::getDIS_CamQuan, qty + it.getCurQuan())
+//                            .eq(PprrPprr00000100::getPrdRef, it.getPrdRef()));
+//                    log.info("库存更新，钢板编码：{}，原库存数量：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), it.getCurQuan(), qty + it.getCurQuan(), update1);
+
+                    //如果不使用覆盖值，需要查出WwhhIivv00000200现有库存数量，然后做累加，并注释掉下面的清零操作
+                    boolean update2 = wwhhIivv00000200Service.update(Wrappers.lambdaUpdate(WwhhIivv00000200.class)
+                            .set(WwhhIivv00000200::getStockQ, qty)
+                            .eq(WwhhIivv00000200::getPrdRef, it.getPrdRef()));
+                    log.info("库存模块更新，钢板编码：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), qty + it.getCurQuan(), update2);
+                    //如果是覆盖，需要将ppbb中的数量清零
+                    boolean update3 = ppbbPpbb00000100Service.update(Wrappers.lambdaUpdate(PpbbPpbb00000100.class)
+                            .set(PpbbPpbb00000100::getAllocatedQ, 0)
+                            .set(PpbbPpbb00000100::getPendingQ, 0)
+                            .set(PpbbPpbb00000100::getReceivedQ, 0)
+                            .set(PpbbPpbb00000100::getRequiredQ, 0)
+                            .set(PpbbPpbb00000100::getOnOrderQ, 0)
+                            .eq(PpbbPpbb00000100::getPrdRef, it.getPrdRef())
+                    );
+                    log.info("已使用库存清零，钢板编码：{}，更新结果：{}", it.getPrdRef(), update3);
+
                 });
             }
 

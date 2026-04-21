@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoDTO;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@DS("lantek")
 public class ZhurongButSupplierinfoServiceImpl
         extends ServiceImpl<ZhurongButSupplierinfoMapper, ZhurongButSupplierinfo>
         implements IZhurongButSupplierinfoService {
@@ -40,10 +42,5 @@ public class ZhurongButSupplierinfoServiceImpl
         ZhurongButSupplierinfo entity = this.getById(id);
         convert.updateFromDTO(dto, entity);
         return this.updateById(entity);
-    }
-
-    @Override
-    public Boolean syncSupplierInfo(ZhurongButSupplierinfoDTO dto) {
-        return false;
     }
 }

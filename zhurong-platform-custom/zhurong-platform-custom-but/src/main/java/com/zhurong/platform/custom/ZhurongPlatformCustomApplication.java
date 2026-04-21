@@ -6,12 +6,14 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @Slf4j
 @SpringBootApplication
 @EnableFeignClients
 @MapperScan(basePackages = {"com.zhurong.platform.custom.mapper","com.zhurong.platform.custom.erp.mapper","com.zhurong.platform.custom.sap.mapper"})
+@ConfigurationPropertiesScan
 public class ZhurongPlatformCustomApplication {
 
     @Value("${test.value}")

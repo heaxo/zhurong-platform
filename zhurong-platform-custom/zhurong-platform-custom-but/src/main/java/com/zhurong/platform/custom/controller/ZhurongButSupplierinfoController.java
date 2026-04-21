@@ -10,6 +10,7 @@ import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoDTO;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
+import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
 import com.zhurong.platform.custom.service.IZhurongButSupplierinfoService;
 import com.zhurong.platform.custom.vo.ZhurongButSupplierinfoVO;
 import com.zhurong.platform.custom.web.BaseController;
@@ -31,6 +32,7 @@ public class ZhurongButSupplierinfoController extends BaseController {
 
     private final ZhurongButSupplierinfoConvert convert;
     private final IZhurongButSupplierinfoService service;
+    private final IViPmPrjplanLantekService viPmPrjplanLantekService;
 
     @GetMapping("/page")
     public ApiResponse<PageResponse<ZhurongButSupplierinfoVO>> page(ZhurongButSupplierinfoPageQuery pageQuery) {
@@ -67,7 +69,8 @@ public class ZhurongButSupplierinfoController extends BaseController {
      */
     @PostMapping("/sync")
     public ApiResponse<Boolean> syncSupplierInfo(ZhurongButSupplierinfoDTO dto) {
-        Boolean b = service.syncSupplierInfo(dto);
-        return ApiResponse.success(b);
+        boolean update1 = viPmPrjplanLantekService.syncSupplierInfo();
+        boolean update2 = viPmPrjplanLantekService.updateInventoryReferences();
+        return ApiResponse.success(update1 || update2);
     }
 }

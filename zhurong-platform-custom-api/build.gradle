@@ -16,6 +16,7 @@ dependencies {
     api project(':zhurong-platform-core-api')
 
     api "com.baomidou:mybatis-plus-spring-boot3-starter:${mybatisPlusVersion}"
+    api "com.baomidou:mybatis-plus-jsqlparser"
     api 'org.springframework.boot:spring-boot-starter-web'
     api "org.springframework.boot:spring-boot-starter-webflux"
     api 'org.springframework.cloud:spring-cloud-starter-openfeign'
