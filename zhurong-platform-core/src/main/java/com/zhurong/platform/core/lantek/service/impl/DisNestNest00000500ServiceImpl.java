@@ -3,13 +3,17 @@ package com.zhurong.platform.core.lantek.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhurong.platform.core.lantek.convert.DisNestNest00000500Convert;
+import com.zhurong.platform.core.lantek.convert.MmnnMmoo00000300Convert;
 import com.zhurong.platform.core.lantek.dto.DisNestNest00000500DTO;
 import com.zhurong.platform.core.lantek.dto.RelationLoadPlan;
 import com.zhurong.platform.core.lantek.entity.DisNestNest00000500;
+import com.zhurong.platform.core.lantek.entity.MmnnMmoo00000300;
 import com.zhurong.platform.core.lantek.mapper.DisNestNest00000500Mapper;
 import com.zhurong.platform.core.lantek.service.IDisNestNest00000500Service;
+import com.zhurong.platform.core.lantek.service.IMmnnMmoo00000300Service;
 import com.zhurong.platform.core.lantek.service.IPprrPprr00000100Service;
 import com.zhurong.platform.core.lantek.vo.DisNestNest00000500VO;
+import com.zhurong.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.zhurong.platform.core.lantek.vo.PprrPprr00000100VO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +36,9 @@ public class DisNestNest00000500ServiceImpl
         implements IDisNestNest00000500Service {
 
     private final DisNestNest00000500Convert convert;
+    private final MmnnMmoo00000300Convert mmnnMmoo00000300Convert;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
+    private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
 
 
     @Override
@@ -81,6 +87,29 @@ public class DisNestNest00000500ServiceImpl
                     .collect(Collectors.toMap(PprrPprr00000100VO::getPrdRef, Function.identity(), (a, b) -> a));
 
             views.forEach(vo -> vo.setItem(partMap.get(vo.getPrdRefDst())));
+        }
+
+        if (loadPlan != null && loadPlan.isIncludePlanMaster()) {
+            List<String> mnoRefs = rows.stream()
+                    .map(DisNestNest00000500::getMnORef)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
+            List<Integer> oprIds = rows.stream()
+                    .map(DisNestNest00000500::getOprID)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .toList();
+
+            List<MmnnMmoo00000300> list = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                    .in(MmnnMmoo00000300::getMnORef, mnoRefs)
+                    .in(MmnnMmoo00000300::getOprID, oprIds));
+
+            record GroupKey(String mnoRef,Integer oprId){}
+            Map<GroupKey, MmnnMmoo00000300VO> workOrderMap = list.stream()
+                    .collect(Collectors.toMap(it -> new GroupKey(it.getMnORef(),it.getOprID()), mmnnMmoo00000300Convert::toVO, (a, b) -> a));
+
+            views.forEach(vo -> vo.setWorkOrder(workOrderMap.get(new GroupKey(vo.getMnORef(),vo.getOprID()))));
         }
 
         return views;

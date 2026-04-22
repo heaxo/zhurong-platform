@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-21T22:19:18+0800",
+    date = "2026-04-22T09:28:31+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -41,7 +41,16 @@ public class ZhurongButSupplierinfoConvertImpl implements ZhurongButSupplierinfo
         zhurongButSupplierinfoVO.setIsDeleted( entity.getIsDeleted() );
         zhurongButSupplierinfoVO.setIsRead( entity.getIsRead() );
         zhurongButSupplierinfoVO.setIsReviewed( entity.getIsReviewed() );
+        zhurongButSupplierinfoVO.setCnc( entity.getCnc() );
+        zhurongButSupplierinfoVO.setLocName( entity.getLocName() );
+        zhurongButSupplierinfoVO.setShtRef( entity.getShtRef() );
+        zhurongButSupplierinfoVO.setShtName( entity.getShtName() );
+        zhurongButSupplierinfoVO.setQuantity( entity.getQuantity() );
         zhurongButSupplierinfoVO.setWhsName( entity.getWhsName() );
+        zhurongButSupplierinfoVO.setBatchNumber( entity.getBatchNumber() );
+        zhurongButSupplierinfoVO.setWeight( entity.getWeight() );
+        zhurongButSupplierinfoVO.setUnit( entity.getUnit() );
+        zhurongButSupplierinfoVO.setBusinessType( entity.getBusinessType() );
 
         return zhurongButSupplierinfoVO;
     }

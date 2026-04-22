@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class DisNestNest00000500VO implements Serializable {
 
         private PprrPprr00000100VO item;
+        private MmnnMmoo00000300VO workOrder;
 
         private String NstRef;
         private String MnORef;

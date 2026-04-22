@@ -19,7 +19,8 @@ public class CodeGenerator {
 //                new String[]{"flyway_schema_history"},
                 null,
                 new String[]{
-                        "Zhurong_But_SupplierInfo",
+//                        "Zhurong_But_SupplierInfo",
+                        "Zhurong_But_Nesting_Parts_Split_Records",
 //                        "ZHURONG_PLATFORM_JOB_CURSOR",
 //                        "ZHURONG_PLATFORM_OUTBOX_EVENT",
 //                        "ZHURONG_PLATFORM_NEST100_STATE_SNAPSHOT",

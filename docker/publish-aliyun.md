@@ -10,8 +10,8 @@ docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/
 ```
 
 ```shell
-docker tag zhurong-platform/core:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.12
-docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.12
+docker tag zhurong-platform/core:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.13
+docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.13
 ```
 
 ```shell

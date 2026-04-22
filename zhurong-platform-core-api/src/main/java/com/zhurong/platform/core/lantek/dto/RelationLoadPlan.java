@@ -22,6 +22,8 @@ public class RelationLoadPlan {
 
     /** 是否补单项主数据 */
     private boolean includePartMaster;
+    /** 是否补计划主数据 */
+    private boolean includePlanMaster;
 
     /** 是否补单项辅助数据 */
     private boolean includePartExtra;
