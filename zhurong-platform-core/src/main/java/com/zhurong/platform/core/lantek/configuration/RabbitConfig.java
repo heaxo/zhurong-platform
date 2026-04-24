@@ -3,6 +3,7 @@ package com.zhurong.platform.core.lantek.configuration;
 import com.zhurong.platform.core.lantek.constants.NestMqConstants;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,6 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@ConditionalOnProperty(
+        prefix = "zhurong.rabbitmq",
+        name = "enabled",
+        havingValue = "true",
+        matchIfMissing = false
+)
 public class RabbitConfig {
 
     @Bean

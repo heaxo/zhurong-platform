@@ -4,12 +4,12 @@
 CREATE TABLE sys_tenant
 (
     id          BIGINT PRIMARY KEY,
-    name        VARCHAR(200) NOT NULL,
+    name        NVARCHAR(200) NOT NULL,
     status      SMALLINT     NOT NULL DEFAULT 1,
-    expire_time TIMESTAMP,
-    create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    update_time TIMESTAMP,
-    version     INTEGER      NOT NULL DEFAULT 0
+    expire_time DATETIME,
+    create_time DATETIME    NOT NULL ,
+    update_time DATETIME,
+    version     INT      NOT NULL DEFAULT 0
 );
 
 CREATE INDEX idx_tenant_status ON sys_tenant (status);
@@ -22,19 +22,19 @@ CREATE TABLE sys_dept
 (
     id          BIGINT PRIMARY KEY,
     tenant_id   BIGINT       NOT NULL,
-    deleted     BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted     BIT      NOT NULL DEFAULT 0,
 
     create_by   BIGINT,
-    create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time DATETIME    NOT NULL ,
     update_by   BIGINT,
-    update_time TIMESTAMP,
-    version     INTEGER      NOT NULL DEFAULT 0,
+    update_time DATETIME,
+    version     INT      NOT NULL DEFAULT 0,
 
     pid         BIGINT,
-    name        VARCHAR(100) NOT NULL,
+    name        NVARCHAR(100) NOT NULL,
     status      SMALLINT     NOT NULL DEFAULT 1,
-    sort_order  INTEGER               DEFAULT 0,
-    remark      TEXT
+    sort_order  INT               DEFAULT 0,
+    remark      NVARCHAR(MAX)
 );
 
 CREATE INDEX idx_dept_tenant ON sys_dept (tenant_id);
@@ -48,19 +48,19 @@ CREATE TABLE sys_role
 (
     id          BIGINT PRIMARY KEY,
     tenant_id   BIGINT       NOT NULL,
-    deleted     BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted     BIT      NOT NULL DEFAULT 0,
 
     create_by   BIGINT,
-    create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time DATETIME    NOT NULL ,
     update_by   BIGINT,
-    update_time TIMESTAMP,
-    version     INTEGER      NOT NULL DEFAULT 0,
+    update_time DATETIME,
+    version     INT      NOT NULL DEFAULT 0,
 
-    name        VARCHAR(100) NOT NULL,
-    code        VARCHAR(100),
+    name        NVARCHAR(100) NOT NULL,
+    code        NVARCHAR(100),
     status      SMALLINT     NOT NULL DEFAULT 1,
     data_scope  SMALLINT              DEFAULT 1,
-    remark      TEXT
+    remark      NVARCHAR(MAX)
 );
 
 CREATE INDEX idx_role_tenant ON sys_role (tenant_id);
@@ -75,23 +75,23 @@ CREATE TABLE sys_user
 (
     id              BIGINT PRIMARY KEY,
     tenant_id       BIGINT       NOT NULL,
-    deleted         BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted         BIT      NOT NULL DEFAULT 0,
 
     create_by       BIGINT,
-    create_time     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time     DATETIME    NOT NULL ,
     update_by       BIGINT,
-    update_time     TIMESTAMP,
-    version         INTEGER      NOT NULL DEFAULT 0,
+    update_time     DATETIME,
+    version         INT      NOT NULL DEFAULT 0,
 
-    username        VARCHAR(100) NOT NULL,
-    password        VARCHAR(255) NOT NULL,
-    real_name       VARCHAR(100),
+    username        NVARCHAR(100) NOT NULL,
+    password        NVARCHAR(255) NOT NULL,
+    real_name       NVARCHAR(100),
     dept_id         BIGINT,
     status          SMALLINT     NOT NULL DEFAULT 1,
 
-    last_login_time TIMESTAMP,
-    last_login_ip   VARCHAR(50),
-    remark          TEXT
+    last_login_time DATETIME,
+    last_login_ip   NVARCHAR(50),
+    remark          NVARCHAR(MAX)
 );
 
 CREATE INDEX idx_user_tenant ON sys_user (tenant_id);
@@ -107,13 +107,13 @@ CREATE TABLE sys_user_role
 (
     id          BIGINT PRIMARY KEY,
     tenant_id   BIGINT    NOT NULL,
-    deleted     BOOLEAN   NOT NULL DEFAULT FALSE,
+    deleted     BIT   NOT NULL DEFAULT 0,
 
     create_by   BIGINT,
-    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time DATETIME NOT NULL ,
     update_by   BIGINT,
-    update_time TIMESTAMP,
-    version     INTEGER   NOT NULL DEFAULT 0,
+    update_time DATETIME,
+    version     INT   NOT NULL DEFAULT 0,
 
     user_id     BIGINT    NOT NULL,
     role_id     BIGINT    NOT NULL
@@ -132,45 +132,45 @@ CREATE TABLE sys_menu
 (
     id                         BIGINT PRIMARY KEY,
     tenant_id                  BIGINT       NOT NULL,
-    deleted                    BOOLEAN      NOT NULL DEFAULT FALSE,
+    deleted                    BIT      NOT NULL DEFAULT 0,
 
     create_by                  BIGINT,
-    create_time                TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time                DATETIME    NOT NULL ,
     update_by                  BIGINT,
-    update_time                TIMESTAMP,
-    version                    INTEGER      NOT NULL DEFAULT 0,
+    update_time                DATETIME,
+    version                    INT      NOT NULL DEFAULT 0,
 
     pid                        BIGINT,
-    name                       VARCHAR(100) NOT NULL,
-    type                       VARCHAR(20)  NOT NULL,
-    path                       VARCHAR(255),
-    active_path                VARCHAR(255),
-    component                  VARCHAR(255),
+    name                       NVARCHAR(100) NOT NULL,
+    type                       NVARCHAR(20)  NOT NULL,
+    path                       NVARCHAR(255),
+    active_path                NVARCHAR(255),
+    component                  NVARCHAR(255),
 
-    auth_code                  VARCHAR(100),
+    auth_code                  NVARCHAR(100),
 
     status                     SMALLINT     NOT NULL DEFAULT 1,
-    sort_order                 INTEGER               DEFAULT 0,
+    sort_order                 INT               DEFAULT 0,
 
-    meta_title                 VARCHAR(200) NOT NULL,
-    meta_icon                  VARCHAR(100),
-    meta_active_icon           VARCHAR(100),
+    meta_title                 NVARCHAR(200) NOT NULL,
+    meta_icon                  NVARCHAR(100),
+    meta_active_icon           NVARCHAR(100),
 
-    meta_badge_type            VARCHAR(50),
-    meta_badge                 VARCHAR(50),
-    meta_badge_variants        VARCHAR(50),
+    meta_badge_type            NVARCHAR(50),
+    meta_badge                 NVARCHAR(50),
+    meta_badge_variants        NVARCHAR(50),
 
-    meta_iframe_src            VARCHAR(255),
-    meta_link                  VARCHAR(255),
+    meta_iframe_src            NVARCHAR(255),
+    meta_link                  NVARCHAR(255),
 
-    meta_keep_alive            BOOLEAN               DEFAULT FALSE,
-    meta_affix_tab             BOOLEAN               DEFAULT FALSE,
-    meta_hide_in_menu          BOOLEAN               DEFAULT FALSE,
-    meta_hide_children_in_menu BOOLEAN               DEFAULT FALSE,
-    meta_hide_in_breadcrumb    BOOLEAN               DEFAULT FALSE,
-    meta_hide_in_tab           BOOLEAN               DEFAULT FALSE,
+    meta_keep_alive            BIT               DEFAULT 0,
+    meta_affix_tab             BIT               DEFAULT 0,
+    meta_hide_in_menu          BIT               DEFAULT 0,
+    meta_hide_children_in_menu BIT               DEFAULT 0,
+    meta_hide_in_breadcrumb    BIT               DEFAULT 0,
+    meta_hide_in_tab           BIT               DEFAULT 0,
 
-    remark                     TEXT,
+    remark                     NVARCHAR(MAX),
 
     CONSTRAINT chk_menu_type CHECK (
         type IN ('catalog', 'menu', 'button', 'embedded', 'link')
@@ -189,13 +189,13 @@ CREATE TABLE sys_role_menu
 (
     id          BIGINT PRIMARY KEY,
     tenant_id   BIGINT    NOT NULL,
-    deleted     BOOLEAN   NOT NULL DEFAULT FALSE,
+    deleted     BIT   NOT NULL DEFAULT 0,
 
     create_by   BIGINT,
-    create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    create_time DATETIME NOT NULL ,
     update_by   BIGINT,
-    update_time TIMESTAMP,
-    version     INTEGER   NOT NULL DEFAULT 0,
+    update_time DATETIME,
+    version     INT   NOT NULL DEFAULT 0,
 
     role_id     BIGINT    NOT NULL,
     menu_id     BIGINT    NOT NULL

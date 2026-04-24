@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.zhurong'
-version = '0.0.3'
+version = '0.0.4'
 description = 'zhurong-platform-auth'
 
 java {
@@ -50,11 +50,12 @@ dependencies {
     implementation "com.baomidou:mybatis-plus-jsqlparser"
 
     // PostgreSQL
-    runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+//    runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
+    runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
 
     // Flyway
     implementation "org.flywaydb:flyway-core"
-    implementation "org.flywaydb:flyway-database-postgresql"
+    implementation "org.flywaydb:flyway-sqlserver"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

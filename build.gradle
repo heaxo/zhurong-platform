@@ -58,3 +58,32 @@ subprojects {
         }
     }
 }
+
+def webServiceProjects = [
+        ':zhurong-platform-gateway',
+        ':zhurong-platform-core',
+        ':zhurong-platform-auth',
+        ':zhurong-platform-custom:zhurong-platform-custom-but'
+]
+
+tasks.register('bootJarWebServices') {
+    group = 'build'
+    description = 'Build bootJar for all web service modules'
+
+    dependsOn webServiceProjects.collect { "${it}:bootJar" }
+}
+
+tasks.register('collectWebServiceBootJars', Copy) {
+    group = 'build'
+    description = 'Build and copy all web service bootJar outputs to root build/libs'
+
+    dependsOn tasks.named('bootJarWebServices')
+
+    into layout.buildDirectory.dir('libs')
+
+    from(webServiceProjects.collect { projectPath ->
+        project(projectPath).tasks.named('bootJar').map { bootJarTask ->
+            bootJarTask.archiveFile
+        }
+    })
+}

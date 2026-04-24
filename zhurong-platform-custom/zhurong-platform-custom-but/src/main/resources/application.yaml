@@ -38,7 +38,7 @@ spring:
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 
         sap:
-          url: jdbc:sap://192.168.30.210:30015/?databaseName=SAP_HDB
+          url: jdbc:sap://192.168.30.210:30015/?databaseName=SBO_BUT
           username: SYSTEM
           password: Butit2019
           driver-class-name: com.sap.db.jdbc.Driver

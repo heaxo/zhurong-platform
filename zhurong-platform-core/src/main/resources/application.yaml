@@ -37,11 +37,11 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: lantekha:8848
-        ip: 192.168.1.76
-        port: ${server.port}
+        server-addr: localhost:8848
+#        ip: 192.168.1.76
+#        port: ${server.port}
       config:
-        server-addr: lantekha:8848
+        server-addr: localhost:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
@@ -49,6 +49,10 @@ spring:
       - nacos:zhurong-platform-core
       - nacos:zhurong-platform-core-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
+
+zhurong:
+  rabbitmq:
+    enabled: false
 
 lantek-config:
   install: C:/Lantek

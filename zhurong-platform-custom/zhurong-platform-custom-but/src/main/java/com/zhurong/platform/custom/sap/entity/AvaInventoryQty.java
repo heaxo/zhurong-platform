@@ -43,6 +43,6 @@ public class AvaInventoryQty {
     @TableField("\"weight\"")
     private Double weight;
 
-    @TableField("\"LocName\"")
+    @TableField("\"WhsName\"")
     private String locName;
 }
