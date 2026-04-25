@@ -26,7 +26,6 @@ echo ===== Step 1: build app-image =====
   --main-jar "%MAIN_JAR%" ^
   --main-class org.springframework.boot.loader.launch.JarLauncher ^
   --dest "%APPIMG_OUT%" ^
-  --win-console ^
   --java-options "-Dspring.profiles.active=prod"
 
 if errorlevel 1 (

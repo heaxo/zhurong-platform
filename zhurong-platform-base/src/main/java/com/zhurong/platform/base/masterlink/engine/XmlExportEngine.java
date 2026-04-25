@@ -15,11 +15,20 @@ import java.util.List;
 
 public class XmlExportEngine {
 
+    private static final byte[] UTF8_BOM = new byte[] {
+            (byte) 0xEF,
+            (byte) 0xBB,
+            (byte) 0xBF
+    };
+
     public void export(String filePath, List<? extends IXmlCommand> commands) throws Exception {
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
 
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
+
+            // 写入 UTF-8 BOM：EF BB BF
+            fos.write(UTF8_BOM);
 
             XMLStreamWriter writer = factory.createXMLStreamWriter(fos, StandardCharsets.UTF_8.name());
 

@@ -11,6 +11,7 @@ import com.zhurong.platform.base.masterlink.commands.SheetsCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
 import com.zhurong.platform.core.lantek.dto.WwhhIivv00000100DTO;
 import com.zhurong.platform.core.lantek.dto.WwhhWwhh00000100DTO;
+import com.zhurong.platform.custom.entity.DisMmttMmtt00000100;
 import com.zhurong.platform.custom.entity.PpbbPpbb00000100;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.WwhhIivv00000200;
@@ -21,6 +22,7 @@ import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
+import com.zhurong.platform.custom.service.IDisMmttMmtt00000100Service;
 import com.zhurong.platform.custom.service.IPpbbPpbb00000100Service;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import com.zhurong.platform.custom.service.IWwhhIivv00000200Service;
@@ -53,6 +55,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
     private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
     private final WwhhIivv00000100FeignClient wwhhIivv00000100FeignClient;
     private final IWwhhIivv00000200Service wwhhIivv00000200Service;
+    private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
 
     private final ReentrantLock exeLock = new ReentrantLock();
 
@@ -73,6 +76,32 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
         List<AvaInventoryQty> inserts = new ArrayList<>();
         List<AvaInventoryQty> updates = new ArrayList<>();
         List<AvaInventoryQty> list = mergeMap.entrySet().stream().map(Map.Entry::getValue).toList();
+
+        //校验材质和数量
+        List<String> matRefs = list.stream().map(AvaInventoryQty::getUBeasZnr).distinct()
+                .toList();
+
+        List<DisMmttMmtt00000100> materials = disMmttMmtt00000100Service.list();
+        List<String> existingMatRefs = materials.stream().map(DisMmttMmtt00000100::getMatRef).toList();
+
+        //不存在的材质
+        List<String> dontExistMatRefs = matRefs.stream().filter(it -> !existingMatRefs.contains(it)).toList();
+
+        if (CollectionUtils.isNotEmpty(dontExistMatRefs)){
+            String msg = String.format("套料软件中未维护材质，%s",String.join(",", dontExistMatRefs));
+            log.warn(msg);
+            throw new BusinessException(msg);
+        }
+
+        List<String> quantityZeroPrdRefs = list.stream().filter(it -> it.getQuantity() <= 0)
+                .map(AvaInventoryQty::getItemCode).toList();
+        if (CollectionUtils.isNotEmpty(quantityZeroPrdRefs)){
+            String msg = String.format("数量异常，不能小于或等于0，%s",String.join(",",quantityZeroPrdRefs));
+            log.warn(msg);
+            throw new BusinessException(msg);
+        }
+
+
 
         boolean locked = false;
 
