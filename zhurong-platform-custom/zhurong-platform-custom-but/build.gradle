@@ -42,6 +42,7 @@ dependencies {
 
     runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
     implementation "com.oracle.database.jdbc:ojdbc8:21.9.0.0"
+    implementation "com.oracle.database.nls:orai18n:21.9.0.0"
     implementation "com.sap.cloud.db.jdbc:ngdbc:2.27.7"
 
     // Flyway
