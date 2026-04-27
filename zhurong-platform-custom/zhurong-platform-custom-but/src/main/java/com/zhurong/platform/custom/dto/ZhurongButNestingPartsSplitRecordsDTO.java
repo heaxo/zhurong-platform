@@ -34,5 +34,6 @@ public class ZhurongButNestingPartsSplitRecordsDTO implements Serializable {
     private String remark;
     private String ordRef;
     private Integer recId;
+    private String prdRef;
 
 }

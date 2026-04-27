@@ -65,4 +65,10 @@ private static final long serialVersionUID = 1L;
         */
             @TableField("rec_id")
             private Integer recId;
+
+    /**
+     *
+     */
+    @TableField("prd_ref")
+    private String prdRef;
 }

@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @Data
 public class WwhhIivv00000100DTO implements Serializable {
 
+    private String BatchNo;
+
     private String WrhRef;
     private String PrdRef;
     private String PrdName;

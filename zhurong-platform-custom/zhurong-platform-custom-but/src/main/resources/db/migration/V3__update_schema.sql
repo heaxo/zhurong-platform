@@ -1,0 +1,1 @@
+alter table Zhurong_But_Nesting_Parts_Split_Records add prd_ref nvarchar(40) null;

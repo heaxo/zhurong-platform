@@ -102,6 +102,7 @@ public class ZhurongButNestingPartsSplitRecordsPageQuery extends BasePageQuery {
         * 
         */
         private Integer recId;
+        private String prdRef;
 
 /**
 * 创建时间开始

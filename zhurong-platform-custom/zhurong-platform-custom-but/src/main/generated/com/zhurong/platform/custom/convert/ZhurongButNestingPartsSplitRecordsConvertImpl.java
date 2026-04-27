@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-22T17:30:22+0800",
+    date = "2026-04-27T20:26:50+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -48,6 +48,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecordsVO.setRemark( entity.getRemark() );
         zhurongButNestingPartsSplitRecordsVO.setOrdRef( entity.getOrdRef() );
         zhurongButNestingPartsSplitRecordsVO.setRecId( entity.getRecId() );
+        zhurongButNestingPartsSplitRecordsVO.setPrdRef( entity.getPrdRef() );
 
         return zhurongButNestingPartsSplitRecordsVO;
     }
@@ -90,6 +91,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecords.setRemark( dto.getRemark() );
         zhurongButNestingPartsSplitRecords.setOrdRef( dto.getOrdRef() );
         zhurongButNestingPartsSplitRecords.setRecId( dto.getRecId() );
+        zhurongButNestingPartsSplitRecords.setPrdRef( dto.getPrdRef() );
 
         return zhurongButNestingPartsSplitRecords;
     }
@@ -131,6 +133,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecords.setRemark( dto.getRemark() );
         zhurongButNestingPartsSplitRecords.setOrdRef( dto.getOrdRef() );
         zhurongButNestingPartsSplitRecords.setRecId( dto.getRecId() );
+        zhurongButNestingPartsSplitRecords.setPrdRef( dto.getPrdRef() );
 
         return zhurongButNestingPartsSplitRecords;
     }
@@ -189,6 +192,9 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         if ( dto.getRecId() != null ) {
             entity.setRecId( dto.getRecId() );
         }
+        if ( dto.getPrdRef() != null ) {
+            entity.setPrdRef( dto.getPrdRef() );
+        }
     }
 
     protected ZhurongButNestingPartsSplitRecords zhurongButNestingPartsSplitRecordsCreateDTOToZhurongButNestingPartsSplitRecords(ZhurongButNestingPartsSplitRecordsCreateDTO zhurongButNestingPartsSplitRecordsCreateDTO) {
@@ -205,6 +211,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecords.setRemark( zhurongButNestingPartsSplitRecordsCreateDTO.getRemark() );
         zhurongButNestingPartsSplitRecords.setOrdRef( zhurongButNestingPartsSplitRecordsCreateDTO.getOrdRef() );
         zhurongButNestingPartsSplitRecords.setRecId( zhurongButNestingPartsSplitRecordsCreateDTO.getRecId() );
+        zhurongButNestingPartsSplitRecords.setPrdRef( zhurongButNestingPartsSplitRecordsCreateDTO.getPrdRef() );
 
         return zhurongButNestingPartsSplitRecords;
     }

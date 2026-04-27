@@ -151,7 +151,7 @@ public class WwhhIivv00000100ServiceImpl
                     .setPrdRef(dto.getPrdRef())
                     .setStockQ(dto.getAllocatedQ())
                     .setGLS_Var1("")
-                    .setGLS_BatchNo("");
+                    .setGLS_BatchNo(dto.getBatchNo());
             WwhhIivv00000200 last = wwhhIivv00000200Service.getOne(Wrappers.lambdaQuery(WwhhIivv00000200.class)
                     .orderByDesc(WwhhIivv00000200::getRecID), false);
             if (last == null){

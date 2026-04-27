@@ -31,10 +31,10 @@ public class AvaInventoryQty {
     @TableField("\"Qantity\"")
     private Double quantity;
 
-    @TableField("\"Width\"")
+    @TableField("\"Length\"")
     private String width;
 
-    @TableField("\"Length\"")
+    @TableField("\"Width\"")
     private String length;
 
     @TableField("\"WhsName\"")

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,10 +59,14 @@ public class ZhurongButNestingPartsSplitRecordsServiceImpl
 
         List<DisNestNest00000500> nestParts = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
                 .in(DisNestNest00000500::getRecID, recIds));
+
+        Map<String, String> prdRefMap = new HashMap<>();
+
         //校验数量
         for (int i = 0; i < nestParts.size(); i++) {
             DisNestNest00000500 disNestNest00000500 = nestParts.get(i);
             Integer quantity = recordMap.get(disNestNest00000500.getRecID());
+            prdRefMap.put(disNestNest00000500.getRecID().toString(), disNestNest00000500.getPrdRefDst());
             if (quantity > disNestNest00000500.getQuantity()){
                 String msg = String.format("套料程序：%s，零件：%s，拆分数量总和：%s，超出原套料数量：%s",
                         disNestNest00000500.getNstRef(),
@@ -88,7 +93,9 @@ public class ZhurongButNestingPartsSplitRecordsServiceImpl
         }
 
         List<ZhurongButNestingPartsSplitRecords> saves = convert.toEntity(records);
-
+        saves.forEach(it -> {
+            it.setPrdRef(prdRefMap.get(it.getRecId().toString()));
+        });
         boolean succeed = saveBatch(saves);
         if (!succeed){
             throw new BusinessException("拆分记录保存失败");

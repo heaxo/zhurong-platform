@@ -218,6 +218,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                     wwhhIivv00000100DTO.setLocDefault(it.getLocName());
                     wwhhIivv00000100DTO.setPrdRef(it.getItemCode());
                     wwhhIivv00000100DTO.setAllocatedQ(it.getQuantity());
+                    wwhhIivv00000100DTO.setBatchNo(it.getBatchNum());
                     ApiResponse<Boolean> apiResponse = wwhhIivv00000100FeignClient.sheetMetalBinding(wwhhIivv00000100DTO);
 
                     if (apiResponse.data() == null || !apiResponse.data()){

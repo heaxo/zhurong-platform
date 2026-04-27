@@ -25,5 +25,6 @@ public class ZhurongButNestingPartsSplitRecordsCreateDTO implements Serializable
     private String ordRef;
     @NotNull(message = "套料零件ID不能为空")
     private Integer recId;
+    private String prdRef;
 
 }
