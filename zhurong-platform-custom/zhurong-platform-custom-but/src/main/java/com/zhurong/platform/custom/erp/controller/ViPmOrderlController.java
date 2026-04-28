@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.erp.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.custom.erp.convert.ViPmOrderlConvert;
 import com.zhurong.platform.custom.erp.dto.ViPmOrderlDTO;
@@ -28,8 +29,9 @@ public class ViPmOrderlController extends BaseController {
     }
 
     @GetMapping("list")
-    public ApiResponse<List<ViPmOrderlVO>> list() {
-        List<ViPmOrderl> list = viPmOrderlService.list();
+    public ApiResponse<List<ViPmOrderlVO>> list(ViPmOrderlDTO dto) {
+        ViPmOrderl entity = viPmOrderlConvert.toEntity(dto);
+        List<ViPmOrderl> list = viPmOrderlService.list(Wrappers.lambdaQuery(entity));
         List<ViPmOrderlVO> vo = viPmOrderlConvert.toVO(list);
         return ApiResponse.success(vo);
     }

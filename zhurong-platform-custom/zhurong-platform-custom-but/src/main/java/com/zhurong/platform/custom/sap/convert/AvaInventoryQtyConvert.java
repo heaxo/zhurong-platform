@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.sap.convert;
 
+import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.vo.AvaInventoryQtyVO;
 import org.mapstruct.Mapper;
@@ -13,6 +14,7 @@ import java.util.List;
 )
 public interface AvaInventoryQtyConvert {
 
+    AvaInventoryQty toEntity(AvaInventoryQtyDTO dto);
     AvaInventoryQtyVO toVO(AvaInventoryQty entity);
     List<AvaInventoryQtyVO> toVO(List<AvaInventoryQty> entity);
 }

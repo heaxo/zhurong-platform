@@ -36,4 +36,5 @@ public class ViPmOrderlVO {
     private String vversion;
 
     private String icadproduct;
+    private String company;
 }

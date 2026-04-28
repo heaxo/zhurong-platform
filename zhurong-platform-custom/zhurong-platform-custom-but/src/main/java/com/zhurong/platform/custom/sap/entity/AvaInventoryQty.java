@@ -45,4 +45,7 @@ public class AvaInventoryQty {
 
     @TableField("\"WhsName\"")
     private String locName;
+
+    @TableField("\"Company\"")
+    private String company;
 }

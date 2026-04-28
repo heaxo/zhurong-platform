@@ -102,4 +102,10 @@ public class ViPmOrderl implements Serializable  {
      */
     @TableField("ICADPRODUCT")
     private String icadproduct;
+
+    /**
+     * 公司
+     */
+    @TableField("公司")
+    private String company;
 }

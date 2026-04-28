@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.sap.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.custom.sap.convert.AvaInventoryQtyConvert;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
@@ -28,8 +29,9 @@ public class AvaInventoryQtyController extends BaseController {
     }
 
     @GetMapping("list")
-    public ApiResponse<List<AvaInventoryQtyVO>> list(){
-        List<AvaInventoryQty> list = avaInventoryQtyService.list();
+    public ApiResponse<List<AvaInventoryQtyVO>> list(AvaInventoryQtyDTO dto){
+        AvaInventoryQty entity = avaInventoryQtyConvert.toEntity(dto);
+        List<AvaInventoryQty> list = avaInventoryQtyService.list(Wrappers.lambdaQuery(entity));
         List<AvaInventoryQtyVO> vo = avaInventoryQtyConvert.toVO(list);
         return ApiResponse.success(vo);
     }

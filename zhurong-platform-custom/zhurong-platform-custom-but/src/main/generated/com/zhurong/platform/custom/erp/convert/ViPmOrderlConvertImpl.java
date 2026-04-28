@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.erp.convert;
 
+import com.zhurong.platform.custom.erp.dto.ViPmOrderlDTO;
 import com.zhurong.platform.custom.erp.entity.ViPmOrderl;
 import com.zhurong.platform.custom.erp.vo.ViPmOrderlVO;
 import java.util.ArrayList;
@@ -9,11 +10,39 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-27T20:26:50+0800",
+    date = "2026-04-28T21:28:16+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class ViPmOrderlConvertImpl implements ViPmOrderlConvert {
+
+    @Override
+    public ViPmOrderl toEntity(ViPmOrderlDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        ViPmOrderl viPmOrderl = new ViPmOrderl();
+
+        viPmOrderl.setBelposId( dto.getBelposId() );
+        viPmOrderl.setItemCode( dto.getItemCode() );
+        viPmOrderl.setCoutKey( dto.getCoutKey() );
+        viPmOrderl.setCfccad( dto.getCfccad() );
+        viPmOrderl.setCfType( dto.getCfType() );
+        viPmOrderl.setCcad( dto.getCcad() );
+        viPmOrderl.setItemName( dto.getItemName() );
+        viPmOrderl.setUZnr( dto.getUZnr() );
+        viPmOrderl.setUdf1( dto.getUdf1() );
+        viPmOrderl.setAplatzId( dto.getAplatzId() );
+        viPmOrderl.setMengeVerbrauch( dto.getMengeVerbrauch() );
+        viPmOrderl.setAnfzeit( dto.getAnfzeit() );
+        viPmOrderl.setLieferdatum( dto.getLieferdatum() );
+        viPmOrderl.setVversion( dto.getVversion() );
+        viPmOrderl.setIcadproduct( dto.getIcadproduct() );
+        viPmOrderl.setCompany( dto.getCompany() );
+
+        return viPmOrderl;
+    }
 
     @Override
     public ViPmOrderlVO toVO(ViPmOrderl entity) {
@@ -38,6 +67,7 @@ public class ViPmOrderlConvertImpl implements ViPmOrderlConvert {
         viPmOrderlVO.setLieferdatum( entity.getLieferdatum() );
         viPmOrderlVO.setVversion( entity.getVversion() );
         viPmOrderlVO.setIcadproduct( entity.getIcadproduct() );
+        viPmOrderlVO.setCompany( entity.getCompany() );
 
         return viPmOrderlVO;
     }

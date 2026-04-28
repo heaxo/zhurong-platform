@@ -37,6 +37,7 @@ public class ViPmOrderlDTO {
     private String vversion;
 
     private String icadproduct;
+    private String company;
 
     private List<String> belposIds;
     private String jobRef;

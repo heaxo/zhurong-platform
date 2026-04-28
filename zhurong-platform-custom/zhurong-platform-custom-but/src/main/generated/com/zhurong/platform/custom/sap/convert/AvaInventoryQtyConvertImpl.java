@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.sap.convert;
 
+import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.vo.AvaInventoryQtyVO;
 import java.util.ArrayList;
@@ -9,11 +10,35 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-27T20:26:50+0800",
+    date = "2026-04-28T21:32:54+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
+
+    @Override
+    public AvaInventoryQty toEntity(AvaInventoryQtyDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        AvaInventoryQty avaInventoryQty = new AvaInventoryQty();
+
+        avaInventoryQty.setItemCode( dto.getItemCode() );
+        avaInventoryQty.setItemName( dto.getItemName() );
+        avaInventoryQty.setUBeasZnr( dto.getUBeasZnr() );
+        avaInventoryQty.setUHd( dto.getUHd() );
+        avaInventoryQty.setBatchNum( dto.getBatchNum() );
+        avaInventoryQty.setQuantity( dto.getQuantity() );
+        avaInventoryQty.setWidth( dto.getWidth() );
+        avaInventoryQty.setLength( dto.getLength() );
+        avaInventoryQty.setWhsName( dto.getWhsName() );
+        avaInventoryQty.setWeight( dto.getWeight() );
+        avaInventoryQty.setLocName( dto.getLocName() );
+        avaInventoryQty.setCompany( dto.getCompany() );
+
+        return avaInventoryQty;
+    }
 
     @Override
     public AvaInventoryQtyVO toVO(AvaInventoryQty entity) {
@@ -33,6 +58,7 @@ public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
         avaInventoryQtyVO.setLength( entity.getLength() );
         avaInventoryQtyVO.setWhsName( entity.getWhsName() );
         avaInventoryQtyVO.setWeight( entity.getWeight() );
+        avaInventoryQtyVO.setCompany( entity.getCompany() );
 
         return avaInventoryQtyVO;
     }

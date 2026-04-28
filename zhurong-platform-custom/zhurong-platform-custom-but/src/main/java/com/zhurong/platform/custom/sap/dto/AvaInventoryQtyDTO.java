@@ -32,5 +32,7 @@ public class AvaInventoryQtyDTO {
 
     private Double weight;
 
+    private String company;
+
     private List<String> itemCodes;
 }

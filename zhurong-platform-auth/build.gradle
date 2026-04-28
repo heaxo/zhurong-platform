@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.zhurong'
-version = '0.0.4'
+version = '0.0.7'
 description = 'zhurong-platform-auth'
 
 java {

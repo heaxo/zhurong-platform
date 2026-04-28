@@ -19,4 +19,5 @@ public class AvaInventoryQtyVO {
     private String length;
     private String whsName;
     private Double weight;
+    private String company;
 }
