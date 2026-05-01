@@ -12,7 +12,12 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @Slf4j
 @SpringBootApplication
 @EnableFeignClients
-@MapperScan(basePackages = {"com.zhurong.platform.custom.mapper","com.zhurong.platform.custom.erp.mapper","com.zhurong.platform.custom.sap.mapper"})
+@MapperScan(basePackages = {
+        "com.zhurong.platform.custom.mapper",
+        "com.zhurong.platform.custom.erp.mapper",
+        "com.zhurong.platform.custom.sap.mapper",
+        "com.zhurong.platform.custom.sbut.mapper"
+})
 @ConfigurationPropertiesScan
 public class ZhurongPlatformCustomApplication {
 

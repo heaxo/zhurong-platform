@@ -9,20 +9,14 @@ import com.google.common.collect.Sets;
 import com.zhurong.platform.base.exception.BusinessException;
 import com.zhurong.platform.base.masterlink.commands.ManufacturingCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
-import com.zhurong.platform.custom.entity.DisMmttMmtt00000100;
-import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
-import com.zhurong.platform.custom.entity.PprrPprr00000100;
-import com.zhurong.platform.custom.entity.WwccWwcc00000100;
+import com.zhurong.platform.custom.entity.*;
 import com.zhurong.platform.custom.erp.dto.ViPmOrderlDTO;
 import com.zhurong.platform.custom.erp.entity.ViPmOrderl;
 import com.zhurong.platform.custom.erp.mapper.ViPmOrderlMapper;
 import com.zhurong.platform.custom.erp.service.ILkPmOrderService;
 import com.zhurong.platform.custom.erp.service.IViPmOrderlService;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
-import com.zhurong.platform.custom.service.IDisMmttMmtt00000100Service;
-import com.zhurong.platform.custom.service.IMmnnMmoo00000300Service;
-import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
-import com.zhurong.platform.custom.service.IWwccWwcc00000100Service;
+import com.zhurong.platform.custom.service.*;
 import com.zhurong.platform.custom.util.MasterlinkTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +40,7 @@ import java.util.stream.Collectors;
 public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrderl> implements IViPmOrderlService {
 
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
+    private final IDisMmnnMmoo00000200Service disMmnnMmoo00000200Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
     private final IWwccWwcc00000100Service wwccWwcc00000100Service;
@@ -65,28 +60,51 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
         }
         List<ViPmOrderl> list = list(Wrappers.lambdaQuery(ViPmOrderl.class).in(ViPmOrderl::getBelposId, belposIds));
 
+        //检查数据是否是同一家公司
+        List<String> companys = list.stream().map(ViPmOrderl::getCompany).distinct().toList();
+
+        if (companys.size() > 1){
+            throw new BusinessException(String.format("不允许同时指定多家不同公司的数据，%s",String.join(",", companys)));
+        }
+        String company = companys.get(0);
+        //检查指定的作业是否存在，并且是否已指定公司，如果已指定公司，检查是否与当前指定的公司一致，不一致直接抛异常
+        DisMmnnMmoo00000200 job = disMmnnMmoo00000200Service.getOne(Wrappers.lambdaQuery(DisMmnnMmoo00000200.class)
+                .eq(DisMmnnMmoo00000200::getJobRef, dto.getJobRef()));
+
+        if (job == null){
+            throw new BusinessException(String.format("作业%s不存在，请检查套料软件中是否已创建作业", dto.getJobRef()));
+        }
+
+        String targetCompany = job.getUData1();
+
+        if (StringUtils.isNotBlank(targetCompany) && !company.equals(targetCompany)){
+            throw new BusinessException(String.format("作业%s，已被指定公司：%s，无法再次指定公司：%s", job.getJobName(), targetCompany, dto.getJobRef()));
+        }
+
         Set<String> prdRefs = list.stream().map(ViPmOrderl::getCcad).collect(Collectors.toSet());
         Set<String> wrkRefs = list.stream().map(ViPmOrderl::getAplatzId).collect(Collectors.toSet());
         Set<String> matRefs = list.stream().map(ViPmOrderl::getUZnr).collect(Collectors.toSet());
 
         List<PprrPprr00000100> pprrs = pprrPprr00000100Service.list(Wrappers.lambdaQuery(PprrPprr00000100.class)
                 .in(PprrPprr00000100::getPrdRef, prdRefs));
-        Set<String> existsPrdRefs = pprrs.stream().map(PprrPprr00000100::getPrdRef).collect(Collectors.toSet());
-
+        Set<String> existsPrdRefs = pprrs.stream().map(PprrPprr00000100::getPrdRef)
+                .map(String::toLowerCase).collect(Collectors.toSet());
+        List<String> notExistPrdRefs = new ArrayList<>();
         if (existsPrdRefs.size() < prdRefs.size()){
             Sets.SetView<String> difference = Sets.difference(prdRefs, existsPrdRefs);
-            String msg = String.format("零件档案图纸不存在，无法导入至作业，%s",String.join(",",difference.stream().toList()));
-            log.warn(msg);
-            throw new BusinessException(msg);
+            notExistPrdRefs.addAll(difference);
+//            String msg = String.format("零件档案图纸不存在，无法导入至作业，%s",String.join(",",difference.stream().toList()));
+//            log.warn(msg);
+//            throw new BusinessException(msg);
         }
 
         List<DisMmttMmtt00000100> masterials = disMmttMmtt00000100Service.list();
         List<WwccWwcc00000100> machines = wwccWwcc00000100Service.list();
-        List<String> existsMatRefs = masterials.stream().map(DisMmttMmtt00000100::getMatRef).toList();
-        List<String> existsWrkRefs = machines.stream().map(WwccWwcc00000100::getWrkRef).toList();
-        List<String> notExistMatRefs = matRefs.stream().filter(matRef -> !existsMatRefs.contains(matRef)).toList();
-        List<String> notExistWrkRefs = wrkRefs.stream().filter(wrkRef -> !existsWrkRefs.contains(wrkRef)).toList();
-        if (CollectionUtils.isNotEmpty(notExistMatRefs)){
+        List<String> existsMatRefs = masterials.stream().map(DisMmttMmtt00000100::getMatRef).map(String::toLowerCase).toList();
+        List<String> existsWrkRefs = machines.stream().map(WwccWwcc00000100::getWrkRef).map(String::toLowerCase).toList();
+        List<String> notExistMatRefs = matRefs.stream().filter(matRef -> !existsMatRefs.contains(matRef.toLowerCase())).toList();
+        List<String> notExistWrkRefs = wrkRefs.stream().filter(wrkRef -> !existsWrkRefs.contains(wrkRef.toLowerCase())).toList();
+        /*if (CollectionUtils.isNotEmpty(notExistMatRefs)){
             String msg = String.format("材质不存在，请在lantek套料软件中创建相关材质，%s", String.join(",",notExistMatRefs));
             log.warn(msg);
             throw new BusinessException(msg);
@@ -95,7 +113,7 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
             String msg = String.format("机床不存在，请在lantek套料软件中创建相关机床，%s", String.join(",",notExistWrkRefs));
             log.warn(msg);
             throw new BusinessException(msg);
-        }
+        }*/
 
         boolean locked = false;
         try {
@@ -126,9 +144,26 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                 if (finalExistingMnorefs.contains(mnoRef)){
                     return null;
                 }
+
                 ManufacturingCommand manufacturing = new ManufacturingCommand();
                 String wrkRef = StringUtils.isNotBlank(dto.getWrkRef()) ? dto.getWrkRef() : it.getAplatzId();
                 String matRef = StringUtils.isNotBlank(dto.getMatRef()) ? dto.getMatRef() : it.getUZnr();
+
+                //不存在图纸得跳过
+                if (!existsPrdRefs.contains(it.getCcad().toLowerCase())){
+                    log.warn(String.format("%s，图纸不存在，跳过", it.getCcad()));
+                    return null;
+                }
+                //不存在得材质跳过
+                if (!existsMatRefs.contains(matRef.toLowerCase())){
+                    log.warn(String.format("%s，材质不存在，跳过", it.getCcad()));
+                    return null;
+                }
+                //不存在得机床跳过
+                if (!existsWrkRefs.contains(wrkRef.toLowerCase())){
+                    log.warn(String.format("%s，机床不存在，跳过", it.getCcad()));
+                    return null;
+                }
 
                 manufacturing.setCDate(LocalDateTime.now().toLocalDate());
                 manufacturing.setDisJobRef(dto.getJobRef());
@@ -147,6 +182,22 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
             .filter(Objects::nonNull).toList();
 
             if (CollectionUtils.isEmpty(imports)){
+                if (CollectionUtils.isNotEmpty(notExistPrdRefs)){
+                    String msg = String.format("零件图纸未维护，先维护零件图纸后重新提交，%s",String.join(",",notExistPrdRefs));
+                    log.warn(msg);
+                    throw new BusinessException(msg);
+                }
+                if (CollectionUtils.isNotEmpty(notExistMatRefs)){
+                    String msg = String.format("材质未维护，先维护材质后重新提交，%s",String.join(",",notExistMatRefs));
+                    log.warn(msg);
+                    throw new BusinessException(msg);
+                }
+                if (CollectionUtils.isNotEmpty(notExistWrkRefs)){
+                    String msg = String.format("机床未维护，先维护机床后重新提交，%s",String.join(",",notExistWrkRefs));
+                    log.warn(msg);
+                    throw new BusinessException(msg);
+                }
+
                 String msg = "生产订单可能已完成导入，请刷新重试";
                 log.warn(msg);
                 throw new BusinessException(msg);
@@ -188,8 +239,16 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                         .set(MmnnMmoo00000300::getPrdNameDst, viPmOrderl.getItemName())
                         .set(MmnnMmoo00000300::getCusName, viPmOrderl.getItemCode())
                         .set(MmnnMmoo00000300::getRDate, viPmOrderl.getLieferdatum())
+                        .set(MmnnMmoo00000300::getDescrip, viPmOrderl.getCompany())
                         .eq(MmnnMmoo00000300::getMnORef, viPmOrderl.getBelposId()));
                 log.info(String.format("更新生产订单：%s，更新结果：%s", viPmOrderl.getBelposId(), update));
+            }
+            //更新公司到作业
+            if (StringUtils.isBlank(targetCompany)){
+                boolean update = disMmnnMmoo00000200Service.update(Wrappers.lambdaUpdate(DisMmnnMmoo00000200.class)
+                        .set(DisMmnnMmoo00000200::getUData1, company)
+                        .eq(DisMmnnMmoo00000200::getRecID, job.getRecID()));
+                log.info(String.format("作业公司更新结果：%s，%s，%s", update, company, job.getJobName()));
             }
 
             return true;

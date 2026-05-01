@@ -68,9 +68,22 @@ def webServiceProjects = [
 
 tasks.register('bootJarWebServices') {
     group = 'build'
-    description = 'Build bootJar for all web service modules'
+    description = 'Clean and build bootJar for all web service modules'
 
-    dependsOn webServiceProjects.collect { "${it}:bootJar" }
+    webServiceProjects.each { projectPath ->
+        def serviceProject = project(projectPath)
+        def cleanTask = serviceProject.tasks.named('clean')
+
+        // 保证该模块 clean 先于该模块后续所有非 clean 构建任务执行
+        serviceProject.tasks.configureEach { task ->
+            if (!task.name.startsWith('clean')) {
+                task.mustRunAfter(cleanTask)
+            }
+        }
+
+        dependsOn cleanTask
+        dependsOn serviceProject.tasks.named('bootJar')
+    }
 }
 
 tasks.register('collectWebServiceBootJars', Copy) {

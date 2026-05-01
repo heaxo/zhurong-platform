@@ -3,6 +3,7 @@ package com.zhurong.platform.custom.sap.convert;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.vo.AvaInventoryQtyVO;
+import com.zhurong.platform.custom.sbut.entity.SbutAvaInventoryQty;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-28T21:32:54+0800",
+    date = "2026-05-01T16:04:16+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -38,6 +39,30 @@ public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
         avaInventoryQty.setCompany( dto.getCompany() );
 
         return avaInventoryQty;
+    }
+
+    @Override
+    public SbutAvaInventoryQty toEntity(AvaInventoryQty entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        SbutAvaInventoryQty sbutAvaInventoryQty = new SbutAvaInventoryQty();
+
+        sbutAvaInventoryQty.setItemCode( entity.getItemCode() );
+        sbutAvaInventoryQty.setItemName( entity.getItemName() );
+        sbutAvaInventoryQty.setUBeasZnr( entity.getUBeasZnr() );
+        sbutAvaInventoryQty.setUHd( entity.getUHd() );
+        sbutAvaInventoryQty.setBatchNum( entity.getBatchNum() );
+        sbutAvaInventoryQty.setQuantity( entity.getQuantity() );
+        sbutAvaInventoryQty.setWidth( entity.getWidth() );
+        sbutAvaInventoryQty.setLength( entity.getLength() );
+        sbutAvaInventoryQty.setWhsName( entity.getWhsName() );
+        sbutAvaInventoryQty.setWeight( entity.getWeight() );
+        sbutAvaInventoryQty.setLocName( entity.getLocName() );
+        sbutAvaInventoryQty.setCompany( entity.getCompany() );
+
+        return sbutAvaInventoryQty;
     }
 
     @Override
@@ -75,5 +100,41 @@ public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
         }
 
         return list;
+    }
+
+    @Override
+    public List<AvaInventoryQtyVO> toVOFromSbut(List<SbutAvaInventoryQty> entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        List<AvaInventoryQtyVO> list = new ArrayList<AvaInventoryQtyVO>( entity.size() );
+        for ( SbutAvaInventoryQty sbutAvaInventoryQty : entity ) {
+            list.add( sbutAvaInventoryQtyToAvaInventoryQtyVO( sbutAvaInventoryQty ) );
+        }
+
+        return list;
+    }
+
+    protected AvaInventoryQtyVO sbutAvaInventoryQtyToAvaInventoryQtyVO(SbutAvaInventoryQty sbutAvaInventoryQty) {
+        if ( sbutAvaInventoryQty == null ) {
+            return null;
+        }
+
+        AvaInventoryQtyVO avaInventoryQtyVO = new AvaInventoryQtyVO();
+
+        avaInventoryQtyVO.setItemCode( sbutAvaInventoryQty.getItemCode() );
+        avaInventoryQtyVO.setItemName( sbutAvaInventoryQty.getItemName() );
+        avaInventoryQtyVO.setUBeasZnr( sbutAvaInventoryQty.getUBeasZnr() );
+        avaInventoryQtyVO.setUHd( sbutAvaInventoryQty.getUHd() );
+        avaInventoryQtyVO.setBatchNum( sbutAvaInventoryQty.getBatchNum() );
+        avaInventoryQtyVO.setQuantity( sbutAvaInventoryQty.getQuantity() );
+        avaInventoryQtyVO.setWidth( sbutAvaInventoryQty.getWidth() );
+        avaInventoryQtyVO.setLength( sbutAvaInventoryQty.getLength() );
+        avaInventoryQtyVO.setWhsName( sbutAvaInventoryQty.getWhsName() );
+        avaInventoryQtyVO.setWeight( sbutAvaInventoryQty.getWeight() );
+        avaInventoryQtyVO.setCompany( sbutAvaInventoryQty.getCompany() );
+
+        return avaInventoryQtyVO;
     }
 }

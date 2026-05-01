@@ -10,6 +10,7 @@ import com.zhurong.platform.auth.vo.SysDeptVO;
 import com.zhurong.platform.auth.web.BaseController;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.base.model.BaseEntity;
 import com.zhurong.platform.base.model.PageFactory;
 import com.zhurong.platform.base.util.TreeBuilder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -40,7 +41,7 @@ public class SysDeptController extends BaseController implements ISysDeptApi {
 
         LambdaQueryWrapper<SysDept> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
-
+        wrapper.orderByAsc(BaseEntity::getCreateTime);
         Page<SysDept> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper

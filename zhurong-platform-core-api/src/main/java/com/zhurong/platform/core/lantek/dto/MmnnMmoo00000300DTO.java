@@ -1,14 +1,18 @@
 package com.zhurong.platform.core.lantek.dto;
 
 import lombok.Data;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 *  DTO
 */
 @Data
 public class MmnnMmoo00000300DTO implements Serializable {
+
+    private List<Integer> recIds;
 
     private String MnORef;
     private Integer OprID;

@@ -49,6 +49,12 @@ public class MmnnMmoo00000300Controller extends BaseController implements IMmnnM
         if (CollectionUtils.isNotEmpty(pageQuery.getMnoRefs())) {
             wrapper.in(MmnnMmoo00000300::getMnORef, pageQuery.getMnoRefs());
         }
+        if (pageQuery.getQueryRelease() != null && pageQuery.getQueryRelease()){
+            wrapper.and(w -> w
+                    .isNull(MmnnMmoo00000300::getDIS_JobRef)
+                    .or()
+                    .eq(MmnnMmoo00000300::getDIS_JobRef,""));
+        }
 
         Page<MmnnMmoo00000300> page = service.page(
                 PageFactory.build(pageQuery),

@@ -11,6 +11,7 @@ import com.zhurong.platform.auth.vo.SysUserVO;
 import com.zhurong.platform.auth.web.BaseController;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.base.model.BaseEntity;
 import com.zhurong.platform.base.model.PageFactory;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -41,7 +42,7 @@ public class SysUserController extends BaseController implements ISysUserApi {
 
         LambdaQueryWrapper<SysUser> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
-
+        wrapper.orderByAsc(BaseEntity::getCreateTime);
         Page<SysUser> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper

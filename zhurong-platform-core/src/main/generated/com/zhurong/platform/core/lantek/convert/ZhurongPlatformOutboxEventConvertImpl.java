@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-04T11:40:48+0800",
+    date = "2026-05-01T18:49:30+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -38,6 +38,8 @@ public class ZhurongPlatformOutboxEventConvertImpl implements ZhurongPlatformOut
         zhurongPlatformOutboxEventVO.setStatus( entity.getStatus() );
         zhurongPlatformOutboxEventVO.setRetryCount( entity.getRetryCount() );
         zhurongPlatformOutboxEventVO.setNextRetryTime( entity.getNextRetryTime() );
+        zhurongPlatformOutboxEventVO.setCreateTime( entity.getCreateTime() );
+        zhurongPlatformOutboxEventVO.setUpdateTime( entity.getUpdateTime() );
 
         return zhurongPlatformOutboxEventVO;
     }
@@ -64,6 +66,9 @@ public class ZhurongPlatformOutboxEventConvertImpl implements ZhurongPlatformOut
 
         ZhurongPlatformOutboxEvent zhurongPlatformOutboxEvent = new ZhurongPlatformOutboxEvent();
 
+        zhurongPlatformOutboxEvent.setId( dto.getId() );
+        zhurongPlatformOutboxEvent.setCreateTime( dto.getCreateTime() );
+        zhurongPlatformOutboxEvent.setUpdateTime( dto.getUpdateTime() );
         zhurongPlatformOutboxEvent.setEventId( dto.getEventId() );
         zhurongPlatformOutboxEvent.setEventType( dto.getEventType() );
         zhurongPlatformOutboxEvent.setAggregateId( dto.getAggregateId() );
@@ -106,6 +111,15 @@ public class ZhurongPlatformOutboxEventConvertImpl implements ZhurongPlatformOut
             return;
         }
 
+        if ( dto.getId() != null ) {
+            entity.setId( dto.getId() );
+        }
+        if ( dto.getCreateTime() != null ) {
+            entity.setCreateTime( dto.getCreateTime() );
+        }
+        if ( dto.getUpdateTime() != null ) {
+            entity.setUpdateTime( dto.getUpdateTime() );
+        }
         if ( dto.getEventId() != null ) {
             entity.setEventId( dto.getEventId() );
         }

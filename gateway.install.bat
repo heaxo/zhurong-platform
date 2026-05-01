@@ -10,7 +10,7 @@ set "APPIMG_OUT=%BASE%\app-image"
 set "OUTPUT=%BASE%\publish"
 
 set "APP_NAME=zhurong-platform-gateway"
-set "APP_VERSION=0.0.1"
+set "APP_VERSION=0.0.5"
 set "MAIN_JAR=zhurong-platform-gateway-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
 

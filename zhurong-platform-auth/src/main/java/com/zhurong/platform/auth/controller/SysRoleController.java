@@ -12,6 +12,7 @@ import com.zhurong.platform.auth.vo.SysRoleVO;
 import com.zhurong.platform.auth.web.BaseController;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.base.model.BaseEntity;
 import com.zhurong.platform.base.model.PageFactory;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -43,7 +44,7 @@ public class SysRoleController extends BaseController implements ISysRoleApi {
 
         LambdaQueryWrapper<SysRole> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
-
+        wrapper.orderByAsc(BaseEntity::getCreateTime);
         Page<SysRole> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper

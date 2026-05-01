@@ -48,7 +48,7 @@ public class SysMenuController extends BaseController implements ISysMenuApi {
 
         LambdaQueryWrapper<SysMenu> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
-
+        wrapper.orderByAsc(BaseEntity::getCreateTime);
         Page<SysMenu> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper
