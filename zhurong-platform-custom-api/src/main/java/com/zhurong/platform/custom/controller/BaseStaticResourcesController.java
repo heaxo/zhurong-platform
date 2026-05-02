@@ -9,6 +9,7 @@ package com.zhurong.platform.custom.controller;
 import com.zhurong.platform.custom.dto.StaticResourcesDTO;
 import com.zhurong.platform.custom.web.BaseController;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Slf4j
 public class BaseStaticResourcesController extends BaseController {
 
     private static final Duration CACHE_TIMEOUT = Duration.ofMinutes(3);
@@ -41,15 +42,17 @@ public class BaseStaticResourcesController extends BaseController {
     private static final String PRODUCT_NAME = "staticResources";
 
     /**
+     * 父类默认静态资源根目录。
+     */
+    private final Path staticResourceRootFolder = Paths.get("C:\\Lantek\\LSystemDB")
+            .toAbsolutePath()
+            .normalize();
+
+    /**
      * 当前 jar 运行目录。
      * 例如：/opt/app/app.jar -> /opt/app
      */
     private final Path appRunDir = getAppRunDir();
-
-    /**
-     * staticResourceRootFolder 使用当前 jar 运行目录。
-     */
-    private final Path staticResourceRootFolder = appRunDir;
 
     private final Map<String, CacheItem<String>> base64Cache = new ConcurrentHashMap<>();
     private final Map<String, CacheItem<FileCacheData>> fileCache = new ConcurrentHashMap<>();
@@ -59,18 +62,46 @@ public class BaseStaticResourcesController extends BaseController {
             .followRedirects(HttpClient.Redirect.NORMAL)
             .build();
 
+    /**
+     * 子类可以重写该方法，自定义静态资源根目录。
+     */
+    protected Path getStaticResourceRootFolder() {
+        return staticResourceRootFolder;
+    }
+
     @GetMapping
     public ResponseEntity<?> get(StaticResourcesDTO req, HttpServletResponse response) {
-        if (req == null || !StringUtils.hasText(req.getSource())) {
+        long startTime = System.currentTimeMillis();
+        Path localPath = null;
+
+        if (req == null) {
+            log.warn("[staticResources] 请求参数为空，返回默认图片");
+            return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
+        }
+
+        if (!StringUtils.hasText(req.getSource())) {
+            log.warn("[staticResources] source为空，返回默认图片，req={}", req);
             return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
         }
 
         String image = req.getSource();
 
+        log.info(
+                "[staticResources] 收到请求，source={}, resultType={}, disabledCache={}",
+                safeLogText(image),
+                req.getResultType(),
+                req.getDisabledCache()
+        );
+
         /**
          * http / https 直接返回 URL，前端自行加载。
          */
         if (startsWithIgnoreCase(image, "http://") || startsWithIgnoreCase(image, "https://")) {
+            log.info(
+                    "[staticResources] HTTP/HTTPS资源直接返回，source={}, cost={}ms",
+                    safeLogText(image),
+                    System.currentTimeMillis() - startTime
+            );
             return ResponseEntity.ok(new ApiResult<>(image, 0));
         }
 
@@ -85,51 +116,180 @@ public class BaseStaticResourcesController extends BaseController {
 
             boolean disabledCache = Boolean.TRUE.equals(req.getDisabledCache());
 
+            log.info(
+                    "[staticResources] 请求解析完成，returnBase64={}, disabledCache={}, cacheKey={}",
+                    returnBase64,
+                    disabledCache,
+                    safeLogText(cacheKey)
+            );
+
             if (returnBase64 && !disabledCache) {
                 String cachedDataUri = getCache(base64Cache, cacheBase64Key);
+
                 if (cachedDataUri != null) {
+                    log.info(
+                            "[staticResources] 命中base64缓存，source={}, dataLength={}, cost={}ms",
+                            safeLogText(image),
+                            cachedDataUri.length(),
+                            System.currentTimeMillis() - startTime
+                    );
                     return ResponseEntity.ok(new ApiResult<>(cachedDataUri, 0));
                 }
+
+                log.info("[staticResources] 未命中base64缓存，source={}", safeLogText(image));
             } else if (!disabledCache) {
                 FileCacheData cachedFile = getCache(fileCache, cacheKey);
+
                 if (cachedFile != null) {
+                    log.info(
+                            "[staticResources] 命中文件缓存，source={}, bytes={}, mime={}, cost={}ms",
+                            safeLogText(image),
+                            cachedFile.bytes() == null ? 0 : cachedFile.bytes().length,
+                            cachedFile.mime(),
+                            System.currentTimeMillis() - startTime
+                    );
                     return buildFileResponse(cachedFile.bytes(), cachedFile.mime());
                 }
+
+                log.info("[staticResources] 未命中文件缓存，source={}", safeLogText(image));
+            } else {
+                log.info("[staticResources] 本次请求禁用缓存，source={}", safeLogText(image));
             }
 
-            Path localPath;
-
             if (isLocalRelativePath(image)) {
-                localPath = staticResourceRootFolder.resolve(image).normalize();
+                Path rootFolder = getStaticResourceRootFolder();
+
+                localPath = rootFolder.resolve(image).normalize();
 
                 // 防止 ../ 路径穿越
-                Path root = staticResourceRootFolder.toAbsolutePath().normalize();
+                Path root = rootFolder.toAbsolutePath().normalize();
                 Path target = localPath.toAbsolutePath().normalize();
 
+                log.info(
+                        "[staticResources] 本地相对路径解析完成，source={}, rootFolder={}, localPath={}, absoluteTarget={}",
+                        safeLogText(image),
+                        rootFolder.toAbsolutePath().normalize(),
+                        localPath,
+                        target
+                );
+
                 if (!target.startsWith(root)) {
+                    log.warn(
+                            "[staticResources] 检测到非法路径访问，source={}, root={}, target={}",
+                            safeLogText(image),
+                            root,
+                            target
+                    );
                     return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
                 }
             } else {
+                log.info(
+                        "[staticResources] source不是本地相对路径，准备下载到本地，source={}",
+                        safeLogText(image)
+                );
+
                 localPath = downloadFileToLocal(image);
+
+                log.info(
+                        "[staticResources] 文件下载完成，source={}, localPath={}",
+                        safeLogText(image),
+                        localPath == null ? null : localPath.toAbsolutePath().normalize()
+                );
+            }
+
+            if (localPath == null) {
+                log.warn("[staticResources] localPath为空，source={}", safeLogText(image));
+                return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
+            }
+
+            Path absoluteLocalPath = localPath.toAbsolutePath().normalize();
+
+            if (!Files.exists(localPath)) {
+                log.warn(
+                        "[staticResources] 文件不存在，source={}, localPath={}",
+                        safeLogText(image),
+                        absoluteLocalPath
+                );
+                return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
+            }
+
+            if (!Files.isRegularFile(localPath)) {
+                log.warn(
+                        "[staticResources] 目标路径不是普通文件，source={}, localPath={}",
+                        safeLogText(image),
+                        absoluteLocalPath
+                );
+                return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
             }
 
             byte[] bytes = Files.readAllBytes(localPath);
             String mime = getMimeFromFileName(localPath);
 
+            log.info(
+                    "[staticResources] 文件读取成功，source={}, localPath={}, bytes={}, mime={}",
+                    safeLogText(image),
+                    absoluteLocalPath,
+                    bytes.length,
+                    mime
+            );
+
             if (returnBase64) {
                 String dataUri = buildDataUri(bytes, mime);
                 setCache(base64Cache, cacheBase64Key, dataUri, CACHE_TIMEOUT);
+
+                log.info(
+                        "[staticResources] 返回base64结果，source={}, dataLength={}, cost={}ms",
+                        safeLogText(image),
+                        dataUri.length(),
+                        System.currentTimeMillis() - startTime
+                );
+
                 return ResponseEntity.ok(new ApiResult<>(dataUri, 0));
             } else {
                 setCache(fileCache, cacheKey, new FileCacheData(bytes, mime), CACHE_TIMEOUT);
+
+                log.info(
+                        "[staticResources] 返回文件流，source={}, localPath={}, bytes={}, mime={}, cost={}ms",
+                        safeLogText(image),
+                        absoluteLocalPath,
+                        bytes.length,
+                        mime,
+                        System.currentTimeMillis() - startTime
+                );
+
                 return buildFileResponse(bytes, mime);
             }
 
         } catch (Exception e) {
+            log.error(
+                    "[staticResources] 处理静态资源异常，source={}, localPath={}, cost={}ms",
+                    safeLogText(image),
+                    localPath == null ? null : localPath.toAbsolutePath().normalize(),
+                    System.currentTimeMillis() - startTime,
+                    e
+            );
+
             return ResponseEntity.ok(new ApiResult<>(defaultBase64Image(), 0));
         }
     }
+    private static String safeLogText(String value) {
+        if (!StringUtils.hasText(value)) {
+            return "";
+        }
 
+        String text = value
+                .replace("\r", "_")
+                .replace("\n", "_")
+                .replace("\t", "_");
+
+        int maxLength = 300;
+
+        if (text.length() <= maxLength) {
+            return text;
+        }
+
+        return text.substring(0, maxLength) + "...(length=" + text.length() + ")";
+    }
     private Path downloadFileToLocal(String target) throws Exception {
         return downloadFileToLocal(target, null);
     }

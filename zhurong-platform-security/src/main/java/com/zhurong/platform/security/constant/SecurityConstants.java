@@ -11,6 +11,8 @@ public class SecurityConstants {
             "/api/auth/auth/login",
             "/staticResources",
             "/staticResources/**",
+            "/custom/staticResources",
+            "/custom/staticResources/**",
             "/api/custom/staticResources",
             "/api/custom/staticResources/**",
             "/swagger-ui/**",
