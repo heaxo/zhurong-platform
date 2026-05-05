@@ -20,4 +20,5 @@ public interface AvaInventoryQtyConvert {
     AvaInventoryQtyVO toVO(AvaInventoryQty entity);
     List<AvaInventoryQtyVO> toVO(List<AvaInventoryQty> entity);
     List<AvaInventoryQtyVO> toVOFromSbut(List<SbutAvaInventoryQty> entity);
+    List<AvaInventoryQty> toEntityFromSbut(List<SbutAvaInventoryQty> entity);
 }

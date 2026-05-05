@@ -27,11 +27,6 @@ spring:
     username: sa
     password:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  mybatis-plus:
-    mapper-locations: classpath*:/mapper/**/*.xml
-    type-aliases-package: com.zhurong.platform.core.entity
-    configuration:
-      map-underscore-to-camel-case: false
   cloud:
     nacos:
       username: nacos
@@ -49,6 +44,13 @@ spring:
       - nacos:zhurong-platform-core
       - nacos:zhurong-platform-core-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.zhurong.platform.core.entity
+  configuration:
+    map-underscore-to-camel-case: false
 
 zhurong:
   rabbitmq:

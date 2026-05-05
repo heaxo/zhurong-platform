@@ -9,6 +9,8 @@ public class NestConstant {
     public static class MState {
         public static int IN_WORKSHOP = 40;
         public static int COMPLETED = 90;
+        public static int PROGRAMMING = 110;
+        public static int NOT_STARTED = 10;
     }
     public static class OprRef {
         public static String Cut2D = "2D Cut";

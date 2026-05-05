@@ -54,9 +54,12 @@ spring:
           username: LANTEK
           password: abclantek
           driver-class-name: oracle.jdbc.OracleDriver
-  mybatis-plus:
-    mapper-locations: classpath*:/mapper/**/*.xml
-    type-aliases-package: com.zhurong.platform.custom.entity
+
+        erp2:
+          url: jdbc:oracle:thin:@192.168.30.199:1521:XBUTORCL
+          username: LANTEK
+          password: abclantek
+          driver-class-name: oracle.jdbc.OracleDriver
   cloud:
     nacos:
       username: nacos
@@ -74,6 +77,13 @@ spring:
       - nacos:zhurong-platform-custom
       - nacos:zhurong-platform-custom-but-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.zhurong.platform.custom.entity
+  configuration:
+    map-underscore-to-camel-case: false
 
 but-config:
   sync-nesting-reporting-maximum-days: 30

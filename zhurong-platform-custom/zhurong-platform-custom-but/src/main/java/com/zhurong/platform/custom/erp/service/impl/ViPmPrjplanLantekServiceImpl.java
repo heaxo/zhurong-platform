@@ -12,6 +12,7 @@ import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
 import com.zhurong.platform.custom.entity.*;
 import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
 import com.zhurong.platform.custom.erp.mapper.ViPmPrjplanLantekMapper;
+import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantek2Service;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
 import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
 import com.zhurong.platform.custom.model.BaseEntity;
@@ -46,6 +47,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
     private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
     private final IZhurongButSupplierinfoService zhurongButSupplierinfoService;
     private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
+    private final IViPmPrjplanLantek2Service viPmPrjplanLantek2Service;
 
     private final ButConfigProperties butConfigProperties;
 
@@ -75,6 +77,15 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         List<ViPmPrjplanLantek> viPmPrjplanLanteks = listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class),
                 ViPmPrjplanLantek::getCnc, cncs, 1000);
+        List<String> querydCncs = viPmPrjplanLanteks.stream().map(ViPmPrjplanLantek::getCnc).toList();
+
+        List<String> cncs2 = cncs.stream().filter(cnc -> !querydCncs.contains(cnc)).toList();
+        if (CollectionUtils.isNotEmpty(cncs2)){
+            List<ViPmPrjplanLantek> viPmPrjplanLanteks2 = viPmPrjplanLantek2Service
+                    .listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class), ViPmPrjplanLantek::getCnc, cncs2, 1000);
+            viPmPrjplanLanteks.addAll(viPmPrjplanLanteks2);
+        }
+        
 
         if (CollectionUtils.isEmpty(viPmPrjplanLanteks)){
             return false;

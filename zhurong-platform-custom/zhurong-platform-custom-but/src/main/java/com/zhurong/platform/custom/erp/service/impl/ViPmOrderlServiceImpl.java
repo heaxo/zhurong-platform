@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.erp.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -13,7 +14,9 @@ import com.zhurong.platform.custom.entity.*;
 import com.zhurong.platform.custom.erp.dto.ViPmOrderlDTO;
 import com.zhurong.platform.custom.erp.entity.ViPmOrderl;
 import com.zhurong.platform.custom.erp.mapper.ViPmOrderlMapper;
+import com.zhurong.platform.custom.erp.service.ILkPmOrder2Service;
 import com.zhurong.platform.custom.erp.service.ILkPmOrderService;
+import com.zhurong.platform.custom.erp.service.IViPmOrderl2Service;
 import com.zhurong.platform.custom.erp.service.IViPmOrderlService;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
 import com.zhurong.platform.custom.service.*;
@@ -44,13 +47,15 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
     private final IWwccWwcc00000100Service wwccWwcc00000100Service;
+    private final IViPmOrderl2Service viPmOrderl2Service;
 
     //已完成导入反馈service
     private final ILkPmOrderService lkPmOrderService;
+    private final ILkPmOrder2Service lkPmOrder2Service;
     private final ReentrantLock exeLock = new ReentrantLock();
 
     @Override
-    public boolean importToExpert(ViPmOrderlDTO dto) {
+    public int importToExpert(ViPmOrderlDTO dto) {
         List<String> belposIds = dto.getBelposIds();
         if (CollectionUtils.isEmpty(belposIds)){
             throw new BusinessException("生产订单工单号不能为空");
@@ -58,8 +63,13 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
         if (StringUtils.isBlank(dto.getJobRef())){
             throw new BusinessException("作业未指定，无法开始导入");
         }
-        List<ViPmOrderl> list = list(Wrappers.lambdaQuery(ViPmOrderl.class).in(ViPmOrderl::getBelposId, belposIds));
-
+        LambdaQueryWrapper<ViPmOrderl> wrapper = Wrappers.lambdaQuery(ViPmOrderl.class).in(ViPmOrderl::getBelposId, belposIds);
+        List<ViPmOrderl> list = list(wrapper);
+        Map<String, Integer> map1 = list.stream().collect(Collectors.toMap(ViPmOrderl::getBelposId, p -> 1));
+        List<ViPmOrderl> list2 = viPmOrderl2Service.list(wrapper);
+        Map<String, Integer> map2 = list2.stream().collect(Collectors.toMap(ViPmOrderl::getBelposId, p -> 1));
+        //合并
+        list.addAll(list2);
         //检查数据是否是同一家公司
         List<String> companys = list.stream().map(ViPmOrderl::getCompany).distinct().toList();
 
@@ -80,10 +90,24 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
         if (StringUtils.isNotBlank(targetCompany) && !company.equals(targetCompany)){
             throw new BusinessException(String.format("作业%s，已被指定公司：%s，无法再次指定公司：%s", job.getJobName(), targetCompany, dto.getJobRef()));
         }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < list.size(); i++) {
+            ViPmOrderl viPmOrderl = list.get(i);
+            if (StringUtils.isBlank(viPmOrderl.getUZnr())){
+                sb.append(String.format("第%s行，%s材质为空",i + 1,viPmOrderl.getItemCode()));
+            }
+            if (StringUtils.isBlank(viPmOrderl.getAplatzId()) && StringUtils.isBlank(dto.getWrkRef())){
+                sb.append(String.format("第%s行，%s机床为空",i + 1,viPmOrderl.getItemCode()));
+            }
+        }
+        if (StringUtils.isNotBlank(sb.toString())){
+            log.warn(sb.toString());
+            throw new BusinessException(sb.toString());
+        }
 
         Set<String> prdRefs = list.stream().map(ViPmOrderl::getCcad).collect(Collectors.toSet());
-        Set<String> wrkRefs = list.stream().map(ViPmOrderl::getAplatzId).collect(Collectors.toSet());
-        Set<String> matRefs = list.stream().map(ViPmOrderl::getUZnr).collect(Collectors.toSet());
+        Set<String> wrkRefs = list.stream().map(ViPmOrderl::getAplatzId).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
+        Set<String> matRefs = list.stream().map(ViPmOrderl::getUZnr).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
 
         List<PprrPprr00000100> pprrs = pprrPprr00000100Service.list(Wrappers.lambdaQuery(PprrPprr00000100.class)
                 .in(PprrPprr00000100::getPrdRef, prdRefs));
@@ -132,6 +156,7 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                 String msg = String.format("生产订单已存在，无法重复导入，%s",String.join(",",existingMnorefs));
                 log.error(msg);
                 lkPmOrderService.tryInserts(existingMnorefs);
+                lkPmOrder2Service.tryInserts(existingMnorefs);
                 //throw new BusinessException(msg);
 
             }
@@ -223,8 +248,13 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
             }
 
             List<String> beenImportedMnoRefs = existsing.stream().map(MmnnMmoo00000300::getMnORef).toList();
+            List<String> beenImportedMnoRefs1 = existsing.stream().map(MmnnMmoo00000300::getMnORef).filter(map1::containsKey).toList();
+            List<String> beenImportedMnoRefs2 = existsing.stream().map(MmnnMmoo00000300::getMnORef).filter(map2::containsKey).toList();
             //反馈已完成导入的工单
-            lkPmOrderService.tryInserts(beenImportedMnoRefs);
+            boolean b1 = lkPmOrderService.tryInserts(beenImportedMnoRefs1);
+            log.info(String.format("已完成导入工单状态保存结果：%s，%s",b1, String.join(",", beenImportedMnoRefs1)));
+            boolean b2 = lkPmOrder2Service.tryInserts(beenImportedMnoRefs2);
+            log.info(String.format("已完成导入工单状态保存结果：%s，%s",b2, String.join(",", beenImportedMnoRefs2)));
             //更新masterlink无法导入的字段数据
             Map<String, ViPmOrderl> recordMap = list.stream().collect(Collectors.toMap(ViPmOrderl::getBelposId, it -> it));
 
@@ -251,7 +281,7 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                 log.info(String.format("作业公司更新结果：%s，%s，%s", update, company, job.getJobName()));
             }
 
-            return true;
+            return existsing.size();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new BusinessException("获取锁被中断");

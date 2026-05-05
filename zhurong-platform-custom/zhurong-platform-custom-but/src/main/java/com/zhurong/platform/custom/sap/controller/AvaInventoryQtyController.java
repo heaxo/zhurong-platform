@@ -69,10 +69,10 @@ public class AvaInventoryQtyController extends BaseController {
     }
 
     @PostMapping("importInventory")
-    public ApiResponse<Boolean> importInventory(@RequestBody AvaInventoryQtyDTO dto){
+    public ApiResponse<String> importInventory(@RequestBody AvaInventoryQtyDTO dto){
         try{
-            boolean succeed = avaInventoryQtyService.importInventory(dto);
-            return ApiResponse.success(succeed);
+            int count = avaInventoryQtyService.importInventory(dto);
+            return ApiResponse.success(count > 0 ? String.format("成功导入%s条", count) : null);
         }catch (Exception e){
             return ApiResponse.fail(e.getMessage());
         }

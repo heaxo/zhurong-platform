@@ -5,5 +5,5 @@ import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 
 public interface IAvaInventoryQtyService extends IService<AvaInventoryQty> {
-    boolean importInventory(AvaInventoryQtyDTO dto);
+    int importInventory(AvaInventoryQtyDTO dto);
 }

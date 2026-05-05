@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-01T16:04:16+0800",
+    date = "2026-05-05T13:11:25+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -116,6 +116,20 @@ public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
         return list;
     }
 
+    @Override
+    public List<AvaInventoryQty> toEntityFromSbut(List<SbutAvaInventoryQty> entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        List<AvaInventoryQty> list = new ArrayList<AvaInventoryQty>( entity.size() );
+        for ( SbutAvaInventoryQty sbutAvaInventoryQty : entity ) {
+            list.add( sbutAvaInventoryQtyToAvaInventoryQty( sbutAvaInventoryQty ) );
+        }
+
+        return list;
+    }
+
     protected AvaInventoryQtyVO sbutAvaInventoryQtyToAvaInventoryQtyVO(SbutAvaInventoryQty sbutAvaInventoryQty) {
         if ( sbutAvaInventoryQty == null ) {
             return null;
@@ -136,5 +150,28 @@ public class AvaInventoryQtyConvertImpl implements AvaInventoryQtyConvert {
         avaInventoryQtyVO.setCompany( sbutAvaInventoryQty.getCompany() );
 
         return avaInventoryQtyVO;
+    }
+
+    protected AvaInventoryQty sbutAvaInventoryQtyToAvaInventoryQty(SbutAvaInventoryQty sbutAvaInventoryQty) {
+        if ( sbutAvaInventoryQty == null ) {
+            return null;
+        }
+
+        AvaInventoryQty avaInventoryQty = new AvaInventoryQty();
+
+        avaInventoryQty.setItemCode( sbutAvaInventoryQty.getItemCode() );
+        avaInventoryQty.setItemName( sbutAvaInventoryQty.getItemName() );
+        avaInventoryQty.setUBeasZnr( sbutAvaInventoryQty.getUBeasZnr() );
+        avaInventoryQty.setUHd( sbutAvaInventoryQty.getUHd() );
+        avaInventoryQty.setBatchNum( sbutAvaInventoryQty.getBatchNum() );
+        avaInventoryQty.setQuantity( sbutAvaInventoryQty.getQuantity() );
+        avaInventoryQty.setWidth( sbutAvaInventoryQty.getWidth() );
+        avaInventoryQty.setLength( sbutAvaInventoryQty.getLength() );
+        avaInventoryQty.setWhsName( sbutAvaInventoryQty.getWhsName() );
+        avaInventoryQty.setWeight( sbutAvaInventoryQty.getWeight() );
+        avaInventoryQty.setLocName( sbutAvaInventoryQty.getLocName() );
+        avaInventoryQty.setCompany( sbutAvaInventoryQty.getCompany() );
+
+        return avaInventoryQty;
     }
 }

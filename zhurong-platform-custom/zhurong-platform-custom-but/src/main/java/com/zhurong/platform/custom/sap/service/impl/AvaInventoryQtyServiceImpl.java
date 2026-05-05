@@ -2,6 +2,7 @@ package com.zhurong.platform.custom.sap.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Sets;
@@ -18,10 +19,13 @@ import com.zhurong.platform.custom.entity.WwhhIivv00000200;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
 import com.zhurong.platform.custom.feign.WwhhIivv00000100FeignClient;
 import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
+import com.zhurong.platform.custom.sap.convert.AvaInventoryQtyConvert;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
 import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
+import com.zhurong.platform.custom.sbut.entity.SbutAvaInventoryQty;
+import com.zhurong.platform.custom.sbut.service.ISbutAvaInventoryQtyService;
 import com.zhurong.platform.custom.service.IDisMmttMmtt00000100Service;
 import com.zhurong.platform.custom.service.IPpbbPpbb00000100Service;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
@@ -50,17 +54,19 @@ import java.util.stream.Collectors;
 @DS("sap")
 public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMapper, AvaInventoryQty> implements IAvaInventoryQtyService {
 
+    private final AvaInventoryQtyConvert avaInventoryQtyConvert;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
     private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
     private final WwhhIivv00000100FeignClient wwhhIivv00000100FeignClient;
     private final IWwhhIivv00000200Service wwhhIivv00000200Service;
     private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
+    private final ISbutAvaInventoryQtyService sbutAvaInventoryQtyService;
 
     private final ReentrantLock exeLock = new ReentrantLock();
 
     @Override
-    public boolean importInventory(AvaInventoryQtyDTO dto) {
+    public int importInventory(AvaInventoryQtyDTO dto) {
         List<String> itemCodes = dto.getItemCodes();
 
         if (CollectionUtils.isEmpty(itemCodes)) {
@@ -69,6 +75,14 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
 
         List<AvaInventoryQty> inventorys = list(Wrappers.lambdaQuery(AvaInventoryQty.class)
                 .in(AvaInventoryQty::getItemCode, itemCodes));
+        List<SbutAvaInventoryQty> sbutAvaInventoryQtys = sbutAvaInventoryQtyService.list(Wrappers.lambdaQuery(SbutAvaInventoryQty.class)
+                .in(SbutAvaInventoryQty::getItemCode, itemCodes));
+        inventorys.addAll(avaInventoryQtyConvert.toEntityFromSbut(sbutAvaInventoryQtys));
+
+        if (CollectionUtils.isEmpty(inventorys)){
+            throw new BusinessException("未检索到可导入钢板库存");
+        }
+
         //合并相同钢板编码的数据（目前应该没有这种数据）
         Map<String, AvaInventoryQty> mergeMap = inventorys.stream().collect(Collectors.toMap(AvaInventoryQty::getItemCode,
                 p -> p, (cur, old) -> cur.setQuantity(cur.getQuantity() + old.getQuantity()))
@@ -78,11 +92,14 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
         List<AvaInventoryQty> list = mergeMap.entrySet().stream().map(Map.Entry::getValue).toList();
 
         //校验材质和数量
-        List<String> matRefs = list.stream().map(AvaInventoryQty::getUBeasZnr).distinct()
+        List<String> matRefs = list.stream().map(AvaInventoryQty::getUBeasZnr)
+                .filter(StringUtils::isNotBlank)
+                .map(String::toLowerCase)
+                .distinct()
                 .toList();
 
         List<DisMmttMmtt00000100> materials = disMmttMmtt00000100Service.list();
-        List<String> existingMatRefs = materials.stream().map(DisMmttMmtt00000100::getMatRef).toList();
+        List<String> existingMatRefs = materials.stream().map(DisMmttMmtt00000100::getMatRef).map(String::toLowerCase).toList();
 
         //不存在的材质
         List<String> dontExistMatRefs = matRefs.stream().filter(it -> !existingMatRefs.contains(it)).toList();
@@ -152,6 +169,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                 });
             }
 
+            log.info("开始导入钢板库存");
             if (CollectionUtils.isNotEmpty(inserts)) {
                 List<SheetsCommand> sheets = inserts.stream().map(it -> new SheetsCommand()
                         .setPrdRef(it.getItemCode())
@@ -163,8 +181,10 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .setDisLength(Float.parseFloat(it.getLength()))
                         .setDisWidth(Float.parseFloat(it.getWidth()))
                         .setDisUData2Sht(it.getWhsName())).toList();
+                log.info("创建XML导入引擎");
                 XmlExportEngine engine = new XmlExportEngine();
                 String xmlPath = engine.export(sheets);
+                log.info("执行xml导入，{}", xmlPath);
                 //执行导入
                 MasterlinkTool.ExecResult execResult = MasterlinkTool.executeImport(xmlPath);
 
@@ -229,7 +249,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                 });
 
 
-                return true;
+                return results.size();
             }
 
         } catch (InterruptedException e) {
@@ -243,6 +263,6 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                 exeLock.unlock();
             }
         }
-        return false;
+        return 0;
     }
 }

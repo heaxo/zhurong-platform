@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhurong.platform.custom.erp.entity.LkPmOrder;
-import com.zhurong.platform.custom.erp.mapper.LkPmOrderMapper;
-import com.zhurong.platform.custom.erp.service.ILkPmOrderService;
+import com.zhurong.platform.custom.erp.mapper.LkPmOrder2Mapper;
+import com.zhurong.platform.custom.erp.service.ILkPmOrder2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ import java.util.List;
  **/
 @Service
 @RequiredArgsConstructor
-@DS("erp")
-public class LkPmOrderServiceImpl extends ServiceImpl<LkPmOrderMapper, LkPmOrder> implements ILkPmOrderService {
+@DS("erp2")
+public class LkPmOrder2ServiceImpl extends ServiceImpl<LkPmOrder2Mapper, LkPmOrder> implements ILkPmOrder2Service {
 
     @Override
     public boolean tryInserts(List<String> mnoRefs) {
