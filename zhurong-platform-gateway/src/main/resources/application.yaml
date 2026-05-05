@@ -27,6 +27,9 @@ spring:
         group: DEFAULT_GROUP
 
     gateway:
+      httpclient:
+        connect-timeout: 10000
+        response-timeout: 780s
       discovery:
         locator:
           enabled: true
