@@ -61,6 +61,11 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
     private final ReentrantLock exeLock = new ReentrantLock();
 
     @Override
+    public boolean clearAllInventory() {
+        return false;
+    }
+
+    @Override
     public int importInventory(AvaInventoryQtyDTO dto) {
         List<String> itemCodes = dto.getItemCodes();
 

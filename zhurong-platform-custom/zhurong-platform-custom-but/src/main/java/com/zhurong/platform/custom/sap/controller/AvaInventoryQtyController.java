@@ -2,6 +2,7 @@ package com.zhurong.platform.custom.sap.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.base.api.ApiResponse;
+import com.zhurong.platform.custom.mapper.ZhurongButSupplierinfoMapper;
 import com.zhurong.platform.custom.sap.convert.AvaInventoryQtyConvert;
 import com.zhurong.platform.custom.sap.dto.AvaInventoryQtyDTO;
 import com.zhurong.platform.custom.sap.entity.AvaInventoryQty;
@@ -13,6 +14,7 @@ import com.zhurong.platform.custom.web.BaseController;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,11 +26,13 @@ import java.util.concurrent.Executor;
 @RequiredArgsConstructor
 @RequestMapping("/sap/ava/inventoyrQty")
 @Hidden
+@Slf4j
 public class AvaInventoryQtyController extends BaseController {
 
     private final AvaInventoryQtyConvert avaInventoryQtyConvert;
     private final IAvaInventoryQtyService avaInventoryQtyService;
     private final ISbutAvaInventoryQtyService sbutAvaInventoryQtyService;
+    private final ZhurongButSupplierinfoMapper zhurongButSupplierinfoMapper;
     @Resource(name = "dbQueryExecutor")
     private Executor dbQueryExecutor;
 
@@ -71,6 +75,12 @@ public class AvaInventoryQtyController extends BaseController {
     @PostMapping("importInventory")
     public ApiResponse<String> importInventory(@RequestBody AvaInventoryQtyDTO dto){
         try{
+            int c1 = zhurongButSupplierinfoMapper.clearPprrPprr00000100();
+            int c2 = zhurongButSupplierinfoMapper.clearWwhhIivv00000100();
+            int c3 = zhurongButSupplierinfoMapper.clearWwhhIivv00000200();
+            log.info("PprrPprr0000010清除条数：{}",c1);
+            log.info("WwhhIivv00000100清除条数：{}",c2);
+            log.info("WwhhIivv00000200清除条数：{}",c3);
             int count = avaInventoryQtyService.importInventory(dto);
             return ApiResponse.success(count > 0 ? String.format("成功导入%s条", count) : null);
         }catch (Exception e){
