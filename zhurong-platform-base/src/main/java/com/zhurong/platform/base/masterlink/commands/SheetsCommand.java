@@ -63,9 +63,9 @@ public class SheetsCommand extends BaseXmlCommand implements GeometrySource {
                 new XmlField("WIDTH", disWidth),
                 new XmlField("THICKNESS", disThickness),
                 new XmlField("CAMQUANTITY", disCamQuan),
-                new XmlField("UDATA1", disUData1Sht),
-                new XmlField("UDATA2", disUData2Sht),
-                new XmlField("UDATA3", disUData3Sht),
+                new XmlField("SUDATA1", disUData1Sht),
+                new XmlField("SUDATA2", disUData2Sht),
+                new XmlField("SUDATA3", disUData3Sht),
                 new XmlField("REMNANT", disIsRemnant)
         );
     }

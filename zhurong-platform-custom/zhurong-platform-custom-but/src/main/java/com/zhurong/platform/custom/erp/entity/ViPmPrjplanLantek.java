@@ -37,5 +37,7 @@ public class ViPmPrjplanLantek {
     private String unit;
     @TableField("业务类型")
     private String businessType;
+    @TableField("使用余料编码")
+    private String remShtRef;
 
 }
