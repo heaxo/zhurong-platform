@@ -12,10 +12,7 @@ import com.zhurong.platform.base.masterlink.commands.SheetsCommand;
 import com.zhurong.platform.base.masterlink.engine.XmlExportEngine;
 import com.zhurong.platform.core.lantek.dto.WwhhIivv00000100DTO;
 import com.zhurong.platform.core.lantek.dto.WwhhWwhh00000100DTO;
-import com.zhurong.platform.custom.entity.DisMmttMmtt00000100;
-import com.zhurong.platform.custom.entity.PpbbPpbb00000100;
-import com.zhurong.platform.custom.entity.PprrPprr00000100;
-import com.zhurong.platform.custom.entity.WwhhIivv00000200;
+import com.zhurong.platform.custom.entity.*;
 import com.zhurong.platform.custom.exception.MasterlinkImportException;
 import com.zhurong.platform.custom.feign.WwhhIivv00000100FeignClient;
 import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
@@ -26,10 +23,7 @@ import com.zhurong.platform.custom.sap.mapper.AvaInventoryQtyMapper;
 import com.zhurong.platform.custom.sap.service.IAvaInventoryQtyService;
 import com.zhurong.platform.custom.sbut.entity.SbutAvaInventoryQty;
 import com.zhurong.platform.custom.sbut.service.ISbutAvaInventoryQtyService;
-import com.zhurong.platform.custom.service.IDisMmttMmtt00000100Service;
-import com.zhurong.platform.custom.service.IPpbbPpbb00000100Service;
-import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
-import com.zhurong.platform.custom.service.IWwhhIivv00000200Service;
+import com.zhurong.platform.custom.service.*;
 import com.zhurong.platform.custom.util.MasterlinkTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +53,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
     private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
     private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
     private final WwhhIivv00000100FeignClient wwhhIivv00000100FeignClient;
+    private final IWwhhIivv00000100Service wwhhIivv00000100Service;
     private final IWwhhIivv00000200Service wwhhIivv00000200Service;
     private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
     private final ISbutAvaInventoryQtyService sbutAvaInventoryQtyService;
@@ -145,16 +140,27 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .collect(Collectors.toMap(AvaInventoryQty::getItemCode, AvaInventoryQty::getQuantity));
                 existsing.forEach(it -> {
                     Double qty = qtyMap.get(it.getPrdRef());
+                    AvaInventoryQty avaInventoryQty = mergeMap.get(it.getPrdRef());
 //                    boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
 //                            .set(PprrPprr00000100::getDIS_CamQuan, qty + it.getCurQuan())
 //                            .eq(PprrPprr00000100::getPrdRef, it.getPrdRef()));
 //                    log.info("库存更新，钢板编码：{}，原库存数量：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), it.getCurQuan(), qty + it.getCurQuan(), update1);
 
+                    String whsName = avaInventoryQty.getWhsName();
+                    String locName = avaInventoryQty.getLocName();
                     //如果不使用覆盖值，需要查出WwhhIivv00000200现有库存数量，然后做累加，并注释掉下面的清零操作
+                    boolean update1 = wwhhIivv00000100Service.update(Wrappers.lambdaUpdate(WwhhIivv00000100.class)
+                            .set(WwhhIivv00000100::getAllocatedQ, qty)
+                            .set(WwhhIivv00000100::getWrhRef, whsName)
+                            .set(WwhhIivv00000100::getLocDefault, locName)
+                            .eq(WwhhIivv00000100::getPrdRef, it.getPrdRef()));
                     boolean update2 = wwhhIivv00000200Service.update(Wrappers.lambdaUpdate(WwhhIivv00000200.class)
                             .set(WwhhIivv00000200::getStockQ, qty)
+                            .set(WwhhIivv00000200::getWrhRef, whsName)
+                            .set(WwhhIivv00000200::getLocRef, locName)
                             .eq(WwhhIivv00000200::getPrdRef, it.getPrdRef()));
-                    log.info("库存模块更新，钢板编码：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), qty + it.getCurQuan(), update2);
+                    log.info("库存模块更新，钢板编码：{}，库存数量：{}，仓库：{}，库位：{}，更新结果：[{},{}]", it.getPrdRef(), qty + it.getCurQuan(),whsName,
+                            locName, update1, update2);
                     //如果是覆盖，需要将ppbb中的数量清零
                     boolean update3 = ppbbPpbb00000100Service.update(Wrappers.lambdaUpdate(PpbbPpbb00000100.class)
                             .set(PpbbPpbb00000100::getAllocatedQ, 0)
@@ -168,6 +174,22 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
 
                 });
             }
+            //创建仓库和库位
+            record WarehouserGroupKey(String whsName,String locName){}
+            Map<WarehouserGroupKey, List<AvaInventoryQty>> createWarehousers = list.stream()
+                    .collect(Collectors.groupingBy(it -> new WarehouserGroupKey(it.getWhsName(), it.getLocName())));
+            List<WarehouserGroupKey> warehouserGroupKeys = createWarehousers.keySet().stream().toList();
+            warehouserGroupKeys.forEach(it -> {
+                WwhhWwhh00000100DTO wwhhWwhh00000100DTO = new WwhhWwhh00000100DTO();
+                wwhhWwhh00000100DTO.setWrhRef(it.whsName);
+                wwhhWwhh00000100DTO.setLocRef(it.locName);
+                ApiResponse<Boolean> apiResponse = wwhhWwhh00000100FeignClient.createWarehouseAndLocation(wwhhWwhh00000100DTO);
+                if (apiResponse.data() == null || !apiResponse.data()){
+                    log.warn("库存库位创建失败：{}-{}，{}",it.whsName, it.locName, apiResponse.message());
+                    return;
+                }
+                log.info("库存库位创建成功：{}-{}",it.whsName, it.locName);
+            });
 
             log.info("开始导入钢板库存");
             if (CollectionUtils.isNotEmpty(inserts)) {
@@ -215,22 +237,6 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                     ));
                 }
 
-                //创建仓库和库位
-                record WarehouserGroupKey(String whsName,String locName){}
-                Map<WarehouserGroupKey, List<AvaInventoryQty>> createWarehousers = list.stream()
-                        .collect(Collectors.groupingBy(it -> new WarehouserGroupKey(it.getWhsName(), it.getLocName())));
-                List<WarehouserGroupKey> warehouserGroupKeys = createWarehousers.keySet().stream().toList();
-                warehouserGroupKeys.forEach(it -> {
-                    WwhhWwhh00000100DTO wwhhWwhh00000100DTO = new WwhhWwhh00000100DTO();
-                    wwhhWwhh00000100DTO.setWrhRef(it.whsName);
-                    wwhhWwhh00000100DTO.setLocRef(it.locName);
-                    ApiResponse<Boolean> apiResponse = wwhhWwhh00000100FeignClient.createWarehouseAndLocation(wwhhWwhh00000100DTO);
-                    if (apiResponse.data() == null || !apiResponse.data()){
-                        log.warn("库存库位创建失败：{}-{}，{}",it.whsName, it.locName, apiResponse.message());
-                        return;
-                    }
-                    log.info("库存库位创建成功：{}-{}",it.whsName, it.locName);
-                });
                 list.forEach(it -> {
                     //钢板绑定库存
                     WwhhIivv00000100DTO wwhhIivv00000100DTO = new WwhhIivv00000100DTO();
