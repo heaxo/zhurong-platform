@@ -10,7 +10,7 @@ set "APPIMG_OUT=%BASE%\app-image"
 set "OUTPUT=%BASE%\publish"
 
 set "APP_NAME=zhurong-custom-but"
-set "APP_VERSION=0.0.3"
+set "APP_VERSION=0.0.4"
 set "MAIN_JAR=zhurong-platform-custom-but-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
 
