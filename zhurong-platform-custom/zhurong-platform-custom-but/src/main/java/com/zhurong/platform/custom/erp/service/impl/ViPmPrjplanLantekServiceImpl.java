@@ -2,6 +2,7 @@ package com.zhurong.platform.custom.erp.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhurong.platform.base.constant.NestConstant;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -146,6 +148,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                         .setDIS_UData7_Prt(supplierInfo.getCnc())
                         .setDIS_UData6_Prt(supplierInfo.getWhsName())
                         .setDIS_UData5_Prt(supplierInfo.getLocName())
+
+                        .setDIS_UData3_Sht(pprr.getDIS_UData3_Sht())
                         .setDIS_CamQuan(pprr.getDIS_CamQuan())
                         .setRecID(pprr.getRecID())
                 );
@@ -179,10 +183,24 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 String cnc = pprrPprr00000100.getDIS_UData7_Prt();
                 String whsName = pprrPprr00000100.getDIS_UData6_Prt();
                 String locName = pprrPprr00000100.getDIS_UData5_Prt();
+                String SUData3 = pprrPprr00000100.getDIS_UData3_Sht();
+
+                String DIS_UData3_Sht = whsName;
+                if(StringUtils.isNotBlank(SUData3)){
+                    String[] split = SUData3.split(",");
+
+                    List<String> list = Arrays.stream(split).toList();
+                    if (!list.contains(whsName)){
+                        list.add(whsName);
+                    }
+                    DIS_UData3_Sht = String.join(",",list);
+                }
+
+
 
                 boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
                         .set(PprrPprr00000100::getPrdRef, shtRef)
-                        .set(PprrPprr00000100::getDIS_UData1_Sht, whsName)
+                        .set(PprrPprr00000100::getDIS_UData3_Sht, DIS_UData3_Sht)
                         .set(PprrPprr00000100::getDIS_UData8_Prt, pprrPprr00000100.getDIS_UData8_Prt())
                         .eq(PprrPprr00000100::getRecID, pprrPprr00000100.getRecID()));
 
