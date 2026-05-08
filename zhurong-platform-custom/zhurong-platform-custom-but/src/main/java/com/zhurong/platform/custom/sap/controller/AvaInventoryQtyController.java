@@ -75,12 +75,12 @@ public class AvaInventoryQtyController extends BaseController {
     @PostMapping("importInventory")
     public ApiResponse<String> importInventory(@RequestBody AvaInventoryQtyDTO dto){
         try{
-            int c1 = zhurongButSupplierinfoMapper.clearPprrPprr00000100();
-            int c2 = zhurongButSupplierinfoMapper.clearWwhhIivv00000100();
+            /*int c2 = zhurongButSupplierinfoMapper.clearWwhhIivv00000100();
             int c3 = zhurongButSupplierinfoMapper.clearWwhhIivv00000200();
+            int c1 = zhurongButSupplierinfoMapper.clearPprrPprr00000100();
             log.info("PprrPprr0000010清除条数：{}",c1);
             log.info("WwhhIivv00000100清除条数：{}",c2);
-            log.info("WwhhIivv00000200清除条数：{}",c3);
+            log.info("WwhhIivv00000200清除条数：{}",c3);*/
             int count = avaInventoryQtyService.importInventory(dto);
             return ApiResponse.success(count > 0 ? String.format("成功导入%s条", count) : null);
         }catch (Exception e){

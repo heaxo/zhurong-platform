@@ -4,20 +4,21 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.constant.NestConstant;
 import com.zhurong.platform.base.exception.BusinessException;
-import com.zhurong.platform.core.lantek.dto.WwhhWwhh00000100DTO;
 import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
-import com.zhurong.platform.custom.entity.*;
+import com.zhurong.platform.custom.entity.DisNestNest00000100;
+import com.zhurong.platform.custom.entity.PprrPprr00000100;
+import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
 import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
 import com.zhurong.platform.custom.erp.mapper.ViPmPrjplanLantekMapper;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantek2Service;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
-import com.zhurong.platform.custom.feign.WwhhWwhh00000100FeignClient;
 import com.zhurong.platform.custom.model.BaseEntity;
 import com.zhurong.platform.custom.properties.ButConfigProperties;
-import com.zhurong.platform.custom.service.*;
+import com.zhurong.platform.custom.service.IDisNestNest00000100Service;
+import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
+import com.zhurong.platform.custom.service.IZhurongButSupplierinfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /*
  * @Author zhurong
@@ -41,13 +40,13 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
     private final ZhurongButSupplierinfoConvert zhurongButSupplierinfoConvert;
     private final IDisNestNest00000100Service disNestNest00000100Service;
-    private final IWwhhIivv00000100Service wwhhIivv00000100Service;
-    private final IWwhhIivv00000200Service wwhhIivv00000200Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
-    private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
     private final IZhurongButSupplierinfoService zhurongButSupplierinfoService;
-    private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
     private final IViPmPrjplanLantek2Service viPmPrjplanLantek2Service;
+//    private final IWwhhIivv00000100Service wwhhIivv00000100Service;
+//    private final IWwhhIivv00000200Service wwhhIivv00000200Service;
+//    private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
+//    private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
 
     private final ButConfigProperties butConfigProperties;
 
@@ -138,6 +137,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 //防止重复,加上序号
                 String newPrdRef = String.format("%s-%s", combinationPrdRef, count + 1);
 
+                log.info("记录需更新钢板引用：{}",newPrdRef);
                 pprrUpdates.add(new PprrPprr00000100()
                         .setPrdRef(newPrdRef)
                         .setDIS_ShtRefOrg(shtRef)
@@ -153,7 +153,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         }
 
-        record WarehouserGroupKey(String whsName,String locName){}
+        /*record WarehouserGroupKey(String whsName,String locName){}
         Map<WarehouserGroupKey, List<ZhurongButSupplierinfo>> createWarehousers = supplierInfos.stream()
                 .collect(Collectors.groupingBy(it -> new WarehouserGroupKey(it.getWhsName(), it.getLocName())));
         List<WarehouserGroupKey> warehouserGroupKeys = createWarehousers.keySet().stream().toList();
@@ -167,9 +167,9 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 return;
             }
             log.info("库存库位创建成功：{}-{}",it.whsName, it.locName);
-        });
+        });*/
 
-
+        log.info("需更新钢板引用数量：{}",pprrUpdates.size());
         if (CollectionUtils.isNotEmpty(pprrUpdates)){
             for (int i = 0; i < pprrUpdates.size(); i++) {
                 PprrPprr00000100 pprrPprr00000100 = pprrUpdates.get(i);
@@ -182,6 +182,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
                 boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
                         .set(PprrPprr00000100::getPrdRef, shtRef)
+                        .set(PprrPprr00000100::getDIS_UData1_Sht, whsName)
                         .set(PprrPprr00000100::getDIS_UData8_Prt, pprrPprr00000100.getDIS_UData8_Prt())
                         .eq(PprrPprr00000100::getRecID, pprrPprr00000100.getRecID()));
 
@@ -193,8 +194,11 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
                 log.info("更新套料程序钢板引用：{} -> {} {}",originShtRef, shtRef, update2);
 
-                if (update1){
-                    /** 更新库存模块相关信息
+                if (update1 && update2){
+                    updateReadState.add(cnc);
+                }
+                /*if (update1){
+                    *//** 更新库存模块相关信息
                      * update WWHH_IIVV_00000100 set WrhRef = N'仓库7',PrdRef  = 'HFB_002' where WrhRef = N'仓库6' and PrdRef  = 'HFB_001';
                      * update WWHH_IIVV_00000200 set WrhRef = N'仓库7',LocRef = N'库位7',PrdRef  = 'HFB_002' where WrhRef = N'仓库6' AND LocRef = N'库位5' and PrdRef  = 'HFB_001';
                      * update PPBB_PPBB_00000100 set WrhRef = N'仓库7',LocRef = N'库位7' where WrhRef = N'仓库6' AND LocRef = N'库位5' and PrdRef  = 'HFB_001';
@@ -203,7 +207,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                      * UPDATE PPRR_PPRR_00000100 SET PrdRef = 'HFB_002' WHERE PrdRef = 'HFB_001';
                      * UPDATE DIS_NEST_NEST_00000100 SET ShtRef = 'HFB_002' WHERE ShtRef = 'HFB_001';
                      * UPDATE PPBB_PPBB_00000100 SET PrdRef= 'HFB_002' WHERE PrdRef = 'HFB_001';
-                     */
+                     *//*
                     boolean update3 = wwhhIivv00000100Service.update(Wrappers.lambdaUpdate(WwhhIivv00000100.class)
                             .set(WwhhIivv00000100::getWrhRef, whsName)
                             .set(WwhhIivv00000100::getPrdRef, shtRef)
@@ -229,11 +233,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                             .set(PpbbPpbb00000100::getPrdRef, shtRef)
                             .eq(PpbbPpbb00000100::getPrdRef, originShtRef));
                     log.info("PPBB_PPBB_00000100，库存钢板引用更新：{} -> {} {}",originShtRef,shtRef,update7);
-                }
-
-                if (update1 && update2){
-                    updateReadState.add(cnc);
-                }
+                }*/
             }
 
             boolean update = zhurongButSupplierinfoService.update(Wrappers.lambdaUpdate(ZhurongButSupplierinfo.class)

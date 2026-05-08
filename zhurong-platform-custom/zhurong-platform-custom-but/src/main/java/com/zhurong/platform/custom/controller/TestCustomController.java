@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,6 +46,17 @@ public class TestCustomController {
 
     @GetMapping("/ping")
     public String ping() {
+        return "pong-from-custom";
+    }
+
+    @GetMapping("/wait_test")
+    public String waitTest() {
+        try {
+            TimeUnit.MINUTES.sleep(8);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return "interrupted";
+        }
         return "pong-from-custom";
     }
 
