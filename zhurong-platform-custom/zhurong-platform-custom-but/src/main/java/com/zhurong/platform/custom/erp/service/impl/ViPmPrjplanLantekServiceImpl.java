@@ -78,16 +78,28 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         List<ViPmPrjplanLantek> viPmPrjplanLanteks = listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class),
                 ViPmPrjplanLantek::getCnc, cncs, 1000);
+        viPmPrjplanLanteks.forEach(prjp -> {
+            if (StringUtils.isBlank(prjp.getShtRef())){
+                prjp.setShtRef(prjp.getUseRemnatRef());
+            }
+        });
         List<String> querydCncs = viPmPrjplanLanteks.stream().map(ViPmPrjplanLantek::getCnc).toList();
 
         List<String> cncs2 = cncs.stream().filter(cnc -> !querydCncs.contains(cnc)).toList();
         if (CollectionUtils.isNotEmpty(cncs2)){
             List<ViPmPrjplanLantek> viPmPrjplanLanteks2 = viPmPrjplanLantek2Service
                     .listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class), ViPmPrjplanLantek::getCnc, cncs2, 1000);
+            viPmPrjplanLanteks2.forEach(prjp -> {
+                if (StringUtils.isBlank(prjp.getShtRef())){
+                    prjp.setShtRef(prjp.getUseRemnatRef());
+                }
+            });
+
             viPmPrjplanLanteks.addAll(viPmPrjplanLanteks2);
         }
-        
 
+
+        viPmPrjplanLanteks = viPmPrjplanLanteks.stream().filter(it -> StringUtils.isNotBlank(it.getShtRef())).toList();
         if (CollectionUtils.isEmpty(viPmPrjplanLanteks)){
             return false;
         }
