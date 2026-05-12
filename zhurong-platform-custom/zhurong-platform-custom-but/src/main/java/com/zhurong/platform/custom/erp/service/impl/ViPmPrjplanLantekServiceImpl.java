@@ -126,7 +126,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 .eq(BaseEntity::getIsRead, false));
 
         if (CollectionUtils.isEmpty(supplierInfos)){
-            log.warn("需更新引用的供应商信息为空，无需更新");
+            log.warn("需更新的供应商信息为空，无需更新");
             return false;
         }
 
@@ -142,20 +142,9 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
             if (pprr != null) {
 
-                String combinationPrdRef = String.format("%s-%s*%s",supplierInfo.getWhsName(), pprr.getDIS_Length(), pprr.getDIS_Width());
-
-                //查询数据库中已有多少个用供应商+尺寸组合的编码
-                long count = pprrPprr00000100Service.count(Wrappers.lambdaQuery(PprrPprr00000100.class)
-                        .eq(PprrPprr00000100::getDIS_UData8_Prt, combinationPrdRef));
-
-                //防止重复,加上序号
-                String newPrdRef = String.format("%s-%s", combinationPrdRef, count + 1);
-
-                log.info("记录需更新钢板引用：{}",newPrdRef);
+                log.info("记录需更新钢板用户数据：{}",shtRef);
                 pprrUpdates.add(new PprrPprr00000100()
-                        .setPrdRef(newPrdRef)
                         .setDIS_ShtRefOrg(shtRef)
-                        .setDIS_UData8_Prt(combinationPrdRef)
 
                         .setDIS_UData7_Prt(supplierInfo.getCnc())
                         .setDIS_UData6_Prt(supplierInfo.getWhsName())
@@ -169,101 +158,49 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         }
 
-        /*record WarehouserGroupKey(String whsName,String locName){}
-        Map<WarehouserGroupKey, List<ZhurongButSupplierinfo>> createWarehousers = supplierInfos.stream()
-                .collect(Collectors.groupingBy(it -> new WarehouserGroupKey(it.getWhsName(), it.getLocName())));
-        List<WarehouserGroupKey> warehouserGroupKeys = createWarehousers.keySet().stream().toList();
-        warehouserGroupKeys.forEach(it -> {
-            WwhhWwhh00000100DTO wwhhWwhh00000100DTO = new WwhhWwhh00000100DTO();
-            wwhhWwhh00000100DTO.setWrhRef(it.whsName);
-            wwhhWwhh00000100DTO.setLocRef(it.locName);
-            ApiResponse<Boolean> apiResponse = wwhhWwhh00000100FeignClient.createWarehouseAndLocation(wwhhWwhh00000100DTO);
-            if (apiResponse.data() == null || !apiResponse.data()){
-                log.warn("库存库位创建失败：{}-{}，{}",it.whsName, it.locName, apiResponse.message());
-                return;
-            }
-            log.info("库存库位创建成功：{}-{}",it.whsName, it.locName);
-        });*/
-
-        log.info("需更新钢板引用数量：{}",pprrUpdates.size());
+        log.info("需更新钢板数量：{}",pprrUpdates.size());
         if (CollectionUtils.isNotEmpty(pprrUpdates)){
             for (int i = 0; i < pprrUpdates.size(); i++) {
-                PprrPprr00000100 pprrPprr00000100 = pprrUpdates.get(i);
-                String shtRef = pprrPprr00000100.getPrdRef();
-                String originShtRef = pprrPprr00000100.getDIS_ShtRefOrg();
+                try{
+                    PprrPprr00000100 pprrPprr00000100 = pprrUpdates.get(i);
+                    String originShtRef = pprrPprr00000100.getDIS_ShtRefOrg();
 
-                String cnc = pprrPprr00000100.getDIS_UData7_Prt();
-                String whsName = pprrPprr00000100.getDIS_UData6_Prt();
-                String locName = pprrPprr00000100.getDIS_UData5_Prt();
-                String SUData3 = pprrPprr00000100.getDIS_UData3_Sht();
+                    String cnc = pprrPprr00000100.getDIS_UData7_Prt();
+                    String whsName = pprrPprr00000100.getDIS_UData6_Prt();
+                    String SUData3 = pprrPprr00000100.getDIS_UData3_Sht();
 
-                String DIS_UData3_Sht = whsName;
-                if(StringUtils.isNotBlank(SUData3)){
-                    String[] split = SUData3.split(",");
+                    String DIS_UData3_Sht = StringUtils.isNotBlank(whsName) ? whsName : "";
+                    if(StringUtils.isNotBlank(SUData3)){
+                        String[] split = SUData3.split(",");
 
-                    List<String> list = Arrays.stream(split).toList();
-                    if (!list.contains(whsName)){
-                        list.add(whsName);
+                        List<String> list = Arrays.stream(split).toList();
+                        if (!list.contains(whsName)){
+                            list.add(whsName);
+                        }
+                        DIS_UData3_Sht = String.join(",",list);
                     }
-                    DIS_UData3_Sht = String.join(",",list);
+
+
+
+                    boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
+                            .set(PprrPprr00000100::getDIS_UData3_Sht, DIS_UData3_Sht)
+                            .eq(PprrPprr00000100::getRecID, pprrPprr00000100.getRecID()));
+
+                    log.info("更新钢板档案用户数据：{} {} {}",originShtRef, DIS_UData3_Sht, update1);
+
+                    boolean update2 = disNestNest00000100Service.update(Wrappers.lambdaUpdate(DisNestNest00000100.class)
+                            .set(DisNestNest00000100::getUData3, DIS_UData3_Sht)
+                            .eq(DisNestNest00000100::getShtRef, originShtRef));
+
+                    log.info("更新套料程序钢板用户数据：{} {} {}",originShtRef, DIS_UData3_Sht, update2);
+
+                    if (update1 && update2){
+                        updateReadState.add(cnc);
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage());
                 }
 
-
-
-                boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
-                        .set(PprrPprr00000100::getPrdRef, shtRef)
-                        .set(PprrPprr00000100::getDIS_UData3_Sht, DIS_UData3_Sht)
-                        .set(PprrPprr00000100::getDIS_UData8_Prt, pprrPprr00000100.getDIS_UData8_Prt())
-                        .eq(PprrPprr00000100::getRecID, pprrPprr00000100.getRecID()));
-
-                log.info("更新钢板档案编码：{} -> {} {}",originShtRef, shtRef, update1);
-
-                boolean update2 = disNestNest00000100Service.update(Wrappers.lambdaUpdate(DisNestNest00000100.class)
-                        .set(DisNestNest00000100::getShtRef, shtRef)
-                        .eq(DisNestNest00000100::getShtRef, originShtRef));
-
-                log.info("更新套料程序钢板引用：{} -> {} {}",originShtRef, shtRef, update2);
-
-                if (update1 && update2){
-                    updateReadState.add(cnc);
-                }
-                /*if (update1){
-                    *//** 更新库存模块相关信息
-                     * update WWHH_IIVV_00000100 set WrhRef = N'仓库7',PrdRef  = 'HFB_002' where WrhRef = N'仓库6' and PrdRef  = 'HFB_001';
-                     * update WWHH_IIVV_00000200 set WrhRef = N'仓库7',LocRef = N'库位7',PrdRef  = 'HFB_002' where WrhRef = N'仓库6' AND LocRef = N'库位5' and PrdRef  = 'HFB_001';
-                     * update PPBB_PPBB_00000100 set WrhRef = N'仓库7',LocRef = N'库位7' where WrhRef = N'仓库6' AND LocRef = N'库位5' and PrdRef  = 'HFB_001';
-                     * update PPBB_PPBB_00000100 set Reference = N'仓库7' where Type = 5 and PrdRef  = 'HFB_001';
-                     *
-                     * UPDATE PPRR_PPRR_00000100 SET PrdRef = 'HFB_002' WHERE PrdRef = 'HFB_001';
-                     * UPDATE DIS_NEST_NEST_00000100 SET ShtRef = 'HFB_002' WHERE ShtRef = 'HFB_001';
-                     * UPDATE PPBB_PPBB_00000100 SET PrdRef= 'HFB_002' WHERE PrdRef = 'HFB_001';
-                     *//*
-                    boolean update3 = wwhhIivv00000100Service.update(Wrappers.lambdaUpdate(WwhhIivv00000100.class)
-                            .set(WwhhIivv00000100::getWrhRef, whsName)
-                            .set(WwhhIivv00000100::getPrdRef, shtRef)
-                            .eq(WwhhIivv00000100::getPrdRef, originShtRef));
-                    log.info("WWHH_IIVV_00000100，仓库信息更新：{}、{}、{}、{}",whsName,shtRef,originShtRef,update3);
-                    boolean update4 = wwhhIivv00000200Service.update(Wrappers.lambdaUpdate(WwhhIivv00000200.class)
-                            .set(WwhhIivv00000200::getWrhRef, whsName)
-                            .set(WwhhIivv00000200::getLocRef, locName)
-                            .set(WwhhIivv00000200::getPrdRef, shtRef)
-                            .eq(WwhhIivv00000200::getPrdRef, originShtRef));
-                    log.info("WWHH_IIVV_00000200，仓库库位信息更新：{}、{}、{}、{}、{}",whsName,locName,shtRef,originShtRef,update4);
-                    boolean update5 = ppbbPpbb00000100Service.update(Wrappers.lambdaUpdate(PpbbPpbb00000100.class)
-                            .set(PpbbPpbb00000100::getWrhRef, whsName)
-                            .set(PpbbPpbb00000100::getLocRef, locName)
-                            .eq(PpbbPpbb00000100::getPrdRef, originShtRef));
-                    log.info("PPBB_PPBB_00000100，库存仓库库位信息更新：{}、{}、{}、{}",whsName,locName,originShtRef,update5);
-                    boolean update6 = ppbbPpbb00000100Service.update(Wrappers.lambdaUpdate(PpbbPpbb00000100.class)
-                            .set(PpbbPpbb00000100::getReference, whsName)
-                            .eq(PpbbPpbb00000100::getType, 5)
-                            .eq(PpbbPpbb00000100::getPrdRef, originShtRef));
-                    log.info("PPBB_PPBB_00000100，库存仓库引用更新：{}、{}、{}",whsName,originShtRef,update6);
-                    boolean update7 = ppbbPpbb00000100Service.update(Wrappers.lambdaUpdate(PpbbPpbb00000100.class)
-                            .set(PpbbPpbb00000100::getPrdRef, shtRef)
-                            .eq(PpbbPpbb00000100::getPrdRef, originShtRef));
-                    log.info("PPBB_PPBB_00000100，库存钢板引用更新：{} -> {} {}",originShtRef,shtRef,update7);
-                }*/
             }
 
             boolean update = zhurongButSupplierinfoService.update(Wrappers.lambdaUpdate(ZhurongButSupplierinfo.class)
