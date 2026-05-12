@@ -207,7 +207,7 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .setDisCamQuan(it.getQuantity().intValue())
                         .setDisLength(Float.parseFloat(it.getLength()))
                         .setDisWidth(Float.parseFloat(it.getWidth()))
-                        .setDisUData2Sht(it.getWhsName())).toList();
+                        .setDisUData2Sht(String.format("%s,%s",it.getCompany(),it.getWhsName()))).toList();
                 log.info("创建XML导入引擎");
                 XmlExportEngine engine = new XmlExportEngine();
                 String xmlPath = engine.export(sheets);

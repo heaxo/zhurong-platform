@@ -21,7 +21,7 @@ public class ViPmPrjplanLantek {
     private String cnc;
     @TableField("位置")
     private String locName;
-    @TableField("钢板编码")
+    @TableField("ShtRef")
     private String shtRef;
     @TableField("钢板名称")
     private String shtName;
