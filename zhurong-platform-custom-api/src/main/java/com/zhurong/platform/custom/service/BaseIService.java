@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -35,6 +36,34 @@ public interface BaseIService<T> extends IService<T> {
             }
         } else {
             list.addAll(list(queryWrapper.in(R, inList)));
+        }
+        return list;
+    }
+
+    default <E> List<Boolean> updateByIn(LambdaUpdateWrapper<T> updateWrapper, SFunction<T, ?> R, List<E> inList) {
+        return updateByIn(updateWrapper, R, inList, sqlserverMaxInCount);
+    }
+    default <E> List<Boolean> updateByIn(LambdaUpdateWrapper<T> updateWrapper, SFunction<T, ?> R, List<E> inList, Integer maxInCount) {
+        List<Boolean> list = new ArrayList<>();
+        if (inList.size() > maxInCount) {
+            int count = inList.size() / maxInCount;
+            int yu = inList.size() % maxInCount;
+            if (yu > 0) {
+                count = count + 1;
+            }
+            for (int i = 0; i < count; i++) {
+                LambdaUpdateWrapper<T> wrapper = updateWrapper.clone();
+                if (i == count - 1) {
+                    List<E> ins = inList.subList(i * maxInCount, inList.size());
+                    wrapper.in(R, ins);
+                } else {
+                    List<E> ins = inList.subList(i * maxInCount, maxInCount * (i + 1));
+                    wrapper.in(R, ins);
+                }
+                list.add(update(wrapper));
+            }
+        } else {
+            list.add(update(updateWrapper.in(R, inList)));
         }
         return list;
     }

@@ -145,12 +145,12 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 log.info("记录需更新钢板用户数据：{}",shtRef);
                 pprrUpdates.add(new PprrPprr00000100()
                         .setDIS_ShtRefOrg(shtRef)
+                        .setDIS_UData3_Sht(pprr.getDIS_UData3_Sht())
 
-                        .setDIS_UData7_Prt(supplierInfo.getCnc())
                         .setDIS_UData6_Prt(supplierInfo.getWhsName())
                         .setDIS_UData5_Prt(supplierInfo.getLocName())
+                        .setDIS_UData7_Prt(supplierInfo.getCnc())
 
-                        .setDIS_UData3_Sht(pprr.getDIS_UData3_Sht())
                         .setDIS_CamQuan(pprr.getDIS_CamQuan())
                         .setRecID(pprr.getRecID())
                 );
@@ -165,17 +165,28 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                     PprrPprr00000100 pprrPprr00000100 = pprrUpdates.get(i);
                     String originShtRef = pprrPprr00000100.getDIS_ShtRefOrg();
 
-                    String cnc = pprrPprr00000100.getDIS_UData7_Prt();
+                    String locName = pprrPprr00000100.getDIS_UData5_Prt();
                     String whsName = pprrPprr00000100.getDIS_UData6_Prt();
+                    String cnc = pprrPprr00000100.getDIS_UData7_Prt();
                     String SUData3 = pprrPprr00000100.getDIS_UData3_Sht();
 
                     String DIS_UData3_Sht = StringUtils.isNotBlank(whsName) ? whsName : "";
+
+                    if (StringUtils.isNotBlank(DIS_UData3_Sht)){
+                        DIS_UData3_Sht = String.format("%s,%s",DIS_UData3_Sht, locName);
+                    }else{
+                        DIS_UData3_Sht = locName;
+                    }
+
                     if(StringUtils.isNotBlank(SUData3)){
                         String[] split = SUData3.split(",");
 
                         List<String> list = Arrays.stream(split).toList();
                         if (!list.contains(whsName)){
                             list.add(whsName);
+                        }
+                        if (!list.contains(locName)){
+                            list.add(locName);
                         }
                         DIS_UData3_Sht = String.join(",",list);
                     }
@@ -203,10 +214,10 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
             }
 
-            boolean update = zhurongButSupplierinfoService.update(Wrappers.lambdaUpdate(ZhurongButSupplierinfo.class)
-                    .set(BaseEntity::getIsRead, true)
-                    .in(ZhurongButSupplierinfo::getCnc, updateReadState));
-            log.info("供应商信息同步状态更新：{}，{}",update, String.join(",", updateReadState));
+            List<Boolean> booleans = zhurongButSupplierinfoService.updateByIn(Wrappers.lambdaUpdate(ZhurongButSupplierinfo.class)
+                            .set(BaseEntity::getIsRead, true),
+                    ZhurongButSupplierinfo::getCnc, updateReadState);
+            log.info("供应商信息同步状态更新：{}，{}",booleans, String.join(",", updateReadState));
         }
 
         return true;
