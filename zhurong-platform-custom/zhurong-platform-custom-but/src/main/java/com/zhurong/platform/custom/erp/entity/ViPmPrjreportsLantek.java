@@ -17,8 +17,6 @@ import lombok.experimental.Accessors;
 @TableName("vi_pm_prjreports_lantek")
 public class ViPmPrjreportsLantek {
 
-    @TableField("IID")
-    private String id;
     @TableField("业务类型")
     private String businessType;
     @TableField("下料程序名")

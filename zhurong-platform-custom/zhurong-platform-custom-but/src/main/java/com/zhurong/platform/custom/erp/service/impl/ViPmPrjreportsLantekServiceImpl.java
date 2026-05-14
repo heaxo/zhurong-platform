@@ -76,9 +76,9 @@ public class ViPmPrjreportsLantekServiceImpl extends ServiceImpl<ViPmPrjreportsL
 
         log.info("正在更新套料程序报工状态：{}",String.join(",", reportCncs));
 
-        return disNestNest00000100Service.update(Wrappers.lambdaUpdate(DisNestNest00000100.class)
-//                        .set(DisNestNest00000100::getDescrip,"已报工")
-                        .set(DisNestNest00000100::getMState,NestConstant.MState.COMPLETED)
-                .in(DisNestNest00000100::getCNC,reportCncs));
+        List<Boolean> booleans = disNestNest00000100Service.updateByIn(Wrappers.lambdaUpdate(DisNestNest00000100.class)
+                        .set(DisNestNest00000100::getMState, NestConstant.MState.COMPLETED),
+                DisNestNest00000100::getCNC, reportCncs);
+        return booleans.stream().allMatch(t -> t);
     }
 }
