@@ -41,5 +41,7 @@ public class ViPmPrjplanLantek {
     private String businessType;
     @TableField("使用余料编码")
     private String remShtRef;
+    @TableField("生成余料编码")
+    private String genRemShtRef;
 
 }

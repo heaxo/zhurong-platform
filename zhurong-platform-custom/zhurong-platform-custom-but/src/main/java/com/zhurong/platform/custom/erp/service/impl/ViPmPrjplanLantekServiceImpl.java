@@ -73,23 +73,93 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         List<String> cncs = nests.stream().map(DisNestNest00000100::getCNC).toList();
 
-        List<ZhurongButSupplierinfo> existingSupplierInfos = zhurongButSupplierinfoService.listByIn(Wrappers.lambdaQuery(ZhurongButSupplierinfo.class), ZhurongButSupplierinfo::getCnc,
+        List<ZhurongButSupplierinfo> existingSupplierInfos = zhurongButSupplierinfoService
+                .listByIn(Wrappers.lambdaQuery(ZhurongButSupplierinfo.class), ZhurongButSupplierinfo::getCnc,
                 cncs);
 
+        List<String> existingCncs = existingSupplierInfos.stream().filter(it -> it.getIsRead() != null && it.getIsRead())
+                .map(ZhurongButSupplierinfo::getCnc)
+                .toList();
+
+        List<String> qcncs = cncs.stream().filter(cnc -> !existingCncs.contains(cnc)).toList();
+        if (qcncs.isEmpty()){
+            String msg = "没有可同步的数据";
+            log.error(msg);
+            throw new BusinessException(msg);
+        }
+        List<String> records = new ArrayList<>();
+        List<ZhurongButSupplierinfo> news = new ArrayList<>();
         List<ViPmPrjplanLantek> viPmPrjplanLanteks = listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class),
-                ViPmPrjplanLantek::getCnc, cncs, 1000);
+                ViPmPrjplanLantek::getCnc, qcncs, 1000);
         viPmPrjplanLanteks.forEach(prjp -> {
+
+            if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+                //保留整板的
+                if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
+                    ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                    news.add(entity);
+                    records.add(entity.getShtRef());
+                }
+                //添加生成余料的（未使用的，没有CNC）
+                prjp.setShtRef(prjp.getGenRemShtRef());
+                prjp.setCnc(prjp.getGenRemShtRef());
+            }
+
+            if (StringUtils.isNotBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+                if (!prjp.getUseRemnatRef().equals(prjp.getGenRemShtRef())){
+                    if (!records.contains(prjp.getUseRemnatRef())){
+                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                        entity.setShtRef(prjp.getUseRemnatRef());
+                        news.add(entity);
+                        records.add(entity.getShtRef());
+                    }
+                    if (!records.contains(prjp.getGenRemShtRef())){
+                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                        entity.setShtRef(prjp.getGenRemShtRef());
+                        news.add(entity);
+                        records.add(entity.getShtRef());
+                    }
+                }
+            }
+
             if (StringUtils.isBlank(prjp.getShtRef())){
                 prjp.setShtRef(prjp.getUseRemnatRef());
             }
         });
         List<String> querydCncs = viPmPrjplanLanteks.stream().map(ViPmPrjplanLantek::getCnc).toList();
-
         List<String> cncs2 = cncs.stream().filter(cnc -> !querydCncs.contains(cnc)).toList();
         if (CollectionUtils.isNotEmpty(cncs2)){
             List<ViPmPrjplanLantek> viPmPrjplanLanteks2 = viPmPrjplanLantek2Service
                     .listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class), ViPmPrjplanLantek::getCnc, cncs2, 1000);
             viPmPrjplanLanteks2.forEach(prjp -> {
+                if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+                    //保留整板的
+                    if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
+                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                        news.add(entity);
+                        records.add(entity.getShtRef());
+                    }
+                    //添加生成余料的（未使用的，没有CNC）
+                    prjp.setShtRef(prjp.getGenRemShtRef());
+                    prjp.setCnc(prjp.getGenRemShtRef());
+                }
+
+                if (StringUtils.isNotBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+                    if (!prjp.getUseRemnatRef().equals(prjp.getGenRemShtRef())){
+                        if (!records.contains(prjp.getUseRemnatRef())){
+                            ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                            entity.setShtRef(prjp.getUseRemnatRef());
+                            news.add(entity);
+                            records.add(entity.getShtRef());
+                        }
+                        if (!records.contains(prjp.getGenRemShtRef())){
+                            ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
+                            entity.setShtRef(prjp.getGenRemShtRef());
+                            news.add(entity);
+                            records.add(entity.getShtRef());
+                        }
+                    }
+                }
                 if (StringUtils.isBlank(prjp.getShtRef())){
                     prjp.setShtRef(prjp.getUseRemnatRef());
                 }
@@ -115,8 +185,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
         }
 
         List<ZhurongButSupplierinfo> saves = needInsert.stream().map(zhurongButSupplierinfoConvert::toEntity).toList();
-
-        return zhurongButSupplierinfoService.saveBatch(saves);
+        news.addAll(saves);
+        return zhurongButSupplierinfoService.saveBatch(news);
     }
 
     @Override
@@ -151,6 +221,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                         .setDIS_UData5_Prt(supplierInfo.getLocName())
                         .setDIS_UData7_Prt(supplierInfo.getCnc())
 
+                        .setDIS_IsRemnant(pprr.getDIS_IsRemnant())
                         .setDIS_CamQuan(pprr.getDIS_CamQuan())
                         .setRecID(pprr.getRecID())
                 );
@@ -169,8 +240,31 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                     String whsName = pprrPprr00000100.getDIS_UData6_Prt();
                     String cnc = pprrPprr00000100.getDIS_UData7_Prt();
                     String SUData3 = pprrPprr00000100.getDIS_UData3_Sht();
+                    Byte DIS_IsRemnant = pprrPprr00000100.getDIS_IsRemnant();
+
+                    log.info("余料标识：{}，{}",originShtRef,DIS_IsRemnant);
+
+                    boolean isRemnant = DIS_IsRemnant != null && "1".equals(DIS_IsRemnant.toString());
+
+                    if (isRemnant){
+                        ViPmPrjplanLantek one = getOne(Wrappers.lambdaQuery(ViPmPrjplanLantek.class).eq(ViPmPrjplanLantek::getGenRemShtRef, originShtRef), false);
+
+                        if (one == null){
+                            log.info("查第二数据库：{}", originShtRef);
+                            one = viPmPrjplanLantek2Service.getOne(Wrappers.lambdaQuery(ViPmPrjplanLantek.class).eq(ViPmPrjplanLantek::getGenRemShtRef, originShtRef), false);
+                        }
+
+                        if (one != null){
+                            whsName = one.getWhsName();
+                            locName = one.getLocName();
+                            log.info("查询生成余料编码数据：{},{},{},{},{}",originShtRef,one.getShtRef(),one.getRemShtRef(),whsName,locName);
+                        }
+                    }
+
 
                     String DIS_UData3_Sht = StringUtils.isNotBlank(whsName) ? whsName : "";
+
+                    log.info("originShtRef = {} DIS_UData3_Sht={}", originShtRef,DIS_UData3_Sht);
 
                     if (StringUtils.isNotBlank(DIS_UData3_Sht)){
                         DIS_UData3_Sht = String.format("%s,%s",DIS_UData3_Sht, locName);
@@ -178,17 +272,21 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                         DIS_UData3_Sht = locName;
                     }
 
-                    if(StringUtils.isNotBlank(SUData3)){
+                    if (StringUtils.isNotBlank(SUData3)) {
                         String[] split = SUData3.split(",");
+                        log.info("whsName={}", whsName);
 
-                        List<String> list = Arrays.stream(split).toList();
-                        if (!list.contains(whsName)){
+                        List<String> list = new ArrayList<>(Arrays.asList(split));
+
+                        if (StringUtils.isNotBlank(whsName) && !list.contains(whsName)) {
                             list.add(whsName);
                         }
-                        if (!list.contains(locName)){
+
+                        if (StringUtils.isNotBlank(locName) && !list.contains(locName)) {
                             list.add(locName);
                         }
-                        DIS_UData3_Sht = String.join(",",list);
+
+                        DIS_UData3_Sht = String.join(",", list);
                     }
 
 
