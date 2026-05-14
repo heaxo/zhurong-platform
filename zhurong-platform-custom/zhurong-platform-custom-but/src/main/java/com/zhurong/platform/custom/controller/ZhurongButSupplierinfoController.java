@@ -15,10 +15,7 @@ import com.zhurong.platform.custom.service.IZhurongButSupplierinfoService;
 import com.zhurong.platform.custom.vo.ZhurongButSupplierinfoVO;
 import com.zhurong.platform.custom.web.BaseController;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,7 +67,14 @@ public class ZhurongButSupplierinfoController extends BaseController {
     @PostMapping("/sync")
     public ApiResponse<Boolean> syncSupplierInfo(ZhurongButSupplierinfoDTO dto) {
         boolean update1 = viPmPrjplanLantekService.syncSupplierInfo();
-        boolean update2 = viPmPrjplanLantekService.updateInventoryReferences();
-        return ApiResponse.success(update1 || update2);
+        return ApiResponse.success(update1);
+    }
+    /*
+     *
+     */
+    @PostMapping("/updateUdata")
+    public ApiResponse<Boolean> updateUdata(@RequestBody ZhurongButSupplierinfoDTO dto) {
+        boolean update2 = viPmPrjplanLantekService.updateInventoryReferences(dto.getIds());
+        return ApiResponse.success(update2);
     }
 }

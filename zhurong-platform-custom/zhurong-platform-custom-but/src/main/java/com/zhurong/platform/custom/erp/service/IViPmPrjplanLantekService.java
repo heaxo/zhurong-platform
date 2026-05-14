@@ -3,6 +3,8 @@ package com.zhurong.platform.custom.erp.service;
 import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
 import com.zhurong.platform.custom.service.BaseIService;
 
+import java.util.List;
+
 public interface IViPmPrjplanLantekService extends BaseIService<ViPmPrjplanLantek> {
 
     /**
@@ -15,6 +17,6 @@ public interface IViPmPrjplanLantekService extends BaseIService<ViPmPrjplanLante
      * 更新库存引用
      * @return 更新结果
      */
-    boolean updateInventoryReferences();
+    boolean updateInventoryReferences(List<String> ids);
 
 }

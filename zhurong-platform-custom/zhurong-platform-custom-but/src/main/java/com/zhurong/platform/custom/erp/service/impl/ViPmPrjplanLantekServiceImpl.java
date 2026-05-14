@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.erp.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -176,8 +177,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
         }
 
         //过滤掉已同步的
-        List<String> existingCNC = existingSupplierInfos.stream().map(ZhurongButSupplierinfo::getCnc).toList();
-        List<ViPmPrjplanLantek> needInsert = viPmPrjplanLanteks.stream().filter(it -> !existingCNC.contains(it.getCnc()))
+        List<String> existings = existingSupplierInfos.stream().map(ZhurongButSupplierinfo::getShtRef).toList();
+        List<ViPmPrjplanLantek> needInsert = viPmPrjplanLanteks.stream().filter(it -> !existings.contains(it.getShtRef()))
                 .toList();
 
         if (CollectionUtils.isEmpty(needInsert)){
@@ -191,9 +192,13 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
     }
 
     @Override
-    public boolean updateInventoryReferences() {
+    public boolean updateInventoryReferences(List<String> ids) {
 
-        List<ZhurongButSupplierinfo> supplierInfos = zhurongButSupplierinfoService.list(Wrappers.lambdaQuery(ZhurongButSupplierinfo.class)
+        LambdaQueryWrapper<ZhurongButSupplierinfo> wrapper = Wrappers.lambdaQuery(ZhurongButSupplierinfo.class);
+        if (ids != null){
+            wrapper.in(BaseEntity::getId, ids);
+        }
+        List<ZhurongButSupplierinfo> supplierInfos = zhurongButSupplierinfoService.list(wrapper
                 .eq(BaseEntity::getIsRead, false));
 
         if (CollectionUtils.isEmpty(supplierInfos)){
@@ -304,8 +309,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
                     log.info("更新套料程序钢板用户数据：{} {} {}",originShtRef, DIS_UData3_Sht, update2);
 
-                    if (update1 && update2){
-                        updateReadState.add(cnc);
+                    if (update1){
+                        updateReadState.add(originShtRef);
                     }
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -315,7 +320,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
             List<Boolean> booleans = zhurongButSupplierinfoService.updateByIn(Wrappers.lambdaUpdate(ZhurongButSupplierinfo.class)
                             .set(BaseEntity::getIsRead, true),
-                    ZhurongButSupplierinfo::getCnc, updateReadState);
+                    ZhurongButSupplierinfo::getShtRef, updateReadState);
             log.info("供应商信息同步状态更新：{}，{}",booleans, String.join(",", updateReadState));
         }
 

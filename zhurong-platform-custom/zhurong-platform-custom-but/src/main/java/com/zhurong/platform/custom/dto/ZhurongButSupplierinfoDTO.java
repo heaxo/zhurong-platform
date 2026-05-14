@@ -1,14 +1,18 @@
 package com.zhurong.platform.custom.dto;
+
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 *  DTO
 */
 @Data
 public class ZhurongButSupplierinfoDTO implements Serializable {
+
+    private List<String> ids;
 
     private Long id;
     private LocalDateTime createdAt;
