@@ -92,8 +92,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
         List<ViPmPrjplanLantek> viPmPrjplanLanteks = listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class),
                 ViPmPrjplanLantek::getCnc, qcncs, 1000);
         viPmPrjplanLanteks.forEach(prjp -> {
-
-            if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+            prjp.setShtRef(prjp.getGenRemShtRef());
+            /*if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
                 //保留整板的
                 if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
                     ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
@@ -124,7 +124,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
             if (StringUtils.isBlank(prjp.getShtRef())){
                 prjp.setShtRef(prjp.getUseRemnatRef());
-            }
+            }*/
         });
         List<String> querydCncs = viPmPrjplanLanteks.stream().map(ViPmPrjplanLantek::getCnc).toList();
         List<String> cncs2 = cncs.stream().filter(cnc -> !querydCncs.contains(cnc)).toList();
@@ -132,7 +132,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
             List<ViPmPrjplanLantek> viPmPrjplanLanteks2 = viPmPrjplanLantek2Service
                     .listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class), ViPmPrjplanLantek::getCnc, cncs2, 1000);
             viPmPrjplanLanteks2.forEach(prjp -> {
-                if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
+                prjp.setShtRef(prjp.getGenRemShtRef());
+                /*if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
                     //保留整板的
                     if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
                         ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
@@ -162,7 +163,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                 }
                 if (StringUtils.isBlank(prjp.getShtRef())){
                     prjp.setShtRef(prjp.getUseRemnatRef());
-                }
+                }*/
             });
 
             viPmPrjplanLanteks.addAll(viPmPrjplanLanteks2);
