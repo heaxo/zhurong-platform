@@ -267,7 +267,6 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                         .eq(PprrPprr00000100::getPrdRef, viPmOrderl.getCcad()));
                 boolean update = mmnnMmoo00000300Service.update(Wrappers.lambdaUpdate(MmnnMmoo00000300.class)
                         .set(MmnnMmoo00000300::getPrdNameDst, viPmOrderl.getItemName())
-                        .set(MmnnMmoo00000300::getCusName, viPmOrderl.getItemCode())
                         .set(MmnnMmoo00000300::getRDate, viPmOrderl.getLieferdatum())
                         .set(MmnnMmoo00000300::getDescrip, viPmOrderl.getCompany())
                         .eq(MmnnMmoo00000300::getMnORef, viPmOrderl.getBelposId()));

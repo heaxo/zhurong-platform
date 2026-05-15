@@ -41,6 +41,7 @@ public class ManufacturingCommand extends BaseXmlCommand {
     private String disJobRef;
     private Integer priority;
     private String cusRef;
+    private String cusName;
     private Boolean disIs2DSOp;
     private Boolean disIs3DSOp;
     private String disMatRef;
@@ -66,6 +67,7 @@ public class ManufacturingCommand extends BaseXmlCommand {
                 new XmlField("Product", prdRefDst),
                 new XmlField("Quantity", rq),
                 new XmlField("Customer", cusRef),
+                new XmlField("CusName", cusName),
                 new XmlField("SaleOrder", ordRef),
                 new XmlField("Material", disMatRef),
                 new XmlField("Thickness", disThickness),
