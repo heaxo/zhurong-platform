@@ -1,0 +1,107 @@
+include:
+  - standalone-mysql.yaml
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: zhurong-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    networks:
+      - zhurong-network
+  zhurong-postgres:
+    image: postgres:16
+    container_name: zhurong-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-gateway 服务
+  zhurong-platform-gateway:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.1
+    container_name: zhurong-platform-gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - nacos
+    volumes:
+      - ./logs/gateway:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-auth 服务
+  zhurong-platform-auth:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-auth:0.0.1
+    container_name: zhurong-platform-auth
+    ports:
+      - "9100:9100"
+    depends_on:
+      - nacos
+    volumes:
+      - ./logs/auth:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-core 服务
+  zhurong-platform-core:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.3
+    container_name: zhurong-platform-core
+    ports:
+      - "9200:9200"
+    depends_on:
+      - nacos
+      - rabbitmq
+    volumes:
+      - ./logs/core:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-custom 服务
+  zhurong-platform-custom:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-custom-first:0.0.3
+    container_name: zhurong-platform-custom-first
+    ports:
+      - "9300:9300"
+    depends_on:
+      - nacos
+      - rabbitmq
+    volumes:
+      - ./logs/custom:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+networks:
+  zhurong-network:
+    driver: bridge

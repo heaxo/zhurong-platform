@@ -1,0 +1,76 @@
+include:
+  - standalone-mysql.yaml
+
+services:
+  # zhurong-platform-gateway 服务
+  zhurong-platform-gateway:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.6
+    container_name: zhurong-platform-gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - nacos
+    volumes:
+      - ./logs/gateway:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+        #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-auth 服务
+  zhurong-platform-auth:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-auth:0.0.9
+    container_name: zhurong-platform-auth
+    ports:
+      - "9100:9100"
+    depends_on:
+      - nacos
+    volumes:
+      - ./logs/auth:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+
+  # zhurong-platform-core 服务
+  zhurong-platform-core:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.15
+    container_name: zhurong-platform-core
+    ports:
+      - "9200:9200"
+    depends_on:
+      - nacos
+        #- rabbitmq
+    volumes:
+      - ./logs/core:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+        #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
+      - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+    restart: always
+    networks:
+      - zhurong-network
+  # 前端      
+  zhurong-nginx:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-but-nginx:0.0.1
+    container_name: zhurong-but-nginx
+    ports:
+      - "9001:80"
+    depends_on:
+      - zhurong-platform-gateway
+    restart: always
+    networks:
+      - zhurong-network
+
+networks:
+  zhurong-network:
+    driver: bridge
