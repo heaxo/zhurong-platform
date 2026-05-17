@@ -4,7 +4,7 @@ include:
 services:
   # zhurong-platform-gateway 服务
   zhurong-platform-gateway:
-    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.6
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.7
     container_name: zhurong-platform-gateway
     ports:
       - "9000:9000"
