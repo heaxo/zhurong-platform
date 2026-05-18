@@ -201,6 +201,7 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                 manufacturing.setDisMatRef(matRef);
                 manufacturing.setDisThickness(it.getUdf1().floatValue());
                 manufacturing.setCDate(it.getAnfzeit().toLocalDate());
+                manufacturing.setCusName(it.getItemCode());
                 return manufacturing;
             })
             //过滤掉空的（已导入的finalExistingMnorefs）
