@@ -4,6 +4,9 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
 
+import java.util.List;
+
 @DS("erp")
 public interface ViPmPrjplanLantekMapper extends BaseMapper<ViPmPrjplanLantek> {
+    List<ViPmPrjplanLantek> getSupplierInfo();
 }

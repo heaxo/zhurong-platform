@@ -13,6 +13,7 @@ import com.zhurong.platform.custom.entity.DisNestNest00000100;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
 import com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek;
+import com.zhurong.platform.custom.erp.mapper.ViPmPrjplanLantek2Mapper;
 import com.zhurong.platform.custom.erp.mapper.ViPmPrjplanLantekMapper;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantek2Service;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
@@ -26,9 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Stream;
 
 /*
  * @Author zhurong
@@ -46,10 +46,8 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IZhurongButSupplierinfoService zhurongButSupplierinfoService;
     private final IViPmPrjplanLantek2Service viPmPrjplanLantek2Service;
-//    private final IWwhhIivv00000100Service wwhhIivv00000100Service;
-//    private final IWwhhIivv00000200Service wwhhIivv00000200Service;
-//    private final IPpbbPpbb00000100Service ppbbPpbb00000100Service;
-//    private final WwhhWwhh00000100FeignClient wwhhWwhh00000100FeignClient;
+    private final ViPmPrjplanLantekMapper viPmPrjplanLantekMapper;
+    private final ViPmPrjplanLantek2Mapper viPmPrjplanLantek2Mapper;
 
     private final ButConfigProperties butConfigProperties;
 
@@ -88,44 +86,11 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
             log.error(msg);
             throw new BusinessException(msg);
         }
-        List<String> records = new ArrayList<>();
         List<ZhurongButSupplierinfo> news = new ArrayList<>();
         List<ViPmPrjplanLantek> viPmPrjplanLanteks = listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class),
                 ViPmPrjplanLantek::getCnc, qcncs, 1000);
         viPmPrjplanLanteks.forEach(prjp -> {
             prjp.setShtRef(prjp.getGenRemShtRef());
-            /*if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
-                //保留整板的
-                if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
-                    ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                    news.add(entity);
-                    records.add(entity.getShtRef());
-                }
-                //添加生成余料的（未使用的，没有CNC）
-                prjp.setShtRef(prjp.getGenRemShtRef());
-                prjp.setCnc(prjp.getGenRemShtRef());
-            }
-
-            if (StringUtils.isNotBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
-                if (!prjp.getUseRemnatRef().equals(prjp.getGenRemShtRef())){
-                    if (!records.contains(prjp.getUseRemnatRef())){
-                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                        entity.setShtRef(prjp.getUseRemnatRef());
-                        news.add(entity);
-                        records.add(entity.getShtRef());
-                    }
-                    if (!records.contains(prjp.getGenRemShtRef())){
-                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                        entity.setShtRef(prjp.getGenRemShtRef());
-                        news.add(entity);
-                        records.add(entity.getShtRef());
-                    }
-                }
-            }
-
-            if (StringUtils.isBlank(prjp.getShtRef())){
-                prjp.setShtRef(prjp.getUseRemnatRef());
-            }*/
         });
         List<String> querydCncs = viPmPrjplanLanteks.stream().map(ViPmPrjplanLantek::getCnc).toList();
         List<String> cncs2 = cncs.stream().filter(cnc -> !querydCncs.contains(cnc)).toList();
@@ -134,37 +99,6 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                     .listByIn(Wrappers.lambdaQuery(ViPmPrjplanLantek.class), ViPmPrjplanLantek::getCnc, cncs2, 1000);
             viPmPrjplanLanteks2.forEach(prjp -> {
                 prjp.setShtRef(prjp.getGenRemShtRef());
-                /*if (StringUtils.isBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
-                    //保留整板的
-                    if (StringUtils.isNotBlank(prjp.getShtRef()) && !prjp.getGenRemShtRef().equals(prjp.getShtRef()) && !records.contains(prjp.getShtRef())){
-                        ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                        news.add(entity);
-                        records.add(entity.getShtRef());
-                    }
-                    //添加生成余料的（未使用的，没有CNC）
-                    prjp.setShtRef(prjp.getGenRemShtRef());
-                    prjp.setCnc(prjp.getGenRemShtRef());
-                }
-
-                if (StringUtils.isNotBlank(prjp.getUseRemnatRef()) && StringUtils.isNotBlank(prjp.getGenRemShtRef())){
-                    if (!prjp.getUseRemnatRef().equals(prjp.getGenRemShtRef())){
-                        if (!records.contains(prjp.getUseRemnatRef())){
-                            ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                            entity.setShtRef(prjp.getUseRemnatRef());
-                            news.add(entity);
-                            records.add(entity.getShtRef());
-                        }
-                        if (!records.contains(prjp.getGenRemShtRef())){
-                            ZhurongButSupplierinfo entity = zhurongButSupplierinfoConvert.toEntity(prjp);
-                            entity.setShtRef(prjp.getGenRemShtRef());
-                            news.add(entity);
-                            records.add(entity.getShtRef());
-                        }
-                    }
-                }
-                if (StringUtils.isBlank(prjp.getShtRef())){
-                    prjp.setShtRef(prjp.getUseRemnatRef());
-                }*/
             });
 
             viPmPrjplanLanteks.addAll(viPmPrjplanLanteks2);
@@ -205,6 +139,20 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
             log.warn("需更新的供应商信息为空，无需更新");
             return false;
         }
+
+        List<ViPmPrjplanLantek> supplierInfo1 = viPmPrjplanLantekMapper.getSupplierInfo();
+        List<ViPmPrjplanLantek> supplierInfo2 = viPmPrjplanLantek2Mapper.getSupplierInfo();
+
+        Map<String, String> infoMap = new HashMap<>();
+        List<ViPmPrjplanLantek> supplierInfo0 = Stream.concat(supplierInfo1.stream(), supplierInfo2.stream()).toList();
+
+        supplierInfo0.forEach(it -> {
+            if (!infoMap.containsKey(it.getLocName())){
+                infoMap.put(it.getLocName(), StringUtils.isNotBlank(it.getWhsName()) ? it.getWhsName() : "");
+            }else if (StringUtils.isBlank(infoMap.get(it.getLocName())) && StringUtils.isNotBlank(it.getWhsName())){
+                infoMap.put(it.getLocName(), it.getWhsName());
+            }
+        });
 
         List<String> updateReadState = new ArrayList<>();
         List<PprrPprr00000100> pprrUpdates = new ArrayList<>();
@@ -282,7 +230,13 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                         String[] split = SUData3.split(",");
                         log.info("whsName={}", whsName);
 
-                        List<String> list = new ArrayList<>(Arrays.asList(split));
+                        List<String> list = new ArrayList<>(Arrays.stream(split)
+                                .filter(StringUtils::isNotBlank)
+                                .filter(v -> !infoMap.containsKey(v))
+                                .filter(v -> !infoMap.containsValue(v))
+                                .toList());
+
+                        log.info("供应商数据UData3清除前长度：{}，清除后长度：{}",split.length,list.size());
 
                         if (StringUtils.isNotBlank(whsName) && !list.contains(whsName)) {
                             list.add(whsName);

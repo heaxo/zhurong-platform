@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.erp.mapper.ViPmPrjplanLantek2Mapper">
+    <select id="getSupplierInfo" resultType="com.zhurong.platform.custom.erp.entity.ViPmPrjplanLantek">
+        select distinct 供应商编号 as whsName,位置 as locName from vi_pm_prjplan_lantek
+    </select>
+</mapper>
