@@ -61,7 +61,7 @@ services:
       - zhurong-network
   # 前端      
   zhurong-nginx:
-    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-but-nginx:0.0.1
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-but-nginx:0.0.2
     container_name: zhurong-but-nginx
     ports:
       - "9001:80"
