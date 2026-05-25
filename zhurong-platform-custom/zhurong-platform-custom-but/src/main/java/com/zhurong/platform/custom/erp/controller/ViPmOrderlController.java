@@ -29,6 +29,7 @@ import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import com.zhurong.platform.custom.web.BaseController;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/erp/vi/pm/orderl")
 @Hidden
+@Slf4j
 public class ViPmOrderlController extends BaseController {
 
     private final ViPmOrderlConvert viPmOrderlConvert;
@@ -118,9 +120,18 @@ public class ViPmOrderlController extends BaseController {
                return ApiResponse.fail(String.format("不能同时指定多家不同公司的生产订单数据%s",String.join(",", companys)));
            }
 
-//           if (!company.equals(companys.getFirst())){
-//               return ApiResponse.fail(String.format("作业所在公司【%s】，释放件所属公司【%s】，公司不一致，无法指定",company, companys.getFirst()));
-//           }
+           if (StringUtils.isBlank(company)){
+               boolean update = disMmnnMmoo00000200Service.update(Wrappers.lambdaUpdate(DisMmnnMmoo00000200.class)
+                       .set(DisMmnnMmoo00000200::getUData1, companys.getFirst())
+                       .eq(DisMmnnMmoo00000200::getJobRef, job.getJobRef()));
+                log.info("作业公司信息更新结果：{}，{}",update,job.getJobRef());
+                company = companys.getFirst();
+           }
+
+
+           if (!company.equals(companys.getFirst())){
+               return ApiResponse.fail(String.format("作业所在公司【%s】，释放件所属公司【%s】，公司不一致，无法指定",company, companys.getFirst()));
+           }
 
            LambdaUpdateWrapper<MmnnMmoo00000300> wrapper = Wrappers.lambdaUpdate(MmnnMmoo00000300.class)
                    .set(MmnnMmoo00000300::getDIS_JobRef, dto.getDIS_JobRef())
