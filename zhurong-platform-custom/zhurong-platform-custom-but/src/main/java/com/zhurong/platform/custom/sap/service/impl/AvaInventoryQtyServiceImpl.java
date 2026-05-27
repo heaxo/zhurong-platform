@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /*
@@ -137,13 +138,20 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
             }
             //更新库存和导入库存
             if (CollectionUtils.isNotEmpty(updates)) {
-                Map<String, Double> qtyMap = updates
+                Map<String, AvaInventoryQty> qtyMap = updates
                         .stream()
-                        .collect(Collectors.toMap(AvaInventoryQty::getItemCode, AvaInventoryQty::getQuantity));
+                        .collect(Collectors.toMap(AvaInventoryQty::getItemCode, Function.identity()));
                 existsing.forEach(it -> {
-                    Double qty = qtyMap.get(it.getPrdRef());
+                    AvaInventoryQty avaInventoryQty = qtyMap.get(it.getPrdRef());
+                    Double qty = avaInventoryQty.getQuantity();
+                    String udata1 = avaInventoryQty.getBatchNum();
+                    String udata2 = String.format("%s,%s",avaInventoryQty.getCompany(),avaInventoryQty.getWhsName());
+                    log.info("库存更新，钢板编码：{}，用户数据1：{}，用户数据2：{}", it.getPrdRef(), udata1,udata2);
+
                     boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
                             .set(PprrPprr00000100::getDIS_CamQuan, qty)
+                            .set(PprrPprr00000100::getDIS_UData1_Sht, udata1)
+                            .set(PprrPprr00000100::getDIS_UData2_Sht, udata2)
                             .eq(PprrPprr00000100::getPrdRef, it.getPrdRef()));
                     log.info("库存更新，钢板编码：{}，原库存数量：{}，库存数量：{}，更新结果：{}", it.getPrdRef(), it.getCurQuan(), qty + it.getCurQuan(), update1);
 

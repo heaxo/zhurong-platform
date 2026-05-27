@@ -9,8 +9,10 @@ import com.zhurong.platform.base.model.PageFactory;
 import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoDTO;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoPageQuery;
+import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
+import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import com.zhurong.platform.custom.service.IZhurongButSupplierinfoService;
 import com.zhurong.platform.custom.vo.ZhurongButSupplierinfoVO;
 import com.zhurong.platform.custom.web.BaseController;
@@ -30,6 +32,7 @@ public class ZhurongButSupplierinfoController extends BaseController {
     private final ZhurongButSupplierinfoConvert convert;
     private final IZhurongButSupplierinfoService service;
     private final IViPmPrjplanLantekService viPmPrjplanLantekService;
+    private final IPprrPprr00000100Service pprrPprr00000100Service;
 
     @GetMapping("/page")
     public ApiResponse<PageResponse<ZhurongButSupplierinfoVO>> page(ZhurongButSupplierinfoPageQuery pageQuery) {
@@ -76,5 +79,17 @@ public class ZhurongButSupplierinfoController extends BaseController {
     public ApiResponse<Boolean> updateUdata(@RequestBody ZhurongButSupplierinfoDTO dto) {
         boolean update2 = viPmPrjplanLantekService.updateInventoryReferences(dto.getIds());
         return ApiResponse.success(update2);
+    }
+    /*
+     *
+     */
+    @PutMapping("/clearExistingInventory")
+    public ApiResponse<Boolean> clearExistingInventory() {
+        boolean update = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
+                .set(PprrPprr00000100::getDIS_CamQuan, 0)
+                .eq(PprrPprr00000100::getDIS_PClass, 51)
+                .ne(PprrPprr00000100::getDIS_IsRemnant, 1)
+        );
+        return ApiResponse.success(update);
     }
 }
