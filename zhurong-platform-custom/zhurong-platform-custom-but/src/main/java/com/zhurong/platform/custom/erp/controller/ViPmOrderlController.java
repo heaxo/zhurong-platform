@@ -137,7 +137,12 @@ public class ViPmOrderlController extends BaseController {
                    .set(MmnnMmoo00000300::getDIS_JobRef, dto.getDIS_JobRef())
                    .set(MmnnMmoo00000300::getMState, NestConstant.MState.PROGRAMMING)
                    .in(MmnnMmoo00000300::getRecID, dto.getRecIds());
-
+           if (StringUtils.isNotBlank(dto.getDIS_MatRef())){
+               wrapper.set(MmnnMmoo00000300::getDIS_MatRef, dto.getDIS_MatRef());
+           }
+           if (StringUtils.isNotBlank(dto.getWrkRef())){
+               wrapper.set(MmnnMmoo00000300::getWrkRef, dto.getWrkRef());
+           }
            if (StringUtils.isBlank(company)){
                wrapper.set(MmnnMmoo00000300::getDescrip, companys.getFirst());
            }
