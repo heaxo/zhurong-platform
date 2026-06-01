@@ -17,6 +17,6 @@ public interface IViPmPrjplanLantekService extends BaseIService<ViPmPrjplanLante
      * 更新库存引用
      * @return 更新结果
      */
-    boolean updateInventoryReferences(List<String> ids);
+    int updateInventoryReferences(List<String> ids);
 
 }

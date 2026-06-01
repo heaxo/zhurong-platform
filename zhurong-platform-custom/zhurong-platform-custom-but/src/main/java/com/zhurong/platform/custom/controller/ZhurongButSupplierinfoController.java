@@ -76,8 +76,8 @@ public class ZhurongButSupplierinfoController extends BaseController {
      *
      */
     @PostMapping("/updateUdata")
-    public ApiResponse<Boolean> updateUdata(@RequestBody ZhurongButSupplierinfoDTO dto) {
-        boolean update2 = viPmPrjplanLantekService.updateInventoryReferences(dto.getIds());
+    public ApiResponse<Integer> updateUdata(@RequestBody ZhurongButSupplierinfoDTO dto) {
+        int update2 = viPmPrjplanLantekService.updateInventoryReferences(dto.getIds());
         return ApiResponse.success(update2);
     }
     /*

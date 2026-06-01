@@ -126,7 +126,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
     }
 
     @Override
-    public boolean updateInventoryReferences(List<String> ids) {
+    public int updateInventoryReferences(List<String> ids) {
 
         LambdaQueryWrapper<ZhurongButSupplierinfo> wrapper = Wrappers.lambdaQuery(ZhurongButSupplierinfo.class);
         if (ids != null){
@@ -137,7 +137,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
         if (CollectionUtils.isEmpty(supplierInfos)){
             log.warn("需更新的供应商信息为空，无需更新");
-            return false;
+            return 0;
         }
 
         List<ViPmPrjplanLantek> supplierInfo1 = viPmPrjplanLantekMapper.getSupplierInfo();
@@ -278,6 +278,6 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
             log.info("供应商信息同步状态更新：{}，{}",booleans, String.join(",", updateReadState));
         }
 
-        return true;
+        return updateReadState.size();
     }
 }

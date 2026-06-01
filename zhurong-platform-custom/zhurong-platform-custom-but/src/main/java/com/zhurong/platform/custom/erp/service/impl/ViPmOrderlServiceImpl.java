@@ -271,6 +271,7 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                         .set(MmnnMmoo00000300::getCusName, viPmOrderl.getItemCode())
                         .set(MmnnMmoo00000300::getRDate, viPmOrderl.getLieferdatum())
                         .set(MmnnMmoo00000300::getDescrip, viPmOrderl.getCompany())
+                        .set(MmnnMmoo00000300::getMinQuan, viPmOrderl.getMengeVerbrauch())
                         .eq(MmnnMmoo00000300::getMnORef, viPmOrderl.getBelposId()));
                 log.info(String.format("更新生产订单：%s，更新结果：%s", viPmOrderl.getBelposId(), update));
             }

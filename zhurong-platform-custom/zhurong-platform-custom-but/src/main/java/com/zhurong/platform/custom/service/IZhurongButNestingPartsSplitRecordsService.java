@@ -16,4 +16,6 @@ public interface IZhurongButNestingPartsSplitRecordsService extends IService<Zhu
      * @return 保存结果
      */
     boolean splitRecordsOverwrite(List<ZhurongButNestingPartsSplitRecordsCreateDTO> records);
+
+    boolean removeSplitRecords(String nstRef);
 }

@@ -1,7 +1,5 @@
 package com.zhurong.platform.custom.dto;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,8 +12,6 @@ import java.util.List;
 @Data
 public class ZhurongButNestingPartsSplitRecordsDTO implements Serializable {
 
-    @Valid
-    @NotEmpty(message = "拆分记录不能为空")
     private List<ZhurongButNestingPartsSplitRecordsCreateDTO> records;
 
     private Long id;

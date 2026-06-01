@@ -79,6 +79,22 @@ public class ZhurongButNestingPartsSplitRecordsServiceImpl
             }
         }
 
+        removeSplitRecords(nstRef);
+
+        List<ZhurongButNestingPartsSplitRecords> saves = convert.toEntity(records);
+        saves.forEach(it -> {
+            it.setPrdRef(prdRefMap.get(it.getRecId().toString()));
+        });
+        boolean succeed = saveBatch(saves);
+        if (!succeed){
+            throw new BusinessException("拆分记录保存失败");
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeSplitRecords(String nstRef){
         //先删除记录
         List<ZhurongButNestingPartsSplitRecords> existings = list(Wrappers.lambdaQuery(ZhurongButNestingPartsSplitRecords.class)
                 .eq(ZhurongButNestingPartsSplitRecords::getNstRef, nstRef));
@@ -90,16 +106,8 @@ public class ZhurongButNestingPartsSplitRecordsServiceImpl
                 log.warn(msg);
                 throw new BusinessException(msg);
             }
+            return true;
         }
-
-        List<ZhurongButNestingPartsSplitRecords> saves = convert.toEntity(records);
-        saves.forEach(it -> {
-            it.setPrdRef(prdRefMap.get(it.getRecId().toString()));
-        });
-        boolean succeed = saveBatch(saves);
-        if (!succeed){
-            throw new BusinessException("拆分记录保存失败");
-        }
-        return true;
+        return false;
     }
 }

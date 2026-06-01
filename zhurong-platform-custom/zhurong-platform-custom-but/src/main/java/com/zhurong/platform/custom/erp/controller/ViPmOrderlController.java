@@ -15,6 +15,7 @@ import com.zhurong.platform.core.lantek.dto.MmnnMmoo00000300PageQuery;
 import com.zhurong.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.zhurong.platform.custom.convert.MmnnMmoo00000300Convert;
 import com.zhurong.platform.custom.entity.DisMmnnMmoo00000200;
+import com.zhurong.platform.custom.entity.DisNestNest00000500;
 import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.erp.convert.ViPmOrderlConvert;
@@ -24,6 +25,7 @@ import com.zhurong.platform.custom.erp.service.IViPmOrderl2Service;
 import com.zhurong.platform.custom.erp.service.IViPmOrderlService;
 import com.zhurong.platform.custom.erp.vo.ViPmOrderlVO;
 import com.zhurong.platform.custom.service.IDisMmnnMmoo00000200Service;
+import com.zhurong.platform.custom.service.IDisNestNest00000500Service;
 import com.zhurong.platform.custom.service.IMmnnMmoo00000300Service;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import com.zhurong.platform.custom.web.BaseController;
@@ -48,6 +50,7 @@ public class ViPmOrderlController extends BaseController {
     private final IViPmOrderlService viPmOrderlService;
     private final IViPmOrderl2Service viPmOrderl2Service;
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
+    private final IDisNestNest00000500Service disNestNest00000500Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IDisMmnnMmoo00000200Service disMmnnMmoo00000200Service;
     private final MmnnMmoo00000300Convert mmnnMmoo00000300Convert;
@@ -214,4 +217,34 @@ public class ViPmOrderlController extends BaseController {
 
         return ApiResponse.success(response);
     }
+    /**
+     * 获取可拆分零件
+     * @return
+     */
+    @GetMapping("getDetachableParts")
+    public ApiResponse<List<MmnnMmoo00000300VO>> getDetachableParts(MmnnMmoo00000300PageQuery pageQuery){
+        if (StringUtils.isBlank(pageQuery.getNstRef())){
+            return ApiResponse.fail("套料编号不能为空");
+        }
+
+        List<DisNestNest00000500> nest500s = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
+                .eq(DisNestNest00000500::getNstRef, pageQuery.getNstRef()));
+
+        if (CollectionUtils.isEmpty(nest500s)){
+            return ApiResponse.fail(String.format("套料零件为空：%s", pageQuery.getNstRef()));
+        }
+
+        List<String> mnoRefs = nest500s.stream().map(DisNestNest00000500::getMnORef).toList();
+
+        List<MmnnMmoo00000300> mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                .in(MmnnMmoo00000300::getMnORef, mnoRefs)
+                .gt(MmnnMmoo00000300::getMinQuan,0)
+                .apply("RQ > MinQuan")
+        );
+
+        List<MmnnMmoo00000300VO> voList = mmnnMmoo00000300Convert.toVOList(mmnnMmoo00000300s);
+        return ApiResponse.success(voList);
+    }
+
+
 }

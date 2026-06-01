@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhurong.platform.base.api.ApiResponse;
@@ -66,6 +67,16 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
 
     @PostMapping("splitRecordsOverwrite")
     public ApiResponse<Boolean> splitRecordsOverwrite(@RequestBody @Valid ZhurongButNestingPartsSplitRecordsDTO dto) {
+
+        if (CollectionUtils.isEmpty(dto.getRecords())){
+            try {
+                boolean result = service.removeSplitRecords(dto.getNstRef());
+                return ApiResponse.success(result);
+            } catch (Exception e) {
+                return ApiResponse.fail(e.getMessage());
+            }
+        }
+
         try {
             boolean result = service.splitRecordsOverwrite(dto.getRecords());
             return ApiResponse.success(result);
