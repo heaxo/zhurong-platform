@@ -262,6 +262,8 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
 
         }
 
-        return ApiResponse.success(true);
+        List<ZhurongButNestingPartsSplitRecords> saves = convert.toEntity(creates);
+        boolean batch = service.saveBatch(saves);
+        return ApiResponse.success(batch);
     }
 }
