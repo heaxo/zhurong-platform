@@ -1,0 +1,1 @@
+ALTER TABLE Zhurong_But_Nesting_Parts_Split_Records ALTER COLUMN ord_ref NVARCHAR(40) NULL;

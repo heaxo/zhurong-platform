@@ -410,4 +410,18 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 record.getOprId(),
                 record.getQuantity());
     }
+
+    @DeleteMapping("remove")
+    public ApiResponse
+            <Boolean> remove(Long id) {
+        boolean remove = service.removeById(id);
+        return ApiResponse.success(remove);
+    }
+
+    @DeleteMapping("batchRemove")
+    public ApiResponse
+            <Boolean> batchRemove(@RequestBody List<Long> ids) {
+        boolean remove = service.removeByIds(ids);
+        return ApiResponse.success(remove);
+    }
 }
