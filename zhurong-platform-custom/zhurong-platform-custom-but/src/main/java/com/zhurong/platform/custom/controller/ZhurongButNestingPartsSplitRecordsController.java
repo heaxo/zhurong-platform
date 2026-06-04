@@ -215,7 +215,17 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
              * 假设
              * 本次可拆数量 = 1，即 currentDetachableQuantity = 1
              * 找到values中满足数量的一条进行拆分（可能values数据本身也只有一条）,
-             * 当values只有一条数据，且数量正好是当前可拆分的数量时，那么直接将这条数据创建为拆单数据（new ZhurongButNestingPartsSplitRecordsCreateDTO()）
+             * 当values只有一条数据，且数量正好是当前可拆分的数量时，那么直接将这条数据创建为拆单记录（new ZhurongButNestingPartsSplitRecordsCreateDTO()）
+             * 当values只有一条数据，且数量大于等于当前可拆分的数量时，需要创建2份拆单记录
+             * 当values有多条且单条数据的数量全小于currentDetachableQuantity时（总数比currentDetachableQuantity大，
+             * 但是每单条的数量小于currentDetachableQuantity，这种则需要每条数据中都拆出来一份记录，
+             * 比如：currentDetachableQuantity = 5，values中有3条数据，分别是2、2、1，需要记录3条带后缀的拆单记录）
+             * 比如：currentDetachableQuantity = 5，values中有3条数据，分别是2、2、2，需要记录3条带后缀的拆单记录，一条不带后缀的拆单记录，也就是有余数1的那条数据）
+             * 比如：currentDetachableQuantity = 5，values中有3条数据，分别是5、2、2，可以只记录1条带后缀的拆单记录，满足数量5的那一条）
+             * 比如：currentDetachableQuantity = 5，values中有3条数据，分别是4、2、2，需要记录2条带后缀的拆单记录（4和1，其中1是2拆开的），一条不带后缀的拆单记录（2拆1有余数1的那条数据））
+             * 比如：currentDetachableQuantity = 5，values中有2条数据，分别是2、2，需要记录2条带后缀的拆单记录，可以发现这种情况values的总数并不满足数量5，但是没关系，有多少就可以拆多少，剩余的留给后面其他nstRef拆）
+             * 比如：currentDetachableQuantity = 5，values中有1条数据，分别是1，需要记录1条带后缀的拆单记录
+             * 总之：要从values中尽量把currentDetachableQuantity拆到记录中保存，不够也没关系（有多少就拆多少，有余的则记录不带后缀的，没有余的currentDetachableQuantity留着后面新数据再拆）
              */
 
             if (values.size() == 1 && values.get(0).getQuantity() >= currentDetachableQuantity){
