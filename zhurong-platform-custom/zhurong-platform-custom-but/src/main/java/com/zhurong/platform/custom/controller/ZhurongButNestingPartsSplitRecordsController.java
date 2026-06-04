@@ -120,9 +120,11 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         if (CollectionUtils.isEmpty(orgMnoRefs)){
             return ApiResponse.fail("订单号不能为空");
         }
+        log.info("开始自动拆单，原始请求订单：{}，有效订单：{}", dto.getOrgMnoRefs(), orgMnoRefs);
         //获取这些订单已拆分的数据
         List<ZhurongButNestingPartsSplitRecords> spliteds = service.list(Wrappers.lambdaQuery(ZhurongButNestingPartsSplitRecords.class)
                 .in(ZhurongButNestingPartsSplitRecords::getOrgMnoRef, orgMnoRefs));
+        log.info("自动拆单查询已拆记录完成，订单数：{}，已拆记录数：{}", orgMnoRefs.size(), spliteds.size());
 
         //按订单号分组处理
         Map<String, List<ZhurongButNestingPartsSplitRecords>> groupMap = spliteds.stream()
@@ -131,6 +133,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         List<MmnnMmoo00000300> mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
                 .in(MmnnMmoo00000300::getMnORef, orgMnoRefs)
                 .gt(MmnnMmoo00000300::getMinQuan, 0));
+        log.info("自动拆单查询订单原始数量完成，请求订单数：{}，可拆订单记录数：{}", orgMnoRefs.size(), mmnnMmoo00000300s.size());
 
         if (CollectionUtils.isEmpty(mmnnMmoo00000300s)){
             String msg = String.format("订单没有记录原始数量，无法执行拆单：%s", String.join(",", orgMnoRefs));
@@ -157,6 +160,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         //获取这些工单的套料零件
         List<DisNestNest00000500> nestParts = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
                 .in(DisNestNest00000500::getMnORef, orgMnoRefs));
+        log.info("自动拆单查询套料零件完成，订单数：{}，套料零件记录数：{}", orgMnoRefs.size(), nestParts.size());
 
         Map<String, List<DisNestNest00000500>> nestPartMap = nestParts.stream()
                 .collect(Collectors.groupingBy(e -> normalizeRef(e.getMnORef())));
@@ -171,6 +175,8 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             //比如：原始数量：20，修改后的数量：30
             //30 - 20 = 10（10是可拆分的数量，不能超过这个数量）
             int detachableQuantity = calculateDetachableQuantity(mmnn300);
+            log.info("自动拆单处理订单，订单：{}，当前数量：{}，原始数量：{}，可拆数量：{}",
+                    mnoRef, mmnn300.getRQ(), mmnn300.getMinQuan(), detachableQuantity);
             if (detachableQuantity <= 0){
                 String msg = String.format("订单：%s，没有可拆单数量，当前数量：%s，原始数量：%s",
                         mnoRef, mmnn300.getRQ(), mmnn300.getMinQuan());
@@ -189,6 +195,9 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
 
             List<String> nstRefs = new java.util.ArrayList<>(disNestNest00000500S.stream()
                     .map(DisNestNest00000500::getNstRef).distinct().toList());
+            log.info("自动拆单订单套料程序统计，订单：{}，套料零件数：{}，套料程序数：{}",
+                    mnoRef, disNestNest00000500S.size(), nstRefs.size());
+            log.debug("自动拆单订单套料程序明细，订单：{}，nstRefs：{}", mnoRef, nstRefs);
 
             List<ZhurongButNestingPartsSplitRecords> splitRecords = groupMap.getOrDefault(mnoRefKey, null);
             if (splitRecords != null){
@@ -198,6 +207,8 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                         .filter(it -> !isSameRef(it.getOrgMnoRef(), it.getMnoRef()))
                         .mapToInt(it -> Optional.ofNullable(it.getQuantity()).orElse(0))
                         .sum();
+                log.info("自动拆单已有拆分统计，订单：{}，已拆记录数：{}，已拆数量：{}",
+                        mnoRef, splitRecords.size(), splitedQuantity);
                 if (detachableQuantity <= splitedQuantity){
                     String msg = String.format("订单：%s，没有可拆单的余数，可拆数量：%s，已拆数量：%s",mnoRef,detachableQuantity,splitedQuantity);
                     log.warn(msg);
@@ -207,6 +218,8 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 nstRefs.removeAll(splitRecords.stream()
                         .map(ZhurongButNestingPartsSplitRecords::getNstRef)
                         .distinct().toList());
+                log.info("自动拆单排除已拆套料程序完成，订单：{}，剩余可拆套料程序数：{}", mnoRef, nstRefs.size());
+                log.debug("自动拆单剩余可拆套料程序明细，订单：{}，nstRefs：{}", mnoRef, nstRefs);
 
                 if (CollectionUtils.isEmpty(nstRefs)){
                     String msg = String.format("%s，没有可拆单的程序",mnoRef);
@@ -217,11 +230,15 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             }
             //计算本次可拆数量
             int currentDetachableQuantity = detachableQuantity - splitedQuantity;
+            log.info("自动拆单本次可拆数量，订单：{}，可拆数量：{}，已拆数量：{}，本次可拆数量：{}",
+                    mnoRef, detachableQuantity, splitedQuantity, currentDetachableQuantity);
 
             //获取可拆程序集
             LambdaQueryWrapper<DisNestNest00000100> nestLambdaQueryWrapper = Wrappers.lambdaQuery(DisNestNest00000100.class);
             nestLambdaQueryWrapper.in(DisNestNest00000100::getNstRef,nstRefs);
             List<DisNestNest00000100> nests = disNestNest00000100Service.list(nestLambdaQueryWrapper);
+            log.info("自动拆单查询可拆程序集完成，订单：{}，请求套料程序数：{}，可拆程序集记录数：{}",
+                    mnoRef, nstRefs.size(), nests.size());
 
             if (CollectionUtils.isEmpty(nests)){
                 String msg = String.format("%s，没有可拆单程序集",mnoRef);
@@ -232,8 +249,15 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             List<DisNestNest00000500> values = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
                     .in(DisNestNest00000500::getNstRef, nests.stream().map(DisNestNest00000100::getNstRef).toList())
                     .eq(DisNestNest00000500::getMnORef, mnoRef));
+            int availableQuantity = values.stream().mapToInt(ZhurongButNestingPartsSplitRecordsController::safeQuantity).sum();
+            log.info("自动拆单查询可拆套料零件完成，订单：{}，可拆零件记录数：{}，可拆零件数量合计：{}",
+                    mnoRef, values.size(), availableQuantity);
+            log.debug("自动拆单可拆套料零件明细，订单：{}，values：{}", mnoRef,
+                    values.stream().map(ZhurongButNestingPartsSplitRecordsController::describeNestPart).toList());
             int beforeSize = creates.size();
             appendOrderSplitRecords(creates, values, currentDetachableQuantity);
+            log.info("自动拆单订单记录生成完成，订单：{}，本订单新增记录数：{}，当前累计新增记录数：{}",
+                    mnoRef, creates.size() - beforeSize, creates.size());
             if (creates.size() == beforeSize){
                 String msg = String.format("%s，没有可拆单的套料零件数量",mnoRef);
                 log.warn(msg);
@@ -246,7 +270,16 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             return ApiResponse.fail("没有生成可保存的拆单记录");
         }
         List<ZhurongButNestingPartsSplitRecords> saves = convert.toEntity(creates);
+        log.info("自动拆单开始保存，订单：{}，保存记录数：{}，拆出数量合计：{}",
+                orgMnoRefs, saves.size(), creates.stream()
+                        .filter(it -> !isSameRef(it.getOrgMnoRef(), it.getMnoRef()))
+                        .mapToInt(it -> Optional.ofNullable(it.getQuantity()).orElse(0))
+                        .sum());
+        log.debug("自动拆单保存记录明细：{}", creates.stream()
+                .map(ZhurongButNestingPartsSplitRecordsController::describeCreateRecord)
+                .toList());
         boolean batch = service.saveBatch(saves);
+        log.info("自动拆单保存完成，订单：{}，保存记录数：{}，保存结果：{}", orgMnoRefs, saves.size(), batch);
         return ApiResponse.success(batch);
     }
 
@@ -288,6 +321,8 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                         .thenComparing(ZhurongButNestingPartsSplitRecordsController::safeRecId));
 
         if (candidate.isPresent()) {
+            log.debug("自动拆单命中单条满足策略，本次可拆数量：{}，选中零件：{}",
+                    currentDetachableQuantity, describeNestPart(candidate.get()));
             addSplitRecord(creates, candidate.get(), currentDetachableQuantity);
             return;
         }
@@ -298,15 +333,23 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 .sorted(Comparator.comparingInt(ZhurongButNestingPartsSplitRecordsController::safeQuantity).reversed()
                         .thenComparing(ZhurongButNestingPartsSplitRecordsController::safeRecId))
                 .toList();
+        log.debug("自动拆单使用多条累加策略，本次可拆数量：{}，候选零件数：{}，候选明细：{}",
+                currentDetachableQuantity,
+                sortedValues.size(),
+                sortedValues.stream().map(ZhurongButNestingPartsSplitRecordsController::describeNestPart).toList());
 
         for (DisNestNest00000500 nestPart : sortedValues) {
             if (remainingQuantity <= 0) {
                 break;
             }
             int splitQuantity = Math.min(safeQuantity(nestPart), remainingQuantity);
+            log.debug("自动拆单累加拆分零件，零件：{}，本零件拆出数量：{}，拆分前剩余目标数量：{}",
+                    describeNestPart(nestPart), splitQuantity, remainingQuantity);
             addSplitRecord(creates, nestPart, splitQuantity);
             remainingQuantity -= splitQuantity;
         }
+        log.debug("自动拆单多条累加策略完成，本次可拆数量：{}，未满足剩余数量：{}",
+                currentDetachableQuantity, remainingQuantity);
     }
 
     private static void addSplitRecord(
@@ -319,10 +362,14 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         }
 
         creates.add(buildSplitRecord(nestPart, nestPart.getMnORef() + AUTO_SPLIT_SUFFIX, splitQuantity));
+        log.debug("自动拆单生成拆出记录，零件：{}，mnoRef：{}，quantity：{}",
+                describeNestPart(nestPart), nestPart.getMnORef() + AUTO_SPLIT_SUFFIX, splitQuantity);
 
         int remainderQuantity = safeQuantity(nestPart) - splitQuantity;
         if (remainderQuantity > 0) {
             creates.add(buildSplitRecord(nestPart, nestPart.getMnORef(), remainderQuantity));
+            log.debug("自动拆单生成原工单余量记录，零件：{}，mnoRef：{}，quantity：{}",
+                    describeNestPart(nestPart), nestPart.getMnORef(), remainderQuantity);
         }
     }
 
@@ -341,5 +388,26 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         create.setRecId(nestPart.getRecID());
         create.setPrdRef(nestPart.getPrdRefDst());
         return create;
+    }
+
+    private static String describeNestPart(DisNestNest00000500 nestPart) {
+        return String.format("nstRef=%s,mnoRef=%s,recId=%s,prdRef=%s,oprId=%s,quantity=%s",
+                nestPart.getNstRef(),
+                nestPart.getMnORef(),
+                nestPart.getRecID(),
+                nestPart.getPrdRefDst(),
+                nestPart.getOprID(),
+                nestPart.getQuantity());
+    }
+
+    private static String describeCreateRecord(ZhurongButNestingPartsSplitRecordsCreateDTO record) {
+        return String.format("nstRef=%s,mnoRef=%s,orgMnoRef=%s,recId=%s,prdRef=%s,oprId=%s,quantity=%s",
+                record.getNstRef(),
+                record.getMnoRef(),
+                record.getOrgMnoRef(),
+                record.getRecId(),
+                record.getPrdRef(),
+                record.getOprId(),
+                record.getQuantity());
     }
 }
