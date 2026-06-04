@@ -1,0 +1,1 @@
+alter table Zhurong_But_Nesting_Parts_Split_Records add org_mno_ref nvarchar(40) null;

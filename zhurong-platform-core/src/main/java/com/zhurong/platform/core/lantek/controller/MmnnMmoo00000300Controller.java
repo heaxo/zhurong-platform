@@ -2,6 +2,7 @@ package com.zhurong.platform.core.lantek.controller;
 
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.base.constant.NestConstant;
 import com.zhurong.platform.base.model.PageFactory;
 import com.zhurong.platform.core.lantek.api.IMmnnMmoo00000300Api;
 import com.zhurong.platform.core.lantek.convert.MmnnMmoo00000300Convert;
@@ -50,10 +51,7 @@ public class MmnnMmoo00000300Controller extends BaseController implements IMmnnM
             wrapper.in(MmnnMmoo00000300::getMnORef, pageQuery.getMnoRefs());
         }
         if (pageQuery.getQueryRelease() != null && pageQuery.getQueryRelease()){
-            wrapper.and(w -> w
-                    .isNull(MmnnMmoo00000300::getDIS_JobRef)
-                    .or()
-                    .eq(MmnnMmoo00000300::getDIS_JobRef,""));
+            wrapper.eq(MmnnMmoo00000300::getMState, NestConstant.MState.NOT_STARTED);
         }
 
         Page<MmnnMmoo00000300> page = service.page(

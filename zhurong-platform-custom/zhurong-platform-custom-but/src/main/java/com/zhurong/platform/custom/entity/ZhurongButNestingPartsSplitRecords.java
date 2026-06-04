@@ -35,6 +35,11 @@ private static final long serialVersionUID = 1L;
         */
             @TableField("mno_ref")
             private String mnoRef;
+        /**
+        *
+        */
+            @TableField("org_mno_ref")
+            private String orgMnoRef;
 
         /**
         * 

@@ -72,6 +72,10 @@ public class ZhurongButNestingPartsSplitRecordsPageQuery extends BasePageQuery {
         * 
         */
         private String mnoRef;
+        /**
+        *
+        */
+        private String orgMnoRef;
 
 
         /**

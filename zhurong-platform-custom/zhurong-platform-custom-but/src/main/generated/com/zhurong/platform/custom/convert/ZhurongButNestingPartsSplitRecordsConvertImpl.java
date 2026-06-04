@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-25T20:39:26+0800",
+    date = "2026-06-04T19:43:09+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -43,6 +43,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecordsVO.setIsReviewed( entity.getIsReviewed() );
         zhurongButNestingPartsSplitRecordsVO.setNstRef( entity.getNstRef() );
         zhurongButNestingPartsSplitRecordsVO.setMnoRef( entity.getMnoRef() );
+        zhurongButNestingPartsSplitRecordsVO.setOrgMnoRef( entity.getOrgMnoRef() );
         zhurongButNestingPartsSplitRecordsVO.setOprId( entity.getOprId() );
         zhurongButNestingPartsSplitRecordsVO.setQuantity( entity.getQuantity() );
         zhurongButNestingPartsSplitRecordsVO.setRemark( entity.getRemark() );
@@ -86,6 +87,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecords.setIsReviewed( dto.getIsReviewed() );
         zhurongButNestingPartsSplitRecords.setNstRef( dto.getNstRef() );
         zhurongButNestingPartsSplitRecords.setMnoRef( dto.getMnoRef() );
+        zhurongButNestingPartsSplitRecords.setOrgMnoRef( dto.getOrgMnoRef() );
         zhurongButNestingPartsSplitRecords.setOprId( dto.getOprId() );
         zhurongButNestingPartsSplitRecords.setQuantity( dto.getQuantity() );
         zhurongButNestingPartsSplitRecords.setRemark( dto.getRemark() );
@@ -128,6 +130,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         zhurongButNestingPartsSplitRecords.setIsReviewed( dto.getIsReviewed() );
         zhurongButNestingPartsSplitRecords.setNstRef( dto.getNstRef() );
         zhurongButNestingPartsSplitRecords.setMnoRef( dto.getMnoRef() );
+        zhurongButNestingPartsSplitRecords.setOrgMnoRef( dto.getOrgMnoRef() );
         zhurongButNestingPartsSplitRecords.setOprId( dto.getOprId() );
         zhurongButNestingPartsSplitRecords.setQuantity( dto.getQuantity() );
         zhurongButNestingPartsSplitRecords.setRemark( dto.getRemark() );
@@ -177,6 +180,9 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
         if ( dto.getMnoRef() != null ) {
             entity.setMnoRef( dto.getMnoRef() );
         }
+        if ( dto.getOrgMnoRef() != null ) {
+            entity.setOrgMnoRef( dto.getOrgMnoRef() );
+        }
         if ( dto.getOprId() != null ) {
             entity.setOprId( dto.getOprId() );
         }
@@ -206,6 +212,7 @@ public class ZhurongButNestingPartsSplitRecordsConvertImpl implements ZhurongBut
 
         zhurongButNestingPartsSplitRecords.setNstRef( zhurongButNestingPartsSplitRecordsCreateDTO.getNstRef() );
         zhurongButNestingPartsSplitRecords.setMnoRef( zhurongButNestingPartsSplitRecordsCreateDTO.getMnoRef() );
+        zhurongButNestingPartsSplitRecords.setOrgMnoRef( zhurongButNestingPartsSplitRecordsCreateDTO.getOrgMnoRef() );
         zhurongButNestingPartsSplitRecords.setOprId( zhurongButNestingPartsSplitRecordsCreateDTO.getOprId() );
         zhurongButNestingPartsSplitRecords.setQuantity( zhurongButNestingPartsSplitRecordsCreateDTO.getQuantity() );
         zhurongButNestingPartsSplitRecords.setRemark( zhurongButNestingPartsSplitRecordsCreateDTO.getRemark() );

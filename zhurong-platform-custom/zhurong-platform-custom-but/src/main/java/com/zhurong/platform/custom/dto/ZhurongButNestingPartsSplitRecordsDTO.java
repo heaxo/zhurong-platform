@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.dto;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,6 +13,8 @@ import java.util.List;
 @Data
 public class ZhurongButNestingPartsSplitRecordsDTO implements Serializable {
 
+    private List<String> orgMnoRefs;
+    @Valid
     private List<ZhurongButNestingPartsSplitRecordsCreateDTO> records;
 
     private Long id;
@@ -25,6 +28,7 @@ public class ZhurongButNestingPartsSplitRecordsDTO implements Serializable {
     private Boolean isReviewed;
     private String nstRef;
     private String mnoRef;
+    private String orgMnoRef;
     private Integer oprId;
     private Integer quantity;
     private String remark;

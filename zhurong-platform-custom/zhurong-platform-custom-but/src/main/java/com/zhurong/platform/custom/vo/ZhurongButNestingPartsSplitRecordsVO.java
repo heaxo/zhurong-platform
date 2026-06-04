@@ -22,6 +22,7 @@ public class ZhurongButNestingPartsSplitRecordsVO implements Serializable {
         private Boolean isReviewed;
         private String nstRef;
         private String mnoRef;
+        private String orgMnoRef;
         private Integer oprId;
         private Integer quantity;
         private String remark;
