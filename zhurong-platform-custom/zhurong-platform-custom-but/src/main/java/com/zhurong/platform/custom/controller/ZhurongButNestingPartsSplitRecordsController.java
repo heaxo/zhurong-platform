@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/zhurongButNestingPartsSplitRecords")
 public class ZhurongButNestingPartsSplitRecordsController extends BaseController {
 
-    private static final String AUTO_SPLIT_SUFFIX = "_A";
+    private static final String AUTO_SPLIT_SUFFIX = "_B";
     private static final String AUTO_SPLIT_REMARK = "程序自动拆单";
 
     private final ZhurongButNestingPartsSplitRecordsConvert convert;
