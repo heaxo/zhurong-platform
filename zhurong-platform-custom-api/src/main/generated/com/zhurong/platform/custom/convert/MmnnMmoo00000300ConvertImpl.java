@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-21T21:18:34+0800",
+    date = "2026-06-14T12:06:49+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -285,9 +285,13 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300.setUCtName( dto.getUCtName() );
         mmnnMmoo00000300.setUntName( dto.getUntName() );
         mmnnMmoo00000300.setQuantity( dto.getQuantity() );
+        mmnnMmoo00000300.setAQ( dto.getAQ() );
+        mmnnMmoo00000300.setMQ( dto.getMQ() );
+        mmnnMmoo00000300.setLQ( dto.getLQ() );
         mmnnMmoo00000300.setToOutQ( dto.getToOutQ() );
         mmnnMmoo00000300.setOutQ( dto.getOutQ() );
         mmnnMmoo00000300.setMState( dto.getMState() );
+        mmnnMmoo00000300.setRQ( dto.getRQ() );
         mmnnMmoo00000300.setOState( dto.getOState() );
         mmnnMmoo00000300.setEDuration( dto.getEDuration() );
         mmnnMmoo00000300.setIOrder( dto.getIOrder() );
@@ -326,7 +330,22 @@ public class MmnnMmoo00000300ConvertImpl implements MmnnMmoo00000300Convert {
         mmnnMmoo00000300.setMainOriginTypeFilter( dto.getMainOriginTypeFilter() );
         mmnnMmoo00000300.setMainPackage( dto.getMainPackage() );
         mmnnMmoo00000300.setMainPackageName( dto.getMainPackageName() );
+        mmnnMmoo00000300.setDIS_PGroup( dto.getDIS_PGroup() );
+        mmnnMmoo00000300.setDIS_MatRef( dto.getDIS_MatRef() );
+        mmnnMmoo00000300.setDIS_Thickness( dto.getDIS_Thickness() );
+        mmnnMmoo00000300.setDIS_JobRef( dto.getDIS_JobRef() );
+        mmnnMmoo00000300.setDIS_FPosition( dto.getDIS_FPosition() );
+        mmnnMmoo00000300.setDIS_NQ( dto.getDIS_NQ() );
+        mmnnMmoo00000300.setDIS_IsChanged( dto.getDIS_IsChanged() );
+        mmnnMmoo00000300.setDIS_IsDuct( dto.getDIS_IsDuct() );
+        mmnnMmoo00000300.setDIS_Is2DSOp( dto.getDIS_Is2DSOp() );
+        mmnnMmoo00000300.setDIS_Is3DSOp( dto.getDIS_Is3DSOp() );
+        mmnnMmoo00000300.setDIS_IsQuote( dto.getDIS_IsQuote() );
+        mmnnMmoo00000300.setDIS_WrkCfg( dto.getDIS_WrkCfg() );
         mmnnMmoo00000300.setWosStatus( dto.getWosStatus() );
+        mmnnMmoo00000300.setDIS_NonCuttingJob( dto.getDIS_NonCuttingJob() );
+        mmnnMmoo00000300.setDIS_OrgOprID( dto.getDIS_OrgOprID() );
+        mmnnMmoo00000300.setDIS_MStateCloudStatus( dto.getDIS_MStateCloudStatus() );
         mmnnMmoo00000300.setRecState( dto.getRecState() );
         mmnnMmoo00000300.setCrtDate( dto.getCrtDate() );
         mmnnMmoo00000300.setLastDate( dto.getLastDate() );

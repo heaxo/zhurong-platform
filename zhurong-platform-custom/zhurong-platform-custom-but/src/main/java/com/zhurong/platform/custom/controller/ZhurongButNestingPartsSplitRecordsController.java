@@ -69,6 +69,19 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 .stream()
                 .map(convert::toVO)
                 .toList();
+        List<String> nstRefs = voList.stream().map(ZhurongButNestingPartsSplitRecordsVO::getNstRef).distinct().toList();
+
+        if (!nstRefs.isEmpty()){
+            List<DisNestNest00000100> nestNest00000100s = disNestNest00000100Service.list(Wrappers.lambdaQuery(DisNestNest00000100.class)
+                    .in(DisNestNest00000100::getNstRef, nstRefs));
+            Map<String, DisNestNest00000100> nstMap = nestNest00000100s.stream().collect(Collectors.toMap(DisNestNest00000100::getNstRef, Function.identity()));
+            voList.forEach(vo -> {
+                DisNestNest00000100 disNestNest00000100 = nstMap.get(vo.getNstRef());
+                if (disNestNest00000100 != null){
+                    vo.setCnc(disNestNest00000100.getCNC());
+                }
+            });
+        }
 
         PageResponse
                 <ZhurongButNestingPartsSplitRecordsVO> response = new PageResponse<>(

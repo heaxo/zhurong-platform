@@ -18,6 +18,7 @@ public class MmnnMmoo00000300PageQuery extends BasePageQuery {
      * 查询释放得
      */
     private Boolean queryRelease;
+    private Boolean splitted;
     private String nstRef;
 
 

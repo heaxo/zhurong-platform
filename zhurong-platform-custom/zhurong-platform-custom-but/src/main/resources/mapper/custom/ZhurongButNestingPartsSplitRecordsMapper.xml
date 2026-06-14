@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.mapper.ZhurongButNestingPartsSplitRecordsMapper">
+
+
+    <sql id="SelectCustomPageFromWhere">
+        FROM [MMNN_MMOO_00000300] t
+        OUTER APPLY (
+        SELECT COUNT(1) AS split_count
+        FROM [Zhurong_But_Nesting_Parts_Split_Records] sr
+        WHERE sr.[org_mno_ref] = t.[MnORef] and isnull(sr.is_deleted,0) = 0
+        ) split_info
+        <where>
+            <include refid="com.zhurong.platform.custom.mapper.MmnnMmoo00000300Mapper.BaseWhere">
+                <property name="alias" value="t"/>
+                <property name="paramAlias" value="req"/>
+            </include>
+
+            <if test="req.ordRefs != null and req.ordRefs.size() > 0">
+                AND t.[OrdRef] IN
+                <foreach collection="req.ordRefs" item="ordRef" open="(" separator="," close=")">
+                    #{ordRef,jdbcType=NVARCHAR}
+                </foreach>
+            </if>
+
+            <if test="req.mnoRefs != null and req.mnoRefs.size() > 0">
+                AND t.[MnORef] IN
+                <foreach collection="req.mnoRefs" item="mnoRef" open="(" separator="," close=")">
+                    #{mnoRef,jdbcType=NVARCHAR}
+                </foreach>
+            </if>
+
+            <if test="req.queryRelease != null and req.queryRelease">
+                AND t.[MState] = #{notStartedMState}
+            </if>
+
+            <if test="detachableOrder != null and detachableOrder">
+                AND t.[MinQuan] &gt; 0
+                AND t.[RQ] &gt; t.[MinQuan]
+            </if>
+
+            <!-- 已拆分：true 查询已拆分，false 查询未拆分，null 不加条件 -->
+            <if test="req.splitted != null and req.splitted == true">
+                AND split_info.[split_count] &gt; 0
+            </if>
+
+            <if test="req.splitted != null and req.splitted == false">
+                AND split_info.[split_count] = 0
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectCustomPage" resultMap="com.zhurong.platform.custom.mapper.MmnnMmoo00000300Mapper.BaseResultMap">
+        SELECT
+        split_info.split_count as LQ,
+        <include refid="com.zhurong.platform.custom.mapper.MmnnMmoo00000300Mapper.BaseColumns">
+            <property name="alias" value="t"/>
+            <property name="paramAlias" value="req"/>
+        </include>
+        <include refid="SelectCustomPageFromWhere"/>
+        ORDER BY t.[RecID] ASC
+    </select>
+
+    <select id="selectCustomPageCount" resultType="java.lang.Long">
+        SELECT COUNT(1)
+        <include refid="SelectCustomPageFromWhere"/>
+    </select>
+</mapper>

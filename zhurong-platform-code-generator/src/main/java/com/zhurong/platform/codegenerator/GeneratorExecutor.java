@@ -71,6 +71,8 @@ public class GeneratorExecutor {
                     customMap.put("useDbColumnName", config.useDbColumnName());
                     customMap.put("importLantekBaseEntity", config.importLantekBaseEntity());
                     customMap.put("moduleName", config.moduleName());
+                    customMap.put("baseColumnList", true);
+                    customMap.put("baseResultMap", true);
 
                     builder.customMap(customMap);
                     builder.customFile(new CustomFile.Builder()

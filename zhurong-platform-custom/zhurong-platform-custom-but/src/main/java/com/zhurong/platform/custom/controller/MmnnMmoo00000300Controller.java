@@ -1,8 +1,5 @@
 package com.zhurong.platform.custom.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
@@ -12,6 +9,7 @@ import com.zhurong.platform.core.lantek.dto.MmnnMmoo00000300PageQuery;
 import com.zhurong.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.zhurong.platform.custom.convert.MmnnMmoo00000300Convert;
 import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
+import com.zhurong.platform.custom.mapper.ZhurongButNestingPartsSplitRecordsMapper;
 import com.zhurong.platform.custom.service.IMmnnMmoo00000300Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +28,14 @@ public class MmnnMmoo00000300Controller extends com.zhurong.platform.custom.web.
 
     private final MmnnMmoo00000300Convert convert;
     private final IMmnnMmoo00000300Service service;
+    private final ZhurongButNestingPartsSplitRecordsMapper zhurongButNestingPartsSplitRecordsMapper;
 
     @GetMapping
     public ApiResponse
             <PageResponse
-                    <MmnnMmoo00000300VO>> page(MmnnMmoo00000300PageQuery pageQuery,Boolean detachableOrder) {
+                    <MmnnMmoo00000300VO>> page(MmnnMmoo00000300PageQuery pageQuery, Boolean detachableOrder) {
 
-        LambdaQueryWrapper<MmnnMmoo00000300> wrapper =
+        /*LambdaQueryWrapper<MmnnMmoo00000300> wrapper =
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
         wrapper.orderByDesc(MmnnMmoo00000300::getRecID);
@@ -59,7 +58,13 @@ public class MmnnMmoo00000300Controller extends com.zhurong.platform.custom.web.
         Page<MmnnMmoo00000300> page = service.page(
                 PageFactory.build(pageQuery),
                 wrapper
+        );*/
+        Page<MmnnMmoo00000300> build = PageFactory.build(pageQuery);
+        build.setCountId(
+                "com.zhurong.platform.custom.mapper.ZhurongButNestingPartsSplitRecordsMapper.selectCustomPageCount"
         );
+        Page<MmnnMmoo00000300> page = zhurongButNestingPartsSplitRecordsMapper.selectCustomPage(build,
+                pageQuery, detachableOrder, NestConstant.MState.NOT_STARTED);
 
         List
                 <MmnnMmoo00000300VO> voList = page.getRecords()
