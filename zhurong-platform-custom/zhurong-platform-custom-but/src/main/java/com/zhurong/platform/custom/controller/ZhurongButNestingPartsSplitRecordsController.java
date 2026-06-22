@@ -79,6 +79,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 DisNestNest00000100 disNestNest00000100 = nstMap.get(vo.getNstRef());
                 if (disNestNest00000100 != null){
                     vo.setCnc(disNestNest00000100.getCNC());
+                    vo.setCncDate(disNestNest00000100.getCamLastDate());
                 }
             });
         }
@@ -175,6 +176,20 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 .in(DisNestNest00000500::getMnORef, orgMnoRefs));
         log.info("自动拆单查询套料零件完成，订单数：{}，套料零件记录数：{}", orgMnoRefs.size(), nestParts.size());
 
+        List<String> nestRefs = nestParts.stream().map(DisNestNest00000500::getNstRef).distinct().toList();
+        List<DisNestNest00000100> nestNest00000100s = CollectionUtils.isEmpty(nestRefs)
+                ? Collections.emptyList()
+                : disNestNest00000100Service.list(Wrappers.lambdaQuery(DisNestNest00000100.class)
+                .in(DisNestNest00000100::getNstRef, nestRefs));
+
+        //套料程序切割次数
+        Map<String, Integer> cutQuantityMap = nestNest00000100s.stream()
+                .collect(Collectors.toMap(
+                        it -> normalizeRef(it.getNstRef()),
+                        it -> safeCutQuantity(it.getQuantity()),
+                        (first, second) -> first
+                ));
+
         Map<String, List<DisNestNest00000500>> nestPartMap = nestParts.stream()
                 .collect(Collectors.groupingBy(e -> normalizeRef(e.getMnORef())));
 
@@ -218,7 +233,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
                 splitedQuantity = splitRecords.stream()
                         //两个订单号不相等，说明其中一个是带后缀的被拆分订单
                         .filter(it -> !isSameRef(it.getOrgMnoRef(), it.getMnoRef()))
-                        .mapToInt(it -> Optional.ofNullable(it.getQuantity()).orElse(0))
+                        .mapToInt(it -> calculateActualQuantity(it, cutQuantityMap))
                         .sum();
                 log.info("自动拆单已有拆分统计，订单：{}，已拆记录数：{}，已拆数量：{}",
                         mnoRef, splitRecords.size(), splitedQuantity);
@@ -262,16 +277,18 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             List<DisNestNest00000500> values = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
                     .in(DisNestNest00000500::getNstRef, nests.stream().map(DisNestNest00000100::getNstRef).toList())
                     .eq(DisNestNest00000500::getMnORef, mnoRef));
-            int availableQuantity = values.stream().mapToInt(ZhurongButNestingPartsSplitRecordsController::safeQuantity).sum();
+            int availableQuantity = values.stream()
+                    .mapToInt(it -> calculateActualQuantity(it, cutQuantityMap))
+                    .sum();
             log.info("自动拆单查询可拆套料零件完成，订单：{}，可拆零件记录数：{}，可拆零件数量合计：{}",
                     mnoRef, values.size(), availableQuantity);
             log.debug("自动拆单可拆套料零件明细，订单：{}，values：{}", mnoRef,
                     values.stream().map(ZhurongButNestingPartsSplitRecordsController::describeNestPart).toList());
             int beforeSize = creates.size();
-            appendOrderSplitRecords(creates, values, currentDetachableQuantity);
+            boolean appended = appendOrderSplitRecords(creates, values, currentDetachableQuantity, cutQuantityMap);
             log.info("自动拆单订单记录生成完成，订单：{}，本订单新增记录数：{}，当前累计新增记录数：{}",
                     mnoRef, creates.size() - beforeSize, creates.size());
-            if (creates.size() == beforeSize){
+            if (!appended || creates.size() == beforeSize){
                 String msg = String.format("%s，没有可拆单的套料零件数量",mnoRef);
                 log.warn(msg);
                 return ApiResponse.fail(msg);
@@ -286,7 +303,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         log.info("自动拆单开始保存，订单：{}，保存记录数：{}，拆出数量合计：{}",
                 orgMnoRefs, saves.size(), creates.stream()
                         .filter(it -> !isSameRef(it.getOrgMnoRef(), it.getMnoRef()))
-                        .mapToInt(it -> Optional.ofNullable(it.getQuantity()).orElse(0))
+                        .mapToInt(it -> calculateActualQuantity(it, cutQuantityMap))
                         .sum());
         log.debug("自动拆单保存记录明细：{}", creates.stream()
                 .map(ZhurongButNestingPartsSplitRecordsController::describeCreateRecord)
@@ -311,6 +328,50 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         return (int) Math.floor(order.getRQ() - order.getMinQuan());
     }
 
+    private static int safeCutQuantity(Integer cutQuantity) {
+        return cutQuantity == null || cutQuantity <= 0 ? 1 : cutQuantity;
+    }
+
+    private static int getCutQuantity(Map<String, Integer> cutQuantityMap, String nstRef) {
+        if (cutQuantityMap == null) {
+            return 1;
+        }
+        return safeCutQuantity(cutQuantityMap.get(normalizeRef(nstRef)));
+    }
+
+    private static int calculateActualQuantity(
+            ZhurongButNestingPartsSplitRecords record,
+            Map<String, Integer> cutQuantityMap
+    ) {
+        return calculateActualQuantity(record.getQuantity(), record.getNstRef(), cutQuantityMap);
+    }
+
+    private static int calculateActualQuantity(
+            ZhurongButNestingPartsSplitRecordsCreateDTO record,
+            Map<String, Integer> cutQuantityMap
+    ) {
+        return calculateActualQuantity(record.getQuantity(), record.getNstRef(), cutQuantityMap);
+    }
+
+    private static int calculateActualQuantity(
+            DisNestNest00000500 nestPart,
+            Map<String, Integer> cutQuantityMap
+    ) {
+        return calculateActualQuantity(nestPart.getQuantity(), nestPart.getNstRef(), cutQuantityMap);
+    }
+
+    private static int calculateActualQuantity(
+            Integer quantity,
+            String nstRef,
+            Map<String, Integer> cutQuantityMap
+    ) {
+        int safeQuantity = Optional.ofNullable(quantity).orElse(0);
+        if (safeQuantity <= 0) {
+            return 0;
+        }
+        return safeQuantity * getCutQuantity(cutQuantityMap, nstRef);
+    }
+
     private static int safeQuantity(DisNestNest00000500 nestPart) {
         return Optional.ofNullable(nestPart.getQuantity()).orElse(0);
     }
@@ -319,50 +380,87 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         return Optional.ofNullable(nestPart.getRecID()).orElse(Integer.MAX_VALUE);
     }
 
-    private static void appendOrderSplitRecords(
+    private static boolean appendOrderSplitRecords(
             List<ZhurongButNestingPartsSplitRecordsCreateDTO> creates,
             List<DisNestNest00000500> values,
-            int currentDetachableQuantity
+            int currentDetachableQuantity,
+            Map<String, Integer> cutQuantityMap
     ) {
         if (CollectionUtils.isEmpty(values) || currentDetachableQuantity <= 0) {
-            return;
+            return false;
         }
 
-        Optional<DisNestNest00000500> candidate = values.stream()
-                .filter(it -> safeQuantity(it) >= currentDetachableQuantity)
-                .min(Comparator.comparingInt(ZhurongButNestingPartsSplitRecordsController::safeQuantity)
-                        .thenComparing(ZhurongButNestingPartsSplitRecordsController::safeRecId));
+        List<DisNestNest00000500> sortedValues = values.stream()
+                .filter(it -> safeQuantity(it) > 0)
+                .sorted(Comparator.comparingInt((DisNestNest00000500 it) -> calculateActualQuantity(it, cutQuantityMap)).reversed()
+                        .thenComparing(ZhurongButNestingPartsSplitRecordsController::safeRecId))
+                .toList();
+
+        Optional<SplitAllocation> candidate = sortedValues.stream()
+                .map(it -> findSinglePartAllocation(it, currentDetachableQuantity, cutQuantityMap))
+                .flatMap(Optional::stream)
+                .min(Comparator.comparingInt(SplitAllocation::splitQuantity)
+                        .thenComparing(it -> safeRecId(it.nestPart())));
 
         if (candidate.isPresent()) {
             log.debug("自动拆单命中单条满足策略，本次可拆数量：{}，选中零件：{}",
-                    currentDetachableQuantity, describeNestPart(candidate.get()));
-            addSplitRecord(creates, candidate.get(), currentDetachableQuantity);
-            return;
+                    currentDetachableQuantity, describeNestPart(candidate.get().nestPart()));
+            addSplitRecord(creates, candidate.get().nestPart(), candidate.get().splitQuantity());
+            return true;
         }
 
-        int remainingQuantity = currentDetachableQuantity;
-        List<DisNestNest00000500> sortedValues = values.stream()
-                .filter(it -> safeQuantity(it) > 0)
-                .sorted(Comparator.comparingInt(ZhurongButNestingPartsSplitRecordsController::safeQuantity).reversed()
-                        .thenComparing(ZhurongButNestingPartsSplitRecordsController::safeRecId))
-                .toList();
         log.debug("自动拆单使用多条累加策略，本次可拆数量：{}，候选零件数：{}，候选明细：{}",
                 currentDetachableQuantity,
                 sortedValues.size(),
                 sortedValues.stream().map(ZhurongButNestingPartsSplitRecordsController::describeNestPart).toList());
 
+        int remainingQuantity = currentDetachableQuantity;
+        List<ZhurongButNestingPartsSplitRecordsCreateDTO> pendingCreates = new ArrayList<>();
         for (DisNestNest00000500 nestPart : sortedValues) {
             if (remainingQuantity <= 0) {
                 break;
             }
-            int splitQuantity = Math.min(safeQuantity(nestPart), remainingQuantity);
+            int cutQuantity = getCutQuantity(cutQuantityMap, nestPart.getNstRef());
+            int splitQuantity = Math.min(safeQuantity(nestPart), remainingQuantity / cutQuantity);
+            if (splitQuantity <= 0) {
+                continue;
+            }
             log.debug("自动拆单累加拆分零件，零件：{}，本零件拆出数量：{}，拆分前剩余目标数量：{}",
                     describeNestPart(nestPart), splitQuantity, remainingQuantity);
-            addSplitRecord(creates, nestPart, splitQuantity);
-            remainingQuantity -= splitQuantity;
+            addSplitRecord(pendingCreates, nestPart, splitQuantity);
+            remainingQuantity -= splitQuantity * cutQuantity;
         }
+        if (remainingQuantity > 0) {
+            return false;
+        }
+        creates.addAll(pendingCreates);
         log.debug("自动拆单多条累加策略完成，本次可拆数量：{}，未满足剩余数量：{}",
                 currentDetachableQuantity, remainingQuantity);
+        return true;
+    }
+
+    private static Optional<SplitAllocation> findSinglePartAllocation(
+            DisNestNest00000500 nestPart,
+            int currentDetachableQuantity,
+            Map<String, Integer> cutQuantityMap
+    ) {
+        int cutQuantity = getCutQuantity(cutQuantityMap, nestPart.getNstRef());
+        if (currentDetachableQuantity % cutQuantity != 0) {
+            return Optional.empty();
+        }
+        int splitQuantity = currentDetachableQuantity / cutQuantity;
+        if (splitQuantity <= 0 || splitQuantity > safeQuantity(nestPart)) {
+            return Optional.empty();
+        }
+        return Optional.of(new SplitAllocation(nestPart, splitQuantity, currentDetachableQuantity, cutQuantity));
+    }
+
+    private record SplitAllocation(
+            DisNestNest00000500 nestPart,
+            int splitQuantity,
+            int actualQuantity,
+            int cutQuantity
+    ) {
     }
 
     private static void addSplitRecord(

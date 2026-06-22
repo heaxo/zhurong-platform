@@ -30,4 +30,5 @@ public class ZhurongButNestingPartsSplitRecordsVO implements Serializable {
         private Integer recId;
         private String prdRef;
         private String cnc;
+        private LocalDateTime cncDate;
 }
