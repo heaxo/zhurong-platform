@@ -133,7 +133,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
             wrapper.in(BaseEntity::getId, ids);
         }
         List<ZhurongButSupplierinfo> supplierInfos = zhurongButSupplierinfoService.list(wrapper
-                .eq(BaseEntity::getIsRead, false));
+                .eq(ids == null || ids.isEmpty(),BaseEntity::getIsRead, false));
 
         if (CollectionUtils.isEmpty(supplierInfos)){
             log.warn("需更新的供应商信息为空，无需更新");
@@ -236,7 +236,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
                                 .filter(v -> !infoMap.containsValue(v))
                                 .toList());
 
-                        log.info("供应商数据UData3清除前长度：{}，清除后长度：{}",split.length,list.size());
+                        log.info("{}供应商数据UData3清除前长度：{}，清除后长度：{}", originShtRef,split.length,list.size());
 
                         if (StringUtils.isNotBlank(whsName) && !list.contains(whsName)) {
                             list.add(whsName);
@@ -253,7 +253,7 @@ public class ViPmPrjplanLantekServiceImpl extends ServiceImpl<ViPmPrjplanLantekM
 
                     boolean update1 = pprrPprr00000100Service.update(Wrappers.lambdaUpdate(PprrPprr00000100.class)
                             .set(PprrPprr00000100::getDIS_UData3_Sht, DIS_UData3_Sht)
-                            .eq(PprrPprr00000100::getRecID, pprrPprr00000100.getRecID()));
+                            .eq(PprrPprr00000100::getPrdRef, originShtRef));
 
                     log.info("更新钢板档案用户数据：{} {} {}",originShtRef, DIS_UData3_Sht, update1);
 

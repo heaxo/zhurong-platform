@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhurong.platform.base.api.ApiResponse;
@@ -9,9 +10,13 @@ import com.zhurong.platform.base.model.PageFactory;
 import com.zhurong.platform.custom.convert.ZhurongButSupplierinfoConvert;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoDTO;
 import com.zhurong.platform.custom.dto.ZhurongButSupplierinfoPageQuery;
+import com.zhurong.platform.custom.entity.DisNestNest00000100;
+import com.zhurong.platform.custom.entity.DisNestNest00000300;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.ZhurongButSupplierinfo;
 import com.zhurong.platform.custom.erp.service.IViPmPrjplanLantekService;
+import com.zhurong.platform.custom.service.IDisNestNest00000100Service;
+import com.zhurong.platform.custom.service.IDisNestNest00000300Service;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import com.zhurong.platform.custom.service.IZhurongButSupplierinfoService;
 import com.zhurong.platform.custom.vo.ZhurongButSupplierinfoVO;
@@ -33,6 +38,8 @@ public class ZhurongButSupplierinfoController extends BaseController {
     private final IZhurongButSupplierinfoService service;
     private final IViPmPrjplanLantekService viPmPrjplanLantekService;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
+    private final IDisNestNest00000100Service disNestNest00000100Service;
+    private final IDisNestNest00000300Service disNestNest00000300Service;
 
     @GetMapping("/page")
     public ApiResponse<PageResponse<ZhurongButSupplierinfoVO>> page(ZhurongButSupplierinfoPageQuery pageQuery) {
@@ -41,6 +48,20 @@ public class ZhurongButSupplierinfoController extends BaseController {
                 Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
         wrapper.orderByAsc(ZhurongButSupplierinfo::getCreatedAt);
+
+        if (StringUtils.isNotBlank(pageQuery.getShtRef())){
+            DisNestNest00000300 one = disNestNest00000300Service.getOne(Wrappers.lambdaQuery(DisNestNest00000300.class)
+                    .eq(DisNestNest00000300::getShtRef, pageQuery.getShtRef()), false);
+
+            if (one != null){
+                DisNestNest00000100 nst = disNestNest00000100Service.getOne(Wrappers.lambdaQuery(DisNestNest00000100.class)
+                        .eq(DisNestNest00000100::getNstRef, one.getNstRef()));
+                if (nst != null){
+                    wrapper.or(w -> w.eq(ZhurongButSupplierinfo::getCnc, nst.getCNC()));
+                }
+            }
+
+        }
 
         Page<ZhurongButSupplierinfo> page = service.page(
                 PageFactory.build(pageQuery),
