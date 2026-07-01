@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.mapper.MmnnMmoo00000300Mapper">
+
+
+    <!-- 通用查询映射结果 -->
+
+    <resultMap id="BaseResultMap" type="com.zhurong.platform.custom.entity.MmnnMmoo00000300">
+        <result column="MnORef" property="MnORef"/>
+        <result column="OprID" property="OprID"/>
+        <result column="NextOprID" property="NextOprID"/>
+        <result column="RouID" property="RouID"/>
+        <result column="NextRouID" property="NextRouID"/>
+        <result column="PrdRef" property="PrdRef"/>
+        <result column="PrdRefOrg" property="PrdRefOrg"/>
+        <result column="NComp" property="NComp"/>
+        <result column="PrdRefDst" property="PrdRefDst"/>
+        <result column="PrdNameDst" property="PrdNameDst"/>
+        <result column="RouRef" property="RouRef"/>
+        <result column="OOrder" property="OOrder"/>
+        <result column="WrkRef" property="WrkRef"/>
+        <result column="OprRef" property="OprRef"/>
+        <result column="PPriority" property="PPriority"/>
+        <result column="Origin" property="Origin"/>
+        <result column="OrdRef" property="OrdRef"/>
+        <result column="OLineNum" property="OLineNum"/>
+        <result column="CusRef" property="CusRef"/>
+        <result column="CusName" property="CusName"/>
+        <result column="CDate" property="CDate"/>
+        <result column="RDate" property="RDate"/>
+        <result column="IsEnd" property="IsEnd"/>
+        <result column="UCtName" property="UCtName"/>
+        <result column="UntName" property="UntName"/>
+        <result column="Quantity" property="Quantity"/>
+        <result column="AQ" property="AQ"/>
+        <result column="MQ" property="MQ"/>
+        <result column="LQ" property="LQ"/>
+        <result column="ToOutQ" property="ToOutQ"/>
+        <result column="OutQ" property="OutQ"/>
+        <result column="MState" property="MState"/>
+        <result column="RQ" property="RQ"/>
+        <result column="OState" property="OState"/>
+        <result column="EDuration" property="EDuration"/>
+        <result column="IOrder" property="IOrder"/>
+        <result column="SDate" property="SDate"/>
+        <result column="EDate" property="EDate"/>
+        <result column="PartialSDate" property="PartialSDate"/>
+        <result column="ESDate" property="ESDate"/>
+        <result column="EEDate" property="EEDate"/>
+        <result column="Descrip" property="Descrip"/>
+        <result column="StdTime" property="StdTime"/>
+        <result column="RunTime" property="RunTime"/>
+        <result column="CurTime" property="CurTime"/>
+        <result column="WrkTime" property="WrkTime"/>
+        <result column="WrkCap" property="WrkCap"/>
+        <result column="StdCostU" property="StdCostU"/>
+        <result column="CurCostU" property="CurCostU"/>
+        <result column="StdCostT" property="StdCostT"/>
+        <result column="CurCostT" property="CurCostT"/>
+        <result column="MainOpr" property="MainOpr"/>
+        <result column="ParallelOpr" property="ParallelOpr"/>
+        <result column="WrhRefSM" property="WrhRefSM"/>
+        <result column="LineNumSM" property="LineNumSM"/>
+        <result column="OutOrdRef" property="OutOrdRef"/>
+        <result column="OutLineNum" property="OutLineNum"/>
+        <result column="SuppRef" property="SuppRef"/>
+        <result column="SuppName" property="SuppName"/>
+        <result column="CurName" property="CurName"/>
+        <result column="TarRef" property="TarRef"/>
+        <result column="MinQuan" property="MinQuan"/>
+        <result column="IsOutsourcing" property="IsOutsourcing"/>
+        <result column="CurCostA" property="CurCostA"/>
+        <result column="MainOriginFilter" property="MainOriginFilter"/>
+        <result column="MainOriginNameFilter" property="MainOriginNameFilter"/>
+        <result column="WorkPackageFilter" property="WorkPackageFilter"/>
+        <result column="WorkPackageNameFilter" property="WorkPackageNameFilter"/>
+        <result column="MainOriginTypeFilter" property="MainOriginTypeFilter"/>
+        <result column="MainPackage" property="MainPackage"/>
+        <result column="MainPackageName" property="MainPackageName"/>
+        <result column="DIS_PGroup" property="DIS_PGroup"/>
+        <result column="DIS_MatRef" property="DIS_MatRef"/>
+        <result column="DIS_Thickness" property="DIS_Thickness"/>
+        <result column="DIS_JobRef" property="DIS_JobRef"/>
+        <result column="DIS_FPosition" property="DIS_FPosition"/>
+        <result column="DIS_NQ" property="DIS_NQ"/>
+        <result column="DIS_IsChanged" property="DIS_IsChanged"/>
+        <result column="DIS_IsDuct" property="DIS_IsDuct"/>
+        <result column="DIS_Is2DSOp" property="DIS_Is2DSOp"/>
+        <result column="DIS_Is3DSOp" property="DIS_Is3DSOp"/>
+        <result column="DIS_IsQuote" property="DIS_IsQuote"/>
+        <result column="DIS_WrkCfg" property="DIS_WrkCfg"/>
+        <result column="WosStatus" property="WosStatus"/>
+        <result column="DIS_NonCuttingJob" property="DIS_NonCuttingJob"/>
+        <result column="DIS_OrgOprID" property="DIS_OrgOprID"/>
+        <result column="DIS_MStateCloudStatus" property="DIS_MStateCloudStatus"/>
+        <result column="RecState" property="RecState"/>
+        <result column="CrtDate" property="CrtDate"/>
+        <result column="LastDate" property="LastDate"/>
+        <result column="CrtUser" property="CrtUser"/>
+        <result column="LastUser" property="LastUser"/>
+        <result column="Owner" property="Owner"/>
+        <result column="RecEnt" property="RecEnt"/>
+        <result column="RecOU" property="RecOU"/>
+        <result column="RecSec" property="RecSec"/>
+        <result column="CntID" property="CntID"/>
+        <result column="RecID" property="RecID"/>
+        <result column="DIS_IsMatThickChanged" property="DIS_IsMatThickChanged"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列：使用 include property 传入 alias -->
+    <sql id="BaseColumns">
+                ${alias}.[MnORef],
+                ${alias}.[OprID], ${alias}.[NextOprID],
+            ${alias}.[RouID],
+            ${alias}.[NextRouID],
+            ${alias}.[PrdRef],
+            ${alias}.[PrdRefOrg],
+            ${alias}.[NComp],
+            ${alias}.[PrdRefDst],
+            ${alias}.[PrdNameDst],
+            ${alias}.[RouRef],
+            ${alias}.[OOrder],
+            ${alias}.[WrkRef],
+            ${alias}.[OprRef],
+            ${alias}.[PPriority],
+            ${alias}.[Origin],
+            ${alias}.[OrdRef],
+            ${alias}.[OLineNum],
+            ${alias}.[CusRef],
+            ${alias}.[CusName],
+            ${alias}.[CDate],
+            ${alias}.[RDate],
+            ${alias}.[IsEnd],
+            ${alias}.[UCtName],
+            ${alias}.[UntName],
+            ${alias}.[Quantity],
+            ${alias}.[AQ],
+            ${alias}.[MQ],
+            ${alias}.[LQ],
+            ${alias}.[ToOutQ],
+            ${alias}.[OutQ],
+            ${alias}.[MState],
+            ${alias}.[RQ],
+            ${alias}.[OState],
+            ${alias}.[EDuration],
+            ${alias}.[IOrder],
+            ${alias}.[SDate],
+            ${alias}.[EDate],
+            ${alias}.[PartialSDate],
+            ${alias}.[ESDate],
+            ${alias}.[EEDate],
+            ${alias}.[Descrip],
+            ${alias}.[StdTime],
+            ${alias}.[RunTime],
+            ${alias}.[CurTime],
+            ${alias}.[WrkTime],
+            ${alias}.[WrkCap],
+            ${alias}.[StdCostU],
+            ${alias}.[CurCostU],
+            ${alias}.[StdCostT],
+            ${alias}.[CurCostT],
+            ${alias}.[MainOpr],
+            ${alias}.[ParallelOpr],
+            ${alias}.[WrhRefSM],
+            ${alias}.[LineNumSM],
+            ${alias}.[OutOrdRef],
+            ${alias}.[OutLineNum],
+            ${alias}.[SuppRef],
+            ${alias}.[SuppName],
+            ${alias}.[CurName],
+            ${alias}.[TarRef],
+            ${alias}.[MinQuan],
+            ${alias}.[IsOutsourcing],
+            ${alias}.[CurCostA],
+            ${alias}.[MainOriginFilter],
+            ${alias}.[MainOriginNameFilter],
+            ${alias}.[WorkPackageFilter],
+            ${alias}.[WorkPackageNameFilter],
+            ${alias}.[MainOriginTypeFilter],
+            ${alias}.[MainPackage],
+            ${alias}.[MainPackageName],
+            ${alias}.[DIS_PGroup],
+            ${alias}.[DIS_MatRef],
+            ${alias}.[DIS_Thickness],
+            ${alias}.[DIS_JobRef],
+            ${alias}.[DIS_FPosition],
+            ${alias}.[DIS_NQ],
+            ${alias}.[DIS_IsChanged],
+            ${alias}.[DIS_IsDuct],
+            ${alias}.[DIS_Is2DSOp],
+            ${alias}.[DIS_Is3DSOp],
+            ${alias}.[DIS_IsQuote],
+            ${alias}.[DIS_WrkCfg],
+            ${alias}.[WosStatus],
+            ${alias}.[DIS_NonCuttingJob],
+            ${alias}.[DIS_OrgOprID],
+            ${alias}.[DIS_MStateCloudStatus],
+            ${alias}.[RecState],
+            ${alias}.[CrtDate],
+            ${alias}.[LastDate],
+            ${alias}.[CrtUser],
+            ${alias}.[LastUser],
+            ${alias}.[Owner],
+            ${alias}.[RecEnt],
+            ${alias}.[RecOU],
+            ${alias}.[RecSec],
+            ${alias}.[CntID],
+            ${alias}.[RecID]    </sql>
+
+    <!-- 通用动态查询条件：SQL Server 版 -->
+
+    <sql id="BaseWhere">
+
+        <if test="${paramAlias}.MnORef != null">
+            ${alias}.[MnORef] = #{${paramAlias}.MnORef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OprID != null">
+            AND ${alias}.[OprID] = #{${paramAlias}.OprID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.NextOprID != null">
+            AND ${alias}.[NextOprID] = #{${paramAlias}.NextOprID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.RouID != null">
+            AND ${alias}.[RouID] = #{${paramAlias}.RouID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.NextRouID != null">
+            AND ${alias}.[NextRouID] = #{${paramAlias}.NextRouID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.PrdRef != null">
+            AND ${alias}.[PrdRef] = #{${paramAlias}.PrdRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.PrdRefOrg != null">
+            AND ${alias}.[PrdRefOrg] = #{${paramAlias}.PrdRefOrg,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.NComp != null">
+            AND ${alias}.[NComp] = #{${paramAlias}.NComp,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.PrdRefDst != null">
+            AND ${alias}.[PrdRefDst] = #{${paramAlias}.PrdRefDst,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.PrdNameDst != null">
+            AND ${alias}.[PrdNameDst] = #{${paramAlias}.PrdNameDst,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.RouRef != null">
+            AND ${alias}.[RouRef] = #{${paramAlias}.RouRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OOrder != null">
+            AND ${alias}.[OOrder] = #{${paramAlias}.OOrder,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.WrkRef != null">
+            AND ${alias}.[WrkRef] = #{${paramAlias}.WrkRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OprRef != null">
+            AND ${alias}.[OprRef] = #{${paramAlias}.OprRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.PPriority != null">
+            AND ${alias}.[PPriority] = #{${paramAlias}.PPriority,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.Origin != null">
+            AND ${alias}.[Origin] = #{${paramAlias}.Origin,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.OrdRef != null">
+            AND ${alias}.[OrdRef] = #{${paramAlias}.OrdRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OLineNum != null">
+            AND ${alias}.[OLineNum] = #{${paramAlias}.OLineNum,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.CusRef != null">
+            AND ${alias}.[CusRef] = #{${paramAlias}.CusRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.CusName != null">
+            AND ${alias}.[CusName] = #{${paramAlias}.CusName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.CDate != null">
+            AND ${alias}.[CDate] = #{${paramAlias}.CDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.RDate != null">
+            AND ${alias}.[RDate] = #{${paramAlias}.RDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.IsEnd != null">
+            AND ${alias}.[IsEnd] = #{${paramAlias}.IsEnd,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.UCtName != null">
+            AND ${alias}.[UCtName] = #{${paramAlias}.UCtName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.UntName != null">
+            AND ${alias}.[UntName] = #{${paramAlias}.UntName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.Quantity != null">
+            AND ${alias}.[Quantity] = #{${paramAlias}.Quantity,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.AQ != null">
+            AND ${alias}.[AQ] = #{${paramAlias}.AQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.MQ != null">
+            AND ${alias}.[MQ] = #{${paramAlias}.MQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.LQ != null">
+            AND ${alias}.[LQ] = #{${paramAlias}.LQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.ToOutQ != null">
+            AND ${alias}.[ToOutQ] = #{${paramAlias}.ToOutQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.OutQ != null">
+            AND ${alias}.[OutQ] = #{${paramAlias}.OutQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.MState != null">
+            AND ${alias}.[MState] = #{${paramAlias}.MState,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.RQ != null">
+            AND ${alias}.[RQ] = #{${paramAlias}.RQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.OState != null">
+            AND ${alias}.[OState] = #{${paramAlias}.OState,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.EDuration != null">
+            AND ${alias}.[EDuration] = #{${paramAlias}.EDuration,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.IOrder != null">
+            AND ${alias}.[IOrder] = #{${paramAlias}.IOrder,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.SDate != null">
+            AND ${alias}.[SDate] = #{${paramAlias}.SDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.EDate != null">
+            AND ${alias}.[EDate] = #{${paramAlias}.EDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.PartialSDate != null">
+            AND ${alias}.[PartialSDate] = #{${paramAlias}.PartialSDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.ESDate != null">
+            AND ${alias}.[ESDate] = #{${paramAlias}.ESDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.EEDate != null">
+            AND ${alias}.[EEDate] = #{${paramAlias}.EEDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.Descrip != null">
+            AND ${alias}.[Descrip] = #{${paramAlias}.Descrip,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.StdTime != null">
+            AND ${alias}.[StdTime] = #{${paramAlias}.StdTime,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.RunTime != null">
+            AND ${alias}.[RunTime] = #{${paramAlias}.RunTime,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.CurTime != null">
+            AND ${alias}.[CurTime] = #{${paramAlias}.CurTime,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.WrkTime != null">
+            AND ${alias}.[WrkTime] = #{${paramAlias}.WrkTime,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.WrkCap != null">
+            AND ${alias}.[WrkCap] = #{${paramAlias}.WrkCap,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.StdCostU != null">
+            AND ${alias}.[StdCostU] = #{${paramAlias}.StdCostU,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.CurCostU != null">
+            AND ${alias}.[CurCostU] = #{${paramAlias}.CurCostU,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.StdCostT != null">
+            AND ${alias}.[StdCostT] = #{${paramAlias}.StdCostT,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.CurCostT != null">
+            AND ${alias}.[CurCostT] = #{${paramAlias}.CurCostT,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.MainOpr != null">
+            AND ${alias}.[MainOpr] = #{${paramAlias}.MainOpr,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.ParallelOpr != null">
+            AND ${alias}.[ParallelOpr] = #{${paramAlias}.ParallelOpr,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.WrhRefSM != null">
+            AND ${alias}.[WrhRefSM] = #{${paramAlias}.WrhRefSM,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.LineNumSM != null">
+            AND ${alias}.[LineNumSM] = #{${paramAlias}.LineNumSM,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OutOrdRef != null">
+            AND ${alias}.[OutOrdRef] = #{${paramAlias}.OutOrdRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.OutLineNum != null">
+            AND ${alias}.[OutLineNum] = #{${paramAlias}.OutLineNum,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.SuppRef != null">
+            AND ${alias}.[SuppRef] = #{${paramAlias}.SuppRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.SuppName != null">
+            AND ${alias}.[SuppName] = #{${paramAlias}.SuppName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.CurName != null">
+            AND ${alias}.[CurName] = #{${paramAlias}.CurName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.TarRef != null">
+            AND ${alias}.[TarRef] = #{${paramAlias}.TarRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.MinQuan != null">
+            AND ${alias}.[MinQuan] = #{${paramAlias}.MinQuan,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.IsOutsourcing != null">
+            AND ${alias}.[IsOutsourcing] = #{${paramAlias}.IsOutsourcing,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.CurCostA != null">
+            AND ${alias}.[CurCostA] = #{${paramAlias}.CurCostA,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.MainOriginFilter != null">
+            AND ${alias}.[MainOriginFilter] = #{${paramAlias}.MainOriginFilter,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.MainOriginNameFilter != null">
+            AND ${alias}.[MainOriginNameFilter] = #{${paramAlias}.MainOriginNameFilter,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.WorkPackageFilter != null">
+            AND ${alias}.[WorkPackageFilter] = #{${paramAlias}.WorkPackageFilter,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.WorkPackageNameFilter != null">
+            AND ${alias}.[WorkPackageNameFilter] = #{${paramAlias}.WorkPackageNameFilter,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.MainOriginTypeFilter != null">
+            AND ${alias}.[MainOriginTypeFilter] = #{${paramAlias}.MainOriginTypeFilter,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.MainPackage != null">
+            AND ${alias}.[MainPackage] = #{${paramAlias}.MainPackage,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.MainPackageName != null">
+            AND ${alias}.[MainPackageName] = #{${paramAlias}.MainPackageName,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_PGroup != null">
+            AND ${alias}.[DIS_PGroup] = #{${paramAlias}.DIS_PGroup,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_MatRef != null">
+            AND ${alias}.[DIS_MatRef] = #{${paramAlias}.DIS_MatRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_Thickness != null">
+            AND ${alias}.[DIS_Thickness] = #{${paramAlias}.DIS_Thickness,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.DIS_JobRef != null">
+            AND ${alias}.[DIS_JobRef] = #{${paramAlias}.DIS_JobRef,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_FPosition != null">
+            AND ${alias}.[DIS_FPosition] = #{${paramAlias}.DIS_FPosition,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_NQ != null">
+            AND ${alias}.[DIS_NQ] = #{${paramAlias}.DIS_NQ,jdbcType=DOUBLE}
+        </if>
+
+        <if test="${paramAlias}.DIS_IsChanged != null">
+            AND ${alias}.[DIS_IsChanged] = #{${paramAlias}.DIS_IsChanged,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_IsDuct != null">
+            AND ${alias}.[DIS_IsDuct] = #{${paramAlias}.DIS_IsDuct,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_Is2DSOp != null">
+            AND ${alias}.[DIS_Is2DSOp] = #{${paramAlias}.DIS_Is2DSOp,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_Is3DSOp != null">
+            AND ${alias}.[DIS_Is3DSOp] = #{${paramAlias}.DIS_Is3DSOp,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_IsQuote != null">
+            AND ${alias}.[DIS_IsQuote] = #{${paramAlias}.DIS_IsQuote,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_WrkCfg != null">
+            AND ${alias}.[DIS_WrkCfg] = #{${paramAlias}.DIS_WrkCfg,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.WosStatus != null">
+            AND ${alias}.[WosStatus] = #{${paramAlias}.WosStatus,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.DIS_NonCuttingJob != null">
+            AND ${alias}.[DIS_NonCuttingJob] = #{${paramAlias}.DIS_NonCuttingJob,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.DIS_OrgOprID != null">
+            AND ${alias}.[DIS_OrgOprID] = #{${paramAlias}.DIS_OrgOprID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.DIS_MStateCloudStatus != null">
+            AND ${alias}.[DIS_MStateCloudStatus] = #{${paramAlias}.DIS_MStateCloudStatus,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.RecState != null">
+            AND ${alias}.[RecState] = #{${paramAlias}.RecState,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.CrtDate != null">
+            AND ${alias}.[CrtDate] = #{${paramAlias}.CrtDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.LastDate != null">
+            AND ${alias}.[LastDate] = #{${paramAlias}.LastDate,jdbcType=TIMESTAMP}
+        </if>
+
+        <if test="${paramAlias}.CrtUser != null">
+            AND ${alias}.[CrtUser] = #{${paramAlias}.CrtUser,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.LastUser != null">
+            AND ${alias}.[LastUser] = #{${paramAlias}.LastUser,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.Owner != null">
+            AND ${alias}.[Owner] = #{${paramAlias}.Owner,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.RecEnt != null">
+            AND ${alias}.[RecEnt] = #{${paramAlias}.RecEnt,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.RecOU != null">
+            AND ${alias}.[RecOU] = #{${paramAlias}.RecOU,jdbcType=NVARCHAR}
+        </if>
+
+        <if test="${paramAlias}.RecSec != null">
+            AND ${alias}.[RecSec] = #{${paramAlias}.RecSec,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.CntID != null">
+            AND ${alias}.[CntID] = #{${paramAlias}.CntID,jdbcType=INTEGER}
+        </if>
+
+        <if test="${paramAlias}.RecID != null">
+            AND ${alias}.[RecID] = #{${paramAlias}.RecID,jdbcType=INTEGER}
+        </if>
+    </sql>
+
+    <sql id="BasePage">
+        OFFSET ((#{current,jdbcType=INTEGER} - 1) * #{pageSize,jdbcType=INTEGER}) ROWS
+        FETCH NEXT #{pageSize,jdbcType=INTEGER} ROWS ONLY
+    </sql>
+</mapper>
