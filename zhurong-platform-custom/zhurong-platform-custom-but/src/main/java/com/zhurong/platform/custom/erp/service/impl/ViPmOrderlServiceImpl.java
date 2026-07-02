@@ -90,20 +90,20 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
         if (StringUtils.isNotBlank(targetCompany) && !company.equals(targetCompany)){
             throw new BusinessException(String.format("作业%s，已被指定公司：%s，无法再次指定公司：%s", job.getJobName(), targetCompany, dto.getJobRef()));
         }
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < list.size(); i++) {
-            ViPmOrderl viPmOrderl = list.get(i);
-            if (StringUtils.isBlank(viPmOrderl.getUZnr())){
-                sb.append(String.format("第%s行，%s材质为空",i + 1,viPmOrderl.getItemCode()));
-            }
-            if (StringUtils.isBlank(viPmOrderl.getAplatzId()) && StringUtils.isBlank(dto.getWrkRef())){
-                sb.append(String.format("第%s行，%s机床为空",i + 1,viPmOrderl.getItemCode()));
-            }
-        }
-        if (StringUtils.isNotBlank(sb.toString())){
-            log.warn(sb.toString());
-            throw new BusinessException(sb.toString());
-        }
+//        StringBuffer sb = new StringBuffer();
+//        for (int i = 0; i < list.size(); i++) {
+//            ViPmOrderl viPmOrderl = list.get(i);
+//            if (StringUtils.isBlank(viPmOrderl.getUZnr())){
+//                sb.append(String.format("第%s行，%s材质为空",i + 1,viPmOrderl.getItemCode()));
+//            }
+//            if (StringUtils.isBlank(viPmOrderl.getAplatzId()) && StringUtils.isBlank(dto.getWrkRef())){
+//                sb.append(String.format("第%s行，%s机床为空",i + 1,viPmOrderl.getItemCode()));
+//            }
+//        }
+//        if (StringUtils.isNotBlank(sb.toString())){
+//            log.warn(sb.toString());
+//            throw new BusinessException(sb.toString());
+//        }
 
         Set<String> prdRefs = list.stream().map(ViPmOrderl::getCcad).collect(Collectors.toSet());
         Set<String> wrkRefs = list.stream().map(ViPmOrderl::getAplatzId).filter(StringUtils::isNotBlank).collect(Collectors.toSet());
