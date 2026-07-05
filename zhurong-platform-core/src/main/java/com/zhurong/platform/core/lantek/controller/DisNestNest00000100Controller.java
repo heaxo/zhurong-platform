@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,7 +72,7 @@ public class DisNestNest00000100Controller extends BaseController implements IDi
     }
 
     @Override
-    public ApiResponse<PageResponse<DisNestNest00000100VO>> pageNestOverview(DisNestNest00000100PageQuery req) {
+    public ApiResponse<PageResponse<DisNestNest00000100VO>> pageNestOverview(@RequestBody DisNestNest00000100PageQuery req) {
         return ApiResponse.success(service.pageNestOverview(req));
     }
 

@@ -20,6 +20,8 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
          */
         private List<SortInstructionDTO> sortRules;
         private RelationLoadPlan loadPlan;
+        private List<Integer> recIds;
+        private List<Integer> nestPartRecIds;
 
         /**
         * 

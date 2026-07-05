@@ -1,11 +1,13 @@
 package com.zhurong.platform.core.lantek.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 富查询装配开关
  */
 @Data
+@Accessors(chain = true)
 public class RelationLoadPlan {
 
     /** 是否补套料零件 */

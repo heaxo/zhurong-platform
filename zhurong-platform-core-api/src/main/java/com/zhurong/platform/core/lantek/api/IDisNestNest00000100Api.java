@@ -36,7 +36,7 @@ public interface IDisNestNest00000100Api {
     /**
      * 套料富分页查询
      */
-    @GetMapping("/pageNestOverview")
+    @PostMapping("/pageNestOverview")
     ApiResponse<PageResponse<DisNestNest00000100VO>> pageNestOverview(DisNestNest00000100PageQuery req);
 
     /**

@@ -197,6 +197,15 @@ public class DisNestNest00000100ServiceImpl
         if (req.getRecID() != null) {
             wrapper.eq(DisNestNest00000100::getRecID, req.getRecID());
         }
+        if (req.getRecIds() != null && CollectionUtils.isNotEmpty(req.getRecIds())) {
+            wrapper.in(DisNestNest00000100::getRecID, req.getRecIds());
+        }
+        if (req.getNestPartRecIds() != null && CollectionUtils.isNotEmpty(req.getNestPartRecIds())) {
+            List<DisNestNest00000500> nestParts = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
+                    .in(DisNestNest00000500::getRecID, req.getNestPartRecIds()));
+            List<String> nstRefs = nestParts.stream().map(DisNestNest00000500::getNstRef).distinct().toList();
+            wrapper.in(DisNestNest00000100::getNstRef, nstRefs);
+        }
         if (StringUtils.isNotBlank(req.getNstRef())) {
             wrapper.eq(DisNestNest00000100::getNstRef, req.getNstRef());
         }
@@ -212,6 +221,7 @@ public class DisNestNest00000100ServiceImpl
         if (req.getSThickness() != null) {
             wrapper.eq(DisNestNest00000100::getSThickness, req.getSThickness());
         }
+
 
         // ===== 动态排序 =====
         OrderByAssembler.applySorts(
@@ -266,14 +276,22 @@ public class DisNestNest00000100ServiceImpl
             views.forEach(vo -> vo.setNestingDocument(docMap.get(vo.getRecID())));
         }
 
-        if (loadPlan.isIncludeNestParts()) {
+        if (loadPlan.isIncludeNestParts() || CollectionUtils.isNotEmpty(req.getNestPartRecIds())) {
             List<DisNestNest00000500VO> partRows =
                     disNestNest00000500Service.findPartRowsByNestRefs(nestRefs, loadPlan);
 
             Map<String, List<DisNestNest00000500VO>> partMap = partRows.stream()
                     .collect(Collectors.groupingBy(DisNestNest00000500VO::getNstRef));
 
-            views.forEach(vo -> vo.setNestParts(partMap.getOrDefault(vo.getNstRef(), Collections.emptyList())));
+            views.forEach(vo -> {
+                //按零件ID过滤
+                if (CollectionUtils.isNotEmpty(req.getNestPartRecIds())){
+                    List<DisNestNest00000500VO> nestParts = partMap.getOrDefault(vo.getNstRef(), Collections.emptyList());
+                    vo.setNestParts(nestParts.stream().filter(it -> req.getNestPartRecIds().contains(it.getRecID())).toList());
+                    return;
+                }
+                vo.setNestParts(partMap.getOrDefault(vo.getNstRef(), Collections.emptyList()));
+            });
         }
 
         if (loadPlan.isIncludeNestRemnants()) {
