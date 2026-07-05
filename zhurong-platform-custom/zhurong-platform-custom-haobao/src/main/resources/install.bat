@@ -10,7 +10,7 @@ set "APPIMG_OUT=%BASE%\app-image"
 set "OUTPUT=%BASE%\publish"
 
 set "APP_NAME=zhurong-custom-haobao"
-set "APP_VERSION=0.0.4"
+set "APP_VERSION=0.0.1"
 set "MAIN_JAR=zhurong-platform-custom-haobao-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
 
