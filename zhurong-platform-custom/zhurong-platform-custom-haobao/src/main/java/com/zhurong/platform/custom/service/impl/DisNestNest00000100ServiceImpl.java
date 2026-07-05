@@ -19,5 +19,4 @@ import org.springframework.stereotype.Service;
 public class DisNestNest00000100ServiceImpl
         extends ServiceImpl<DisNestNest00000100Mapper, DisNestNest00000100>
         implements IDisNestNest00000100Service {
-
 }
