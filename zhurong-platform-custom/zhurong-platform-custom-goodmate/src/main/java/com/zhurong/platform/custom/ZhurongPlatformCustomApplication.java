@@ -14,7 +14,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @MapperScan(basePackages = {
         "com.zhurong.platform.custom.mapper",
-        "com.zhurong.platform.custom.lantek.mapper",
 })
 @ConfigurationPropertiesScan
 public class ZhurongPlatformCustomApplication {
