@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.zhurong'
-version = '0.0.4'
+version = '0.0.1'
 description = 'zhurong-platform-custom-template'
 
 
@@ -62,13 +62,5 @@ tasks.named('test') {
 tasks.register('printVersion') {
     doLast {
         println "Current version: ${project.version}"
-    }
-}
-
-docker {
-    springBootApplication {
-        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
-        images = ['zhurong-platform/custom-first']
-        ports = [9300]
     }
 }

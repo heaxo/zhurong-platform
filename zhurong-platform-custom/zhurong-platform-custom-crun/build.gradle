@@ -57,11 +57,3 @@ tasks.register('printVersion') {
         println "Current version: ${project.version}"
     }
 }
-
-docker {
-    springBootApplication {
-        baseImage = 'eclipse-temurin:21.0.10_7-jre-ubi9-minimal'
-        images = ['zhurong-platform/custom-first']
-        ports = [9300]
-    }
-}
