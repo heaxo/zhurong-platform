@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +26,7 @@ import java.util.HexFormat;
 public class StoredFileWriter {
 
     /*
-     * 物理文件统一写入storage-root下的日期/requestId/fileId目录。
+     * 物理文件统一写入storage-root下的日期/文件后缀目录。
      * 这里负责最终路径归一化和startsWith校验，防止外部文件名造成路径穿越。
      */
     private static final DateTimeFormatter DATE_PATH = DateTimeFormatter.BASIC_ISO_DATE;
@@ -43,12 +44,12 @@ public class StoredFileWriter {
 
         String fileId = IdWorker.getIdStr();
         String datePath = LocalDate.now().format(DATE_PATH);
-        String safeRequestId = SafeFileNames.sanitizePathSegment(requestId, "request");
         String safeFileName = SafeFileNames.sanitizeFileName(originalFileName, fileId + ".bin");
+        String extensionPath = extensionPathSegment(safeFileName);
 
         Path root = Path.of(properties.getStorageRoot()).toAbsolutePath().normalize();
-        Path directory = root.resolve(datePath).resolve(safeRequestId).resolve(fileId).normalize();
-        Path target = directory.resolve(safeFileName).normalize();
+        Path directory = root.resolve(datePath).resolve(extensionPath).normalize();
+        Path target = nextAvailableTarget(directory, safeFileName, fileId).normalize();
 
         if (!target.startsWith(root)) {
             throw new BusinessException("IMPORT_FILE_PATH_TRAVERSAL: 文件保存路径非法");
@@ -82,7 +83,7 @@ public class StoredFileWriter {
         MessageDigest messageDigest = sha256();
         long total = 0;
         try (DigestInputStream digestInputStream = new DigestInputStream(inputStream, messageDigest);
-             var outputStream = Files.newOutputStream(target)) {
+             var outputStream = Files.newOutputStream(target, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
             byte[] buffer = new byte[8192];
             int read;
             while ((read = digestInputStream.read(buffer)) != -1) {
@@ -95,6 +96,27 @@ public class StoredFileWriter {
             }
         }
         return new FileDigest(total, HexFormat.of().formatHex(messageDigest.digest()));
+    }
+
+    private Path nextAvailableTarget(Path directory, String safeFileName, String fileId) {
+        Path target = directory.resolve(safeFileName);
+        if (!Files.exists(target)) {
+            return target;
+        }
+
+        int extensionIndex = safeFileName.lastIndexOf('.');
+        String name = extensionIndex > 0 ? safeFileName.substring(0, extensionIndex) : safeFileName;
+        String extension = extensionIndex > 0 ? safeFileName.substring(extensionIndex) : "";
+        return directory.resolve(name + "_" + fileId + extension);
+    }
+
+    private String extensionPathSegment(String safeFileName) {
+        int extensionIndex = safeFileName.lastIndexOf('.');
+        if (extensionIndex < 0 || extensionIndex == safeFileName.length() - 1) {
+            return "bin";
+        }
+        String extension = safeFileName.substring(extensionIndex + 1).toLowerCase();
+        return SafeFileNames.sanitizePathSegment(extension, "bin");
     }
 
     private MessageDigest sha256() {

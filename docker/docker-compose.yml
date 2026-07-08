@@ -82,10 +82,11 @@ services:
       # docker-desktop下使用windows路径映射
       # wsl系统内使用/mnt/d或者/mnt/c路径映射
       # 左侧是宿主机路径，右侧是core容器内固定路径。
+      # 文件统一存储目录（文件存在宿主机上）
       - D:/Zhurong/import-files:/app/data/import-files
       # - /mnt/d/Zhurong/import-files:/app/data/import-files
       # 共享目录映射（外部系统可能会发共享文件夹图纸路径，如果是其他协议就不需要做这个映射，部署在docker容器内的core使用/app/source/import-files查找文件）
-      - lantek-share:/app/source/import-files
+      - windows-share:/app/source/import-files
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
@@ -97,8 +98,8 @@ services:
       - zhurong-network
 
 volumes:
-  lantek-share:
-    name: lantek-share
+  windows-share:
+    name: windows-share
     driver: local
     driver_opts:
       type: cifs
