@@ -10,8 +10,6 @@ import com.zhurong.platform.core.clientimport.service.ClientRegistryService;
 import com.zhurong.platform.core.clientimport.service.EntityAuditHelper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @ConditionalOnClientCommunicationEnabled
 public class ClientRegistryServiceImpl
@@ -28,7 +26,7 @@ public class ClientRegistryServiceImpl
             registry.setUserName(message.getUserName());
             registry.setClientVersion(message.getVersion());
             registry.setStatus("ONLINE");
-            registry.setLastHeartbeatTime(LocalDateTime.now());
+            registry.setLastHeartbeatTime(EntityAuditHelper.now());
             EntityAuditHelper.prepareInsert(registry);
             save(registry);
             return;
@@ -36,7 +34,7 @@ public class ClientRegistryServiceImpl
         registry.setUserName(message.getUserName());
         registry.setClientVersion(message.getVersion());
         registry.setStatus("ONLINE");
-        registry.setLastHeartbeatTime(LocalDateTime.now());
+        registry.setLastHeartbeatTime(EntityAuditHelper.now());
         EntityAuditHelper.prepareUpdate(registry);
         updateById(registry);
     }

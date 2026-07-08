@@ -10,7 +10,6 @@ import com.zhurong.platform.core.clientimport.service.ClientDispatchTaskService;
 import com.zhurong.platform.core.clientimport.service.EntityAuditHelper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,13 +33,13 @@ public class ClientDispatchTaskServiceImpl
         task.setStatus(status.name());
         task.setErrorMessage(message);
         if (status == DispatchStatus.PUBLISHED) {
-            task.setPublishTime(LocalDateTime.now());
+            task.setPublishTime(EntityAuditHelper.now());
         }
         if (status == DispatchStatus.RECEIVED) {
-            task.setReceiveTime(LocalDateTime.now());
+            task.setReceiveTime(EntityAuditHelper.now());
         }
         if (status == DispatchStatus.SUCCESS || status == DispatchStatus.FAILED || status == DispatchStatus.TIMEOUT) {
-            task.setFinishTime(LocalDateTime.now());
+            task.setFinishTime(EntityAuditHelper.now());
         }
         EntityAuditHelper.prepareUpdate(task);
         updateById(task);

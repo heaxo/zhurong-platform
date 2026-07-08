@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -102,12 +101,12 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
         task.setResponseSnapshot(writeJson(statusMessage));
         task.setErrorMessage(nextMessage);
         if (DispatchStatus.RECEIVED.name().equals(nextStatus)) {
-            task.setReceiveTime(LocalDateTime.now());
+            task.setReceiveTime(EntityAuditHelper.now());
         }
         if (DispatchStatus.SUCCESS.name().equals(nextStatus)
                 || DispatchStatus.FAILED.name().equals(nextStatus)
                 || DispatchStatus.TIMEOUT.name().equals(nextStatus)) {
-            task.setFinishTime(LocalDateTime.now());
+            task.setFinishTime(EntityAuditHelper.now());
         }
         EntityAuditHelper.prepareUpdate(task);
         dispatchTaskService.updateById(task);
