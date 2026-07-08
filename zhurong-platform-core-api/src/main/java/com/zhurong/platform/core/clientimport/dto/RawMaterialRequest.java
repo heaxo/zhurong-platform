@@ -2,6 +2,7 @@ package com.zhurong.platform.core.clientimport.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -35,9 +36,9 @@ public class RawMaterialRequest implements Serializable {
     @Schema(description = "宽度，大于0", example = "1500")
     private BigDecimal width;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "quantity必须大于0")
-    @Schema(description = "数量，大于0", example = "3")
-    private BigDecimal quantity;
+    @Min(value = 1, message = "quantity必须大于0")
+    @Schema(description = "数量，正整数", example = "3")
+    private Integer quantity;
 
     private String udata1;
     private String udata2;

@@ -37,5 +37,5 @@ public class ProductionOrder extends ClientImportRecordBase {
     private String cusRef;
 
     @TableField("Quantity")
-    private BigDecimal quantity;
+    private Integer quantity;
 }

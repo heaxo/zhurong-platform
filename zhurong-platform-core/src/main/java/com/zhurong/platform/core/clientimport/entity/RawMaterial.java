@@ -31,7 +31,7 @@ public class RawMaterial extends ClientImportRecordBase {
     private BigDecimal width;
 
     @TableField("Quantity")
-    private BigDecimal quantity;
+    private Integer quantity;
 
     @TableField("UData1")
     private String udata1;

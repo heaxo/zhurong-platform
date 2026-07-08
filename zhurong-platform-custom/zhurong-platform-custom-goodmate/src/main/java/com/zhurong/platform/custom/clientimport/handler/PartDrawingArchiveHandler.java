@@ -2,7 +2,6 @@ package com.zhurong.platform.custom.clientimport.handler;
 
 import com.zhurong.platform.core.clientimport.dto.PartDrawingArchiveRequest;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
-import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -41,9 +40,6 @@ public class PartDrawingArchiveHandler implements ClientImportHandler<PartDrawin
          * 2. 每条data.image已经是共享目录路径，可直接交给本地套料软件读取。
          * 3. 哪些记录真实导入成功，就返回对应ClientImportTaskPayloadItem.recordId。
          */
-        List<Long> importedIds = context.getItems().stream()
-                .map(ClientImportTaskPayloadItem::getRecordId)
-                .toList();
-        return ClientImportResult.success("钣金件图纸档案模板批量处理完成：" + dataList.size(), importedIds);
+        return ClientImportResult.successAll("钣金件图纸档案模板批量处理完成：" + dataList.size(), context);
     }
 }

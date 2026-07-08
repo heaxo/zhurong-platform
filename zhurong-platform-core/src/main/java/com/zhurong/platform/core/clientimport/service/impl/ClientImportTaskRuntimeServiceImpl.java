@@ -1,41 +1,27 @@
 package com.zhurong.platform.core.clientimport.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.exception.BusinessException;
+import com.zhurong.platform.core.clientimport.business.ClientImportBusinessRegistry;
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
-import com.zhurong.platform.core.clientimport.dto.PartDrawingArchiveRequest;
-import com.zhurong.platform.core.clientimport.dto.ProductionOrderRequest;
-import com.zhurong.platform.core.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.core.clientimport.entity.ClientDispatchTask;
-import com.zhurong.platform.core.clientimport.entity.PartDrawingArchive;
-import com.zhurong.platform.core.clientimport.entity.ProductionOrder;
-import com.zhurong.platform.core.clientimport.entity.RawMaterial;
 import com.zhurong.platform.core.clientimport.enums.DispatchStatus;
 import com.zhurong.platform.core.clientimport.mq.ClientDispatchPublishService;
-import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
-import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskStatusMessage;
 import com.zhurong.platform.core.clientimport.service.ClientDispatchTaskService;
 import com.zhurong.platform.core.clientimport.service.ClientImportTaskRuntimeService;
 import com.zhurong.platform.core.clientimport.service.ClientRegistryService;
 import com.zhurong.platform.core.clientimport.service.EntityAuditHelper;
-import com.zhurong.platform.core.clientimport.service.PartDrawingArchiveService;
-import com.zhurong.platform.core.clientimport.service.ProductionOrderService;
-import com.zhurong.platform.core.clientimport.service.RawMaterialService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -49,9 +35,7 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
     private final ClientRegistryService clientRegistryService;
     private final ClientDispatchTaskService dispatchTaskService;
     private final ClientDispatchPublishService dispatchPublishService;
-    private final PartDrawingArchiveService partDrawingArchiveService;
-    private final ProductionOrderService productionOrderService;
-    private final RawMaterialService rawMaterialService;
+    private final ClientImportBusinessRegistry businessRegistry;
 
     @Override
     public ClientImportTaskMessage getPendingData(String taskId) {
@@ -134,29 +118,8 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
         if (CollectionUtils.isEmpty(importedRecordIds)) {
             return;
         }
-        String message = "客户端已确认导入";
-        switch (task.getBusinessType()) {
-            case ClientImportBusinessTypes.PART_DRAWING_ARCHIVE -> partDrawingArchiveService.update(Wrappers.lambdaUpdate(PartDrawingArchive.class)
-                    .set(PartDrawingArchive::getImported, true)
-                    .set(PartDrawingArchive::getDispatchStatus, DispatchStatus.IMPORTED.name())
-                    .set(PartDrawingArchive::getDispatchMessage, message)
-                    .eq(PartDrawingArchive::getRequestId, task.getRequestId())
-                    .in(PartDrawingArchive::getId, importedRecordIds));
-            case ClientImportBusinessTypes.PRODUCTION_ORDER -> productionOrderService.update(Wrappers.lambdaUpdate(ProductionOrder.class)
-                    .set(ProductionOrder::getImported, true)
-                    .set(ProductionOrder::getDispatchStatus, DispatchStatus.IMPORTED.name())
-                    .set(ProductionOrder::getDispatchMessage, message)
-                    .eq(ProductionOrder::getRequestId, task.getRequestId())
-                    .in(ProductionOrder::getId, importedRecordIds));
-            case ClientImportBusinessTypes.RAW_MATERIAL -> rawMaterialService.update(Wrappers.lambdaUpdate(RawMaterial.class)
-                    .set(RawMaterial::getImported, true)
-                    .set(RawMaterial::getDispatchStatus, DispatchStatus.IMPORTED.name())
-                    .set(RawMaterial::getDispatchMessage, message)
-                    .eq(RawMaterial::getRequestId, task.getRequestId())
-                    .in(RawMaterial::getId, importedRecordIds));
-            default -> {
-            }
-        }
+        businessRegistry.get(task.getBusinessType())
+                .markImportedRows(task.getRequestId(), importedRecordIds, "客户端已确认导入");
     }
 
     private void updateRunningRows(ClientDispatchTask task, ClientImportTaskStatusMessage statusMessage) {
@@ -172,40 +135,11 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
     }
 
     private void updateRowsNotImported(ClientDispatchTask task, DispatchStatus status, String message) {
-        switch (task.getBusinessType()) {
-            case ClientImportBusinessTypes.PART_DRAWING_ARCHIVE -> partDrawingArchiveService.update(Wrappers.lambdaUpdate(PartDrawingArchive.class)
-                    .set(PartDrawingArchive::getDispatchStatus, status.name())
-                    .set(PartDrawingArchive::getDispatchMessage, message)
-                    .eq(PartDrawingArchive::getRequestId, task.getRequestId())
-                    .eq(PartDrawingArchive::getImported, false));
-            case ClientImportBusinessTypes.PRODUCTION_ORDER -> productionOrderService.update(Wrappers.lambdaUpdate(ProductionOrder.class)
-                    .set(ProductionOrder::getDispatchStatus, status.name())
-                    .set(ProductionOrder::getDispatchMessage, message)
-                    .eq(ProductionOrder::getRequestId, task.getRequestId())
-                    .eq(ProductionOrder::getImported, false));
-            case ClientImportBusinessTypes.RAW_MATERIAL -> rawMaterialService.update(Wrappers.lambdaUpdate(RawMaterial.class)
-                    .set(RawMaterial::getDispatchStatus, status.name())
-                    .set(RawMaterial::getDispatchMessage, message)
-                    .eq(RawMaterial::getRequestId, task.getRequestId())
-                    .eq(RawMaterial::getImported, false));
-            default -> {
-            }
-        }
+        businessRegistry.get(task.getBusinessType()).updateNotImportedRows(task.getRequestId(), status, message);
     }
 
     private long countNotImported(ClientDispatchTask task) {
-        return switch (task.getBusinessType()) {
-            case ClientImportBusinessTypes.PART_DRAWING_ARCHIVE -> partDrawingArchiveService.count(Wrappers.lambdaQuery(PartDrawingArchive.class)
-                    .eq(PartDrawingArchive::getRequestId, task.getRequestId())
-                    .eq(PartDrawingArchive::getImported, false));
-            case ClientImportBusinessTypes.PRODUCTION_ORDER -> productionOrderService.count(Wrappers.lambdaQuery(ProductionOrder.class)
-                    .eq(ProductionOrder::getRequestId, task.getRequestId())
-                    .eq(ProductionOrder::getImported, false));
-            case ClientImportBusinessTypes.RAW_MATERIAL -> rawMaterialService.count(Wrappers.lambdaQuery(RawMaterial.class)
-                    .eq(RawMaterial::getRequestId, task.getRequestId())
-                    .eq(RawMaterial::getImported, false));
-            default -> 0L;
-        };
+        return businessRegistry.get(task.getBusinessType()).countNotImported(task.getRequestId());
     }
 
     private ClientImportTaskMessage buildPendingTaskMessage(ClientDispatchTask task) {
@@ -221,91 +155,7 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
     }
 
     private List<?> buildPendingPayload(ClientDispatchTask task) {
-        return switch (task.getBusinessType()) {
-            case ClientImportBusinessTypes.PART_DRAWING_ARCHIVE -> partDrawingArchiveService.list(Wrappers.lambdaQuery(PartDrawingArchive.class)
-                            .eq(PartDrawingArchive::getRequestId, task.getRequestId())
-                            .eq(PartDrawingArchive::getImported, false)
-                            .orderByAsc(PartDrawingArchive::getRequestItemIndex))
-                    .stream()
-                    .map(this::toPayloadItem)
-                    .toList();
-            case ClientImportBusinessTypes.PRODUCTION_ORDER -> productionOrderService.list(Wrappers.lambdaQuery(ProductionOrder.class)
-                            .eq(ProductionOrder::getRequestId, task.getRequestId())
-                            .eq(ProductionOrder::getImported, false)
-                            .orderByAsc(ProductionOrder::getRequestItemIndex))
-                    .stream()
-                    .map(this::toPayloadItem)
-                    .toList();
-            case ClientImportBusinessTypes.RAW_MATERIAL -> rawMaterialService.list(Wrappers.lambdaQuery(RawMaterial.class)
-                            .eq(RawMaterial::getRequestId, task.getRequestId())
-                            .eq(RawMaterial::getImported, false)
-                            .orderByAsc(RawMaterial::getRequestItemIndex))
-                    .stream()
-                    .map(this::toPayloadItem)
-                    .toList();
-            default -> List.of();
-        };
-    }
-
-    private ClientImportTaskPayloadItem<PartDrawingArchiveRequest> toPayloadItem(PartDrawingArchive entity) {
-        PartDrawingArchiveRequest data = new PartDrawingArchiveRequest();
-        data.setPrdRef(entity.getPrdRef());
-        data.setPrdName(entity.getPrdName());
-        data.setMatRef(entity.getMatRef());
-        data.setThickness(entity.getThickness());
-        data.setWrkRef(entity.getWrkRef());
-        data.setImage(entity.getClientImagePath());
-        data.setUdata1(entity.getUdata1());
-        data.setUdata2(entity.getUdata2());
-        data.setUdata3(entity.getUdata3());
-        data.setUdata4(entity.getUdata4());
-        data.setUdata5(entity.getUdata5());
-        data.setUdata6(entity.getUdata6());
-        data.setUdata7(entity.getUdata7());
-        data.setUdata8(entity.getUdata8());
-        data.setExtensions(readExtensions(entity.getExtensionsJson()));
-        return toPayloadItem(entity.getId(), entity.getRequestItemIndex(), data);
-    }
-
-    private ClientImportTaskPayloadItem<ProductionOrderRequest> toPayloadItem(ProductionOrder entity) {
-        ProductionOrderRequest data = new ProductionOrderRequest();
-        data.setPrdRef(entity.getPrdRef());
-        data.setPrdName(entity.getPrdName());
-        data.setMatRef(entity.getMatRef());
-        data.setThickness(entity.getThickness());
-        data.setWrkRef(entity.getWrkRef());
-        data.setImage(entity.getClientImagePath());
-        data.setMnORef(entity.getMnORef());
-        data.setOrdRef(entity.getOrdRef());
-        data.setCusRef(entity.getCusRef());
-        data.setQuantity(entity.getQuantity());
-        data.setExtensions(readExtensions(entity.getExtensionsJson()));
-        return toPayloadItem(entity.getId(), entity.getRequestItemIndex(), data);
-    }
-
-    private ClientImportTaskPayloadItem<RawMaterialRequest> toPayloadItem(RawMaterial entity) {
-        RawMaterialRequest data = new RawMaterialRequest();
-        data.setPrdRef(entity.getPrdRef());
-        data.setPrdName(entity.getPrdName());
-        data.setMatRef(entity.getMatRef());
-        data.setThickness(entity.getThickness());
-        data.setLength(entity.getLength());
-        data.setWidth(entity.getWidth());
-        data.setQuantity(entity.getQuantity());
-        data.setUdata1(entity.getUdata1());
-        data.setUdata2(entity.getUdata2());
-        data.setUdata3(entity.getUdata3());
-        data.setImage(entity.getClientImagePath());
-        data.setExtensions(readExtensions(entity.getExtensionsJson()));
-        return toPayloadItem(entity.getId(), entity.getRequestItemIndex(), data);
-    }
-
-    private <T> ClientImportTaskPayloadItem<T> toPayloadItem(Long recordId, Integer requestItemIndex, T data) {
-        ClientImportTaskPayloadItem<T> item = new ClientImportTaskPayloadItem<>();
-        item.setRecordId(recordId);
-        item.setRequestItemIndex(requestItemIndex);
-        item.setData(data);
-        return item;
+        return businessRegistry.get(task.getBusinessType()).listPendingPayload(task.getRequestId());
     }
 
     private ClientDispatchTask getRequiredTask(String taskId) {
@@ -314,18 +164,6 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
             throw new BusinessException("CLIENT_DISPATCH_TASK_NOT_FOUND: 派发任务不存在");
         }
         return task;
-    }
-
-    private Map<String, Object> readExtensions(String extensionsJson) {
-        if (!StringUtils.hasText(extensionsJson)) {
-            return null;
-        }
-        try {
-            return objectMapper.readValue(extensionsJson, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException ex) {
-            throw new BusinessException("JSON_DESERIALIZE_FAILED: 扩展字段反序列化失败：" + ex.getMessage());
-        }
     }
 
     private String writeJson(Object value) {

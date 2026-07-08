@@ -2,7 +2,6 @@ package com.zhurong.platform.custom.clientimport.handler;
 
 import com.zhurong.platform.core.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
-import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -41,9 +40,6 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
          * 2. image不为空的记录可同时读取共享图纸文件并按客户规则补建图纸档案。
          * 3. 本地套料软件返回成功导入的记录后，只回传对应recordId集合。
          */
-        List<Long> importedIds = context.getItems().stream()
-                .map(ClientImportTaskPayloadItem::getRecordId)
-                .toList();
-        return ClientImportResult.success("生产订单模板批量处理完成：" + dataList.size(), importedIds);
+        return ClientImportResult.successAll("生产订单模板批量处理完成：" + dataList.size(), context);
     }
 }

@@ -1,12 +1,13 @@
 package com.zhurong.platform.core.clientimport.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.zhurong.platform.base.exception.BusinessException;
+import com.zhurong.platform.core.clientimport.business.ClientImportBusinessHandler;
+import com.zhurong.platform.core.clientimport.business.ClientImportBusinessRegistry;
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.core.clientimport.dto.ClientImportRequest;
 import com.zhurong.platform.core.clientimport.dto.PartDrawingArchiveRequest;
@@ -14,9 +15,6 @@ import com.zhurong.platform.core.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.core.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.core.clientimport.entity.ClientDispatchTask;
 import com.zhurong.platform.core.clientimport.entity.ClientImportRecordBase;
-import com.zhurong.platform.core.clientimport.entity.PartDrawingArchive;
-import com.zhurong.platform.core.clientimport.entity.ProductionOrder;
-import com.zhurong.platform.core.clientimport.entity.RawMaterial;
 import com.zhurong.platform.core.clientimport.enums.DispatchStatus;
 import com.zhurong.platform.core.clientimport.file.ImageSourceSanitizer;
 import com.zhurong.platform.core.clientimport.file.ImportImageStorageService;
@@ -28,9 +26,6 @@ import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
 import com.zhurong.platform.core.clientimport.service.ClientDispatchTaskService;
 import com.zhurong.platform.core.clientimport.service.ClientImportApplicationService;
 import com.zhurong.platform.core.clientimport.service.EntityAuditHelper;
-import com.zhurong.platform.core.clientimport.service.PartDrawingArchiveService;
-import com.zhurong.platform.core.clientimport.service.ProductionOrderService;
-import com.zhurong.platform.core.clientimport.service.RawMaterialService;
 import com.zhurong.platform.core.clientimport.target.ClientTargetResolveContext;
 import com.zhurong.platform.core.clientimport.target.ClientTargetResolver;
 import com.zhurong.platform.core.clientimport.validation.ImportReferenceValidator;
@@ -71,9 +66,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
     private final ImportReferenceValidator referenceValidator;
     private final ClientDispatchPublishService dispatchPublishService;
     private final ClientDispatchTaskService dispatchTaskService;
-    private final PartDrawingArchiveService partDrawingArchiveService;
-    private final ProductionOrderService productionOrderService;
-    private final RawMaterialService rawMaterialService;
+    private final ClientImportBusinessRegistry businessRegistry;
 
     @Override
     public boolean importPartDrawing(ClientImportRequest<List<PartDrawingArchiveRequest>> request) {
@@ -82,15 +75,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         BatchPersistResult result = persistBatch(
                 batchRequestId,
                 request,
-                ClientImportBusinessTypes.PART_DRAWING_ARCHIVE,
-                "prdRef",
-                PartDrawingArchiveRequest::getPrdRef,
-                PartDrawingArchiveRequest::getMatRef,
-                PartDrawingArchiveRequest::getWrkRef,
-                PartDrawingArchiveRequest::getImage,
-                this::findPartsByPrdRefs,
-                PartDrawingArchive::getPrdRef,
-                this::savePartDrawing
+                businessRegistry.get(ClientImportBusinessTypes.PART_DRAWING_ARCHIVE)
         );
         publishAfterCommit(result);
         return true;
@@ -103,15 +88,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         BatchPersistResult result = persistBatch(
                 batchRequestId,
                 request,
-                ClientImportBusinessTypes.PRODUCTION_ORDER,
-                "mnORef",
-                ProductionOrderRequest::getMnORef,
-                ProductionOrderRequest::getMatRef,
-                ProductionOrderRequest::getWrkRef,
-                ProductionOrderRequest::getImage,
-                this::findProductionsByMnORefs,
-                ProductionOrder::getMnORef,
-                this::saveProductionOrder
+                businessRegistry.get(ClientImportBusinessTypes.PRODUCTION_ORDER)
         );
         publishAfterCommit(result);
         return true;
@@ -124,15 +101,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         BatchPersistResult result = persistBatch(
                 batchRequestId,
                 request,
-                ClientImportBusinessTypes.RAW_MATERIAL,
-                "prdRef",
-                RawMaterialRequest::getPrdRef,
-                RawMaterialRequest::getMatRef,
-                item -> null,
-                RawMaterialRequest::getImage,
-                this::findRawMaterialsByPrdRefs,
-                RawMaterial::getPrdRef,
-                this::saveRawMaterial
+                businessRegistry.get(ClientImportBusinessTypes.RAW_MATERIAL)
         );
         publishAfterCommit(result);
         return true;
@@ -171,25 +140,18 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
     private <T, R extends ClientImportRecordBase> BatchPersistResult persistBatch(
             String batchRequestId,
             ClientImportRequest<List<T>> request,
-            String businessType,
-            String businessKeyName,
-            Function<T, String> businessKeyGetter,
-            Function<T, String> materialGetter,
-            Function<T, String> machineGetter,
-            Function<T, String> imageGetter,
-            Function<Set<String>, List<R>> existingRecordsFinder,
-            Function<R, String> recordBusinessKeyGetter,
-            BusinessSaver<T> businessSaver) {
+            ClientImportBusinessHandler<T, R> businessHandler) {
 
         validateBatch(request);
 
         BatchPersistResult result = transactionTemplate.execute(status -> {
-            List<IndexedItem<T>> indexedItems = indexItems(request.getData(), businessKeyName, businessKeyGetter);
+            List<IndexedItem<T>> indexedItems = indexItems(request.getData(),
+                    businessHandler.businessKeyName(), businessHandler::businessKey);
             Set<String> businessKeys = indexedItems.stream()
                     .map(IndexedItem::businessKey)
                     .collect(Collectors.toSet());
-            Set<String> existingKeys = existingRecordsFinder.apply(businessKeys).stream()
-                    .map(recordBusinessKeyGetter)
+            Set<String> existingKeys = businessHandler.findExistingByBusinessKeys(businessKeys).stream()
+                    .map(businessHandler::recordBusinessKey)
                     .filter(StringUtils::hasText)
                     .map(this::normalizeBusinessKey)
                     .collect(Collectors.toSet());
@@ -199,34 +161,33 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
 
             if (newItems.isEmpty()) {
                 log.info("客户端导入数据均已存在，跳过保存和派发 businessType={}, requestId={}, keyCount={}",
-                        businessType, batchRequestId, businessKeys.size());
+                        businessHandler.businessType(), batchRequestId, businessKeys.size());
                 throw new BusinessException("CLIENT_IMPORT_DATA_ALREADY_EXISTS: 客户端导入数据已存在，未保存和派发，"
-                        + "businessType=" + businessType + ", keys=" + businessKeys);
+                        + "businessType=" + businessHandler.businessType() + ", keys=" + businessKeys);
             }
 
             if (!existingKeys.isEmpty()) {
                 log.info("客户端导入跳过已存在数据 businessType={}, requestId={}, existingKeys={}",
-                        businessType, batchRequestId, existingKeys);
+                        businessHandler.businessType(), batchRequestId, existingKeys);
             }
 
             String targetClientId = targetResolver.resolve(ClientTargetResolveContext.builder()
                     .requestId(batchRequestId)
                     .requestedTargetClientId(request.getTargetClientId())
-                    .businessType(businessType)
+                    .businessType(businessHandler.businessType())
                     .businessData(request.getData())
                     .build());
 
             String taskId = "TASK-" + IdWorker.getIdStr();
             for (IndexedItem<T> indexedItem : newItems) {
-                persistItem(batchRequestId, request, businessType, targetClientId, taskId, indexedItem,
-                        materialGetter, machineGetter, imageGetter, businessSaver);
+                persistItem(batchRequestId, request, businessHandler, targetClientId, taskId, indexedItem);
             }
 
-            ClientImportTaskMessage message = buildTaskMessage(batchRequestId, businessType, targetClientId, taskId);
-            ClientDispatchTask task = buildDispatchTask(batchRequestId, businessType, targetClientId, taskId, message);
+            ClientImportTaskMessage message = buildTaskMessage(batchRequestId, businessHandler.businessType(), targetClientId, taskId);
+            ClientDispatchTask task = buildDispatchTask(batchRequestId, businessHandler.businessType(), targetClientId, taskId, message);
             dispatchTaskService.save(task);
 
-            return BatchPersistResult.toPublish(taskId, batchRequestId, businessType);
+            return BatchPersistResult.toPublish(taskId, batchRequestId, businessHandler.businessType());
         });
 
         if (result == null) {
@@ -238,21 +199,17 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
     private <T> void persistItem(
             String batchRequestId,
             ClientImportRequest<List<T>> request,
-            String businessType,
+            ClientImportBusinessHandler<T, ?> businessHandler,
             String targetClientId,
             String taskId,
-            IndexedItem<T> indexedItem,
-            Function<T, String> materialGetter,
-            Function<T, String> machineGetter,
-            Function<T, String> imageGetter,
-            BusinessSaver<T> businessSaver) {
+            IndexedItem<T> indexedItem) {
 
         T item = indexedItem.value();
-        validateReferences(businessType, materialGetter.apply(item), machineGetter.apply(item));
+        validateReferences(businessHandler.businessType(), businessHandler.materialRef(item), businessHandler.machineRef(item));
 
         // image仍保持String入参，由core统一识别来源并归档；客户端只接收最终共享路径。
-        StoredImportFile storedFile = imageStorageService.resolveAndStore(batchRequestId, indexedItem.index(), imageGetter.apply(item));
-        businessSaver.save(batchRequestId, request, item, indexedItem.index(), taskId, targetClientId, storedFile);
+        StoredImportFile storedFile = imageStorageService.resolveAndStore(batchRequestId, indexedItem.index(), businessHandler.image(item));
+        businessHandler.save(batchRequestId, request, item, indexedItem.index(), taskId, targetClientId, storedFile);
     }
 
     private ClientImportTaskMessage buildTaskMessage(
@@ -308,134 +265,8 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         }
     }
 
-    private SavedBusinessRecord savePartDrawing(
-            String batchRequestId,
-            ClientImportRequest<List<PartDrawingArchiveRequest>> request,
-            PartDrawingArchiveRequest data,
-            int requestItemIndex,
-            String taskId,
-            String targetClientId,
-            StoredImportFile storedFile) {
-
-        PartDrawingArchive entity = new PartDrawingArchive();
-        fillCommonFields(entity, batchRequestId, requestItemIndex, taskId, targetClientId, data.getImage(), data.getExtensions(), storedFile);
-        entity.setPrdRef(data.getPrdRef());
-        entity.setPrdName(data.getPrdName());
-        entity.setMatRef(data.getMatRef());
-        entity.setThickness(data.getThickness());
-        entity.setWrkRef(data.getWrkRef());
-        entity.setUdata1(data.getUdata1());
-        entity.setUdata2(data.getUdata2());
-        entity.setUdata3(data.getUdata3());
-        entity.setUdata4(data.getUdata4());
-        entity.setUdata5(data.getUdata5());
-        entity.setUdata6(data.getUdata6());
-        entity.setUdata7(data.getUdata7());
-        entity.setUdata8(data.getUdata8());
-        EntityAuditHelper.prepareInsert(entity);
-        partDrawingArchiveService.save(entity);
-        return new SavedBusinessRecord(entity);
-    }
-
-    private SavedBusinessRecord saveProductionOrder(
-            String batchRequestId,
-            ClientImportRequest<List<ProductionOrderRequest>> request,
-            ProductionOrderRequest data,
-            int requestItemIndex,
-            String taskId,
-            String targetClientId,
-            StoredImportFile storedFile) {
-
-        ProductionOrder entity = new ProductionOrder();
-        fillCommonFields(entity, batchRequestId, requestItemIndex, taskId, targetClientId, data.getImage(), data.getExtensions(), storedFile);
-        entity.setPrdRef(data.getPrdRef());
-        entity.setPrdName(data.getPrdName());
-        entity.setMatRef(data.getMatRef());
-        entity.setThickness(data.getThickness());
-        entity.setWrkRef(data.getWrkRef());
-        entity.setMnORef(data.getMnORef());
-        entity.setOrdRef(data.getOrdRef());
-        entity.setCusRef(data.getCusRef());
-        entity.setQuantity(data.getQuantity());
-        EntityAuditHelper.prepareInsert(entity);
-        productionOrderService.save(entity);
-        return new SavedBusinessRecord(entity);
-    }
-
-    private SavedBusinessRecord saveRawMaterial(
-            String batchRequestId,
-            ClientImportRequest<List<RawMaterialRequest>> request,
-            RawMaterialRequest data,
-            int requestItemIndex,
-            String taskId,
-            String targetClientId,
-            StoredImportFile storedFile) {
-
-        RawMaterial entity = new RawMaterial();
-        fillCommonFields(entity, batchRequestId, requestItemIndex, taskId, targetClientId, data.getImage(), data.getExtensions(), storedFile);
-        entity.setPrdRef(data.getPrdRef());
-        entity.setPrdName(data.getPrdName());
-        entity.setMatRef(data.getMatRef());
-        entity.setThickness(data.getThickness());
-        entity.setLength(data.getLength());
-        entity.setWidth(data.getWidth());
-        entity.setQuantity(data.getQuantity());
-        entity.setUdata1(data.getUdata1());
-        entity.setUdata2(data.getUdata2());
-        entity.setUdata3(data.getUdata3());
-        entity.setIsRemnant(StringUtils.hasText(data.getImage()));
-        EntityAuditHelper.prepareInsert(entity);
-        rawMaterialService.save(entity);
-        return new SavedBusinessRecord(entity);
-    }
-
-    private void fillCommonFields(
-            ClientImportRecordBase entity,
-            String requestId,
-            int requestItemIndex,
-            String taskId,
-            String targetClientId,
-            String originalImage,
-            Map<String, Object> extensions,
-            StoredImportFile storedFile) {
-
-        entity.setRequestId(requestId);
-        entity.setRequestItemIndex(requestItemIndex);
-        entity.setTaskId(taskId);
-        entity.setTargetClientId(targetClientId);
-        entity.setOriginalImage(ImageSourceSanitizer.mask(originalImage));
-        // extensions只保存客户扩展字段快照并透传给客户端，core不解释也不参与业务判断。
-        entity.setExtensionsJson(writeJson(extensions));
-        entity.setImported(false);
-        entity.setDispatchStatus(DispatchStatus.PENDING_DISPATCH.name());
-        entity.setDispatchMessage("数据已保存，客户端任务等待派发");
-        if (storedFile != null) {
-            entity.setStoredFileId(storedFile.getFileId());
-            entity.setStoredRelativePath(storedFile.getStoredRelativePath());
-            entity.setClientImagePath(storedFile.getClientAccessPath());
-        }
-    }
-
     private void updateBatchStatus(String businessType, String requestId, DispatchStatus status, String message) {
-        switch (businessType) {
-            case ClientImportBusinessTypes.PART_DRAWING_ARCHIVE -> partDrawingArchiveService.update(Wrappers.lambdaUpdate(PartDrawingArchive.class)
-                    .set(PartDrawingArchive::getDispatchStatus, status.name())
-                    .set(PartDrawingArchive::getDispatchMessage, message)
-                    .eq(PartDrawingArchive::getRequestId, requestId)
-                    .eq(PartDrawingArchive::getImported, false));
-            case ClientImportBusinessTypes.PRODUCTION_ORDER -> productionOrderService.update(Wrappers.lambdaUpdate(ProductionOrder.class)
-                    .set(ProductionOrder::getDispatchStatus, status.name())
-                    .set(ProductionOrder::getDispatchMessage, message)
-                    .eq(ProductionOrder::getRequestId, requestId)
-                    .eq(ProductionOrder::getImported, false));
-            case ClientImportBusinessTypes.RAW_MATERIAL -> rawMaterialService.update(Wrappers.lambdaUpdate(RawMaterial.class)
-                    .set(RawMaterial::getDispatchStatus, status.name())
-                    .set(RawMaterial::getDispatchMessage, message)
-                    .eq(RawMaterial::getRequestId, requestId)
-                    .eq(RawMaterial::getImported, false));
-            default -> {
-            }
-        }
+        businessRegistry.get(businessType).updateNotImportedRows(requestId, status, message);
     }
 
     private void validateReferences(String businessType, String matRef, String wrkRef) {
@@ -530,30 +361,6 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         }
     }
 
-    private List<PartDrawingArchive> findPartsByPrdRefs(Set<String> prdRefs) {
-        if (CollectionUtils.isEmpty(prdRefs)) {
-            return List.of();
-        }
-        return partDrawingArchiveService.list(Wrappers.lambdaQuery(PartDrawingArchive.class)
-                .in(PartDrawingArchive::getPrdRef, prdRefs));
-    }
-
-    private List<ProductionOrder> findProductionsByMnORefs(Set<String> mnORefs) {
-        if (CollectionUtils.isEmpty(mnORefs)) {
-            return List.of();
-        }
-        return productionOrderService.list(Wrappers.lambdaQuery(ProductionOrder.class)
-                .in(ProductionOrder::getMnORef, mnORefs));
-    }
-
-    private List<RawMaterial> findRawMaterialsByPrdRefs(Set<String> prdRefs) {
-        if (CollectionUtils.isEmpty(prdRefs)) {
-            return List.of();
-        }
-        return rawMaterialService.list(Wrappers.lambdaQuery(RawMaterial.class)
-                .in(RawMaterial::getPrdRef, prdRefs));
-    }
-
     private String writeJson(Object value) {
         if (value == null) {
             return null;
@@ -573,20 +380,5 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
         static BatchPersistResult toPublish(String taskId, String requestId, String businessType) {
             return new BatchPersistResult(taskId, requestId, businessType);
         }
-    }
-
-    private record SavedBusinessRecord(ClientImportRecordBase record) {
-    }
-
-    @FunctionalInterface
-    private interface BusinessSaver<T> {
-        SavedBusinessRecord save(
-                String batchRequestId,
-                ClientImportRequest<List<T>> request,
-                T item,
-                int requestItemIndex,
-                String taskId,
-                String targetClientId,
-                StoredImportFile storedFile);
     }
 }

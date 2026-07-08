@@ -2,6 +2,7 @@ package com.zhurong.platform.core.clientimport.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -44,9 +45,9 @@ public class ProductionOrderRequest implements Serializable {
     private String cusRef;
 
     @NotNull(message = "quantity不能为空")
-    @DecimalMin(value = "0.0", inclusive = false, message = "quantity必须大于0")
-    @Schema(description = "数量，必填且大于0", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
-    private BigDecimal quantity;
+    @Min(value = 1, message = "quantity必须大于0")
+    @Schema(description = "数量，必填且为正整数", example = "10", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Integer quantity;
 
     @Schema(description = "客户特殊扩展字段；core只保存JSON快照并透传，不解释客户业务含义")
     private Map<String, Object> extensions;

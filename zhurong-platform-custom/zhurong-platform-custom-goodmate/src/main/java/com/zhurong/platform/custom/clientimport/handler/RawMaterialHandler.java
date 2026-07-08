@@ -2,7 +2,6 @@ package com.zhurong.platform.custom.clientimport.handler;
 
 import com.zhurong.platform.core.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
-import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -41,9 +40,6 @@ public class RawMaterialHandler implements ClientImportHandler<RawMaterialReques
          * 2. data.image为空表示整板；不为空表示余料共享文件路径。
          * 3. 本地套料软件成功导入哪些记录，就返回对应recordId集合。
          */
-        List<Long> importedIds = context.getItems().stream()
-                .map(ClientImportTaskPayloadItem::getRecordId)
-                .toList();
-        return ClientImportResult.success("原材料模板批量处理完成：" + dataList.size(), importedIds);
+        return ClientImportResult.successAll("原材料模板批量处理完成：" + dataList.size(), context);
     }
 }

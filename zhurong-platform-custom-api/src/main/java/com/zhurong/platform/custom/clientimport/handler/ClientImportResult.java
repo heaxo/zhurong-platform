@@ -24,6 +24,10 @@ public class ClientImportResult {
         return new ClientImportResult(true, message, importedRecordIds);
     }
 
+    public static ClientImportResult successAll(String message, ClientImportContext<?> context) {
+        return success(message, context.getRecordIds());
+    }
+
     public static ClientImportResult failed(String message, List<Long> importedRecordIds) {
         return new ClientImportResult(false, message, importedRecordIds);
     }
