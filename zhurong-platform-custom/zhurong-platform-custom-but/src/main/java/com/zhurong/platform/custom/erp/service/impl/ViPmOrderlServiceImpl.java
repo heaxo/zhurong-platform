@@ -171,8 +171,8 @@ public class ViPmOrderlServiceImpl extends ServiceImpl<ViPmOrderlMapper, ViPmOrd
                 }
 
                 ManufacturingCommand manufacturing = new ManufacturingCommand();
-                String wrkRef = StringUtils.isNotBlank(dto.getWrkRef()) ? dto.getWrkRef() : it.getAplatzId();
-                String matRef = StringUtils.isNotBlank(dto.getMatRef()) ? dto.getMatRef() : it.getUZnr();
+                String wrkRef = StringUtils.isNotBlank(dto.getWrkRef()) ? dto.getWrkRef() : Optional.ofNullable(it.getAplatzId()).orElse("");
+                String matRef = StringUtils.isNotBlank(dto.getMatRef()) ? dto.getMatRef() : Optional.ofNullable(it.getUZnr()).orElse("");
 
                 //不存在图纸得跳过
                 if (!existsPrdRefs.contains(it.getCcad().toLowerCase())){
