@@ -9,7 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan(basePackages = {"com.zhurong.platform.core.lantek.mapper"})
+@MapperScan(basePackages = {
+        "com.zhurong.platform.core.lantek.mapper",
+        "com.zhurong.platform.core.clientimport.mapper"
+})
 @EnableScheduling
 @Slf4j
 public class ZhurongPlatformCoreApplication {

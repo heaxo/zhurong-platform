@@ -75,10 +75,12 @@ services:
       - rabbitmq
     volumes:
       - ./logs/core:/app/logs
+      - /mnt/d/Zhurong/import-files:/app/data/import-files
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+      - ZHURONG_IMPORT_FILE_STORAGE_ROOT=/app/data/import-files
     restart: always
     networks:
       - zhurong-network

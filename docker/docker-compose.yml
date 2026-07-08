@@ -78,13 +78,32 @@ services:
       - rabbitmq
     volumes:
       - ./logs/core:/app/logs
+      # 宿主windows机文件夹挂载
+      # docker-desktop下使用windows路径映射
+      # wsl系统内使用/mnt/d或者/mnt/c路径映射
+      # 左侧是宿主机路径，右侧是core容器内固定路径。
+      - D:/Zhurong/import-files:/app/data/import-files
+      # - /mnt/d/Zhurong/import-files:/app/data/import-files
+      # 共享目录映射（外部系统可能会发共享文件夹图纸路径，如果是其他协议就不需要做这个映射，部署在docker容器内的core使用/app/source/import-files查找文件）
+      - lantek-share:/app/source/import-files
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
+      # Java应用看到的是容器内路径，不要配置成D:/或/mnt/d。
+      - ZHURONG_IMPORT_FILE_STORAGE_ROOT=/app/data/import-files
     restart: always
     networks:
       - zhurong-network
+
+volumes:
+  lantek-share:
+    name: lantek-share
+    driver: local
+    driver_opts:
+      type: cifs
+      device: "//192.168.1.101/Lantek"
+      o: "username=${SMB_USERNAME},password=${SMB_PASSWORD},file_mode=0777,dir_mode=0777"
 
 networks:
   zhurong-network:

@@ -55,6 +55,24 @@ mybatis-plus:
 zhurong:
   rabbitmq:
     enabled: false
+  client-communication:
+    enabled: false
+    default-client-id:
+    publish-retry-delay-millis: 60000
+  import-file:
+    storage-root: ${ZHURONG_IMPORT_FILE_STORAGE_ROOT:D:/Zhurong/import-files}
+    auto-create-storage-root: true
+    max-file-size: 104857600
+    connect-timeout-seconds: 20
+    read-timeout-seconds: 120
+    windows-share-root: ${ZHURONG_IMPORT_FILE_WINDOWS_SHARE_ROOT:}
+    # 外部image传入Windows共享路径时，core需要把UNC源路径映射成自身可读的本地/容器路径。
+    # Docker Desktop示例：
+    # windows-share-source-mappings:
+    #   - share-root: "\\\\192.168.1.10\\ZhurongImportFiles"
+    #     mounted-root: /app/data/import-files
+    allow-private-network: false
+    max-redirects: 5
 
 lantek-config:
   install: C:/Lantek

@@ -25,7 +25,9 @@ spring:
     password:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   mybatis-plus:
-    mapper-locations: classpath*:/mapper/**/*.xml
+    mapper-locations:
+      - classpath:/mapper/**/*.xml
+      - classpath*:/mapper-common/**/*.xml
     type-aliases-package: com.zhurong.platform.custom.entity
   cloud:
     nacos:

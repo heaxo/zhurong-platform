@@ -41,25 +41,33 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: localhost:8848
-#        ip: 192.168.1.76
-#        port: ${server.port}
+        server-addr: lantekha:8848
+        ip: 192.168.1.100
+        port: ${server.port}
       config:
-        server-addr: localhost:8848
+        server-addr: lantekha:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
     import:
       - nacos:zhurong-platform-custom
-      - nacos:zhurong-platform-custom-but-${spring.profiles.active}
+      - nacos:zhurong-platform-custom-goodmate-${spring.profiles.active}
       - nacos:zhurong-platform-security-${spring.profiles.active}
 
 
 mybatis-plus:
-  mapper-locations: classpath*:/mapper/**/*.xml
+  # 本模块XML只用classpath加载，公共custom-api XML放在mapper-common并用classpath*加载。
+  mapper-locations:
+    - classpath:/mapper/**/*.xml
+    - classpath*:/mapper-common/**/*.xml
   type-aliases-package: com.zhurong.platform.custom.entity
   configuration:
     map-underscore-to-camel-case: false
 
-but-config:
-  sync-nesting-reporting-maximum-days: 30
+zhurong:
+  client-communication:
+    enabled: false
+    client-id: CLIENT-01
+    user-name:
+    version: 1.0.0
+    heartbeat-seconds: 30

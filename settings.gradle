@@ -24,7 +24,7 @@ include 'zhurong-platform-security'
 
 
 //include 'zhurong-platform-custom:zhurong-platform-custom-crun'
-include 'zhurong-platform-custom:zhurong-platform-custom-but'
+//include 'zhurong-platform-custom:zhurong-platform-custom-but'
 //include 'zhurong-platform-custom:zhurong-platform-custom-haobao'
 include 'zhurong-platform-custom:zhurong-platform-custom-goodmate'
 include 'zhurong-platform-custom-api'
