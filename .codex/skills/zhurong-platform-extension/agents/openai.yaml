@@ -1,0 +1,4 @@
+interface:
+  display_name: "Zhurong 平台扩展"
+  short_description: "指导扩展 Zhurong 平台的新客户模块和新业务流程。"
+  default_prompt: "Use $zhurong-platform-extension 指导在 zhurong-platform 中新增客户模块或标准导入业务。"
