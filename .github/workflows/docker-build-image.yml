@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       service:
-        description: Service to build Docker image for
+        description: Service to build and publish Docker image for
         required: true
         default: all
         type: choice
@@ -15,7 +15,7 @@ on:
           - core
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   docker-build-image:
@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
 
       - name: Set up Java 21
         uses: actions/setup-java@v4
@@ -37,6 +40,58 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
+
+      - name: Bump selected versions
+        run: |
+          bump_patch_version() {
+            local version="$1"
+            IFS='.' read -r major minor patch <<< "${version}"
+
+            if [ -z "${major}" ] || [ -z "${minor}" ] || [ -z "${patch}" ]; then
+              echo "Unsupported version format: ${version}" >&2
+              exit 1
+            fi
+
+            echo "${major}.${minor}.$((patch + 1))"
+          }
+
+          bump_service() {
+            local service="$1"
+            local gradle_file="$2"
+            local remote_repo="zhurong-platform-${service}"
+            local current_version
+            local next_version
+
+            current_version="$(sed -n -E "s/^version = '([^']+)'/\1/p" "${gradle_file}" | head -n 1)"
+            if [ -z "${current_version}" ]; then
+              echo "Cannot find version in ${gradle_file}" >&2
+              exit 1
+            fi
+
+            next_version="$(bump_patch_version "${current_version}")"
+
+            sed -i -E "s/^version = '[^']+'/version = '${next_version}'/" "${gradle_file}"
+            sed -i -E "s|(${remote_repo}:)[0-9]+\\.[0-9]+\\.[0-9]+|\\1${next_version}|g" docker/publish-aliyun.md
+
+            echo "${service}: ${current_version} -> ${next_version}"
+          }
+
+          case "${{ inputs.service }}" in
+            all)
+              bump_service gateway zhurong-platform-gateway/build.gradle
+              bump_service auth zhurong-platform-auth/build.gradle
+              bump_service core zhurong-platform-core/build.gradle
+              ;;
+            gateway)
+              bump_service gateway zhurong-platform-gateway/build.gradle
+              ;;
+            auth)
+              bump_service auth zhurong-platform-auth/build.gradle
+              ;;
+            core)
+              bump_service core zhurong-platform-core/build.gradle
+              ;;
+          esac
 
       - name: Build Docker image
         run: |
@@ -63,3 +118,74 @@ jobs:
 
       - name: List built images
         run: docker images "zhurong-platform/*"
+
+      - name: Login to Aliyun Container Registry
+        run: echo "${{ secrets.ALIYUN_REGISTRY_PASSWORD }}" | docker login crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com --username "${{ secrets.ALIYUN_REGISTRY_USERNAME }}" --password-stdin
+
+      - name: Tag and push Aliyun images
+        run: |
+          get_remote_image() {
+            local service="$1"
+            local local_image="zhurong-platform/${service}:latest"
+
+            awk -v local_image="${local_image}" '
+              $1 == "docker" && $2 == "tag" && $3 == local_image {
+                print $4
+                exit
+              }
+            ' docker/publish-aliyun.md
+          }
+
+          publish_image() {
+            local service="$1"
+            local local_image="zhurong-platform/${service}:latest"
+            local remote_image
+
+            remote_image="$(get_remote_image "${service}")"
+            if [ -z "${remote_image}" ]; then
+              echo "Cannot find Aliyun publish command for ${local_image} in docker/publish-aliyun.md" >&2
+              exit 1
+            fi
+
+            echo "Publishing ${local_image} to ${remote_image}"
+            docker tag "${local_image}" "${remote_image}"
+            docker push "${remote_image}"
+          }
+
+          case "${{ inputs.service }}" in
+            all)
+              publish_image gateway
+              publish_image auth
+              publish_image core
+              ;;
+            gateway)
+              publish_image gateway
+              ;;
+            auth)
+              publish_image auth
+              ;;
+            core)
+              publish_image core
+              ;;
+          esac
+
+      - name: Commit bumped versions
+        run: |
+          if git diff --quiet -- \
+            zhurong-platform-gateway/build.gradle \
+            zhurong-platform-auth/build.gradle \
+            zhurong-platform-core/build.gradle \
+            docker/publish-aliyun.md; then
+            echo "No version changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            zhurong-platform-gateway/build.gradle \
+            zhurong-platform-auth/build.gradle \
+            zhurong-platform-core/build.gradle \
+            docker/publish-aliyun.md
+          git commit -m "Bump Docker image versions"
+          git push
