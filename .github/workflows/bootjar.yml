@@ -1,0 +1,58 @@
+name: Build Boot Jars
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bootjar:
+    name: Build ${{ matrix.name }} bootJar
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gateway
+            gradle_task: :zhurong-platform-gateway:bootJar
+            artifact_path: zhurong-platform-gateway/build/libs/*.jar
+          - name: auth
+            gradle_task: :zhurong-platform-auth:bootJar
+            artifact_path: zhurong-platform-auth/build/libs/*.jar
+          - name: core
+            gradle_task: :zhurong-platform-core:bootJar
+            artifact_path: zhurong-platform-core/build/libs/*.jar
+          - name: custom-goodmate
+            gradle_task: :zhurong-platform-custom:zhurong-platform-custom-goodmate:bootJar
+            artifact_path: zhurong-platform-custom/zhurong-platform-custom-goodmate/build/libs/*.jar
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build bootJar
+        run: ./gradlew --no-daemon --stacktrace ${{ matrix.gradle_task }}
+
+      - name: Upload bootJar
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}-bootjar
+          path: |
+            ${{ matrix.artifact_path }}
+            !**/*-plain.jar
+          if-no-files-found: error
+          retention-days: 14
