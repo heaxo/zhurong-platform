@@ -1,7 +1,7 @@
 发布到aliyun
 ```shell
-docker tag zhurong-platform/gateway:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.7
-docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.7
+docker tag zhurong-platform/gateway:latest crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.8
+docker push crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.8
 ```
 
 ```shell
