@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.zhurong'
-version = '0.0.15'
+version = '0.0.16'
 description = 'zhurong-platform-core'
 
 java {
