@@ -17,6 +17,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: docker-build-image-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   docker-build-image:
     name: Build Docker image
@@ -182,6 +186,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git add \
             zhurong-platform-gateway/build.gradle \
             zhurong-platform-auth/build.gradle \
