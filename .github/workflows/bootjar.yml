@@ -2,31 +2,36 @@ name: Build Boot Jars
 
 on:
   workflow_dispatch:
+    inputs:
+      service:
+        description: Service to build
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - gateway
+          - auth
+          - core
+          - custom
+      custom_module:
+        description: Custom module to build when service is all or custom
+        required: true
+        default: goodmate
+        type: choice
+        options:
+          - goodmate
+          - haobao
+          - crun
+          - but
 
 permissions:
   contents: read
 
 jobs:
   bootjar:
-    name: Build ${{ matrix.name }} bootJar
+    name: Build bootJar
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: gateway
-            gradle_task: :zhurong-platform-gateway:bootJar
-            artifact_path: zhurong-platform-gateway/build/libs/*.jar
-          - name: auth
-            gradle_task: :zhurong-platform-auth:bootJar
-            artifact_path: zhurong-platform-auth/build/libs/*.jar
-          - name: core
-            gradle_task: :zhurong-platform-core:bootJar
-            artifact_path: zhurong-platform-core/build/libs/*.jar
-          - name: custom-goodmate
-            gradle_task: :zhurong-platform-custom:zhurong-platform-custom-goodmate:bootJar
-            artifact_path: zhurong-platform-custom/zhurong-platform-custom-goodmate/build/libs/*.jar
 
     steps:
       - name: Checkout
@@ -44,15 +49,50 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Include selected custom module
+        if: ${{ inputs.service == 'all' || inputs.service == 'custom' }}
+        run: |
+          CUSTOM_PATH="zhurong-platform-custom:zhurong-platform-custom-${{ inputs.custom_module }}"
+          if ! grep -q "^include '${CUSTOM_PATH}'" settings.gradle; then
+            echo "include '${CUSTOM_PATH}'" >> settings.gradle
+          fi
+
       - name: Build bootJar
-        run: ./gradlew --no-daemon --stacktrace ${{ matrix.gradle_task }}
+        run: |
+          TASKS=()
+
+          case "${{ inputs.service }}" in
+            all)
+              TASKS+=(":zhurong-platform-gateway:bootJar")
+              TASKS+=(":zhurong-platform-auth:bootJar")
+              TASKS+=(":zhurong-platform-core:bootJar")
+              TASKS+=(":zhurong-platform-custom:zhurong-platform-custom-${{ inputs.custom_module }}:bootJar")
+              ;;
+            gateway)
+              TASKS+=(":zhurong-platform-gateway:bootJar")
+              ;;
+            auth)
+              TASKS+=(":zhurong-platform-auth:bootJar")
+              ;;
+            core)
+              TASKS+=(":zhurong-platform-core:bootJar")
+              ;;
+            custom)
+              TASKS+=(":zhurong-platform-custom:zhurong-platform-custom-${{ inputs.custom_module }}:bootJar")
+              ;;
+          esac
+
+          ./gradlew --no-daemon --stacktrace "${TASKS[@]}"
 
       - name: Upload bootJar
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.name }}-bootjar
+          name: ${{ inputs.service }}-${{ inputs.custom_module }}-bootjar
           path: |
-            ${{ matrix.artifact_path }}
+            zhurong-platform-gateway/build/libs/*.jar
+            zhurong-platform-auth/build/libs/*.jar
+            zhurong-platform-core/build/libs/*.jar
+            zhurong-platform-custom/zhurong-platform-custom-${{ inputs.custom_module }}/build/libs/*.jar
             !**/*-plain.jar
           if-no-files-found: error
           retention-days: 14
