@@ -88,10 +88,19 @@ public class ProductionOrderImportBusinessHandler
         entity.setMatRef(data.getMatRef());
         entity.setThickness(data.getThickness());
         entity.setWrkRef(data.getWrkRef());
+        entity.setImage(data.getImage());
         entity.setMnORef(data.getMnORef());
         entity.setOrdRef(data.getOrdRef());
         entity.setCusRef(data.getCusRef());
         entity.setQuantity(data.getQuantity());
+        entity.setUdata1(data.getUdata1());
+        entity.setUdata2(data.getUdata2());
+        entity.setUdata3(data.getUdata3());
+        entity.setUdata4(data.getUdata4());
+        entity.setUdata5(data.getUdata5());
+        entity.setUdata6(data.getUdata6());
+        entity.setUdata7(data.getUdata7());
+        entity.setUdata8(data.getUdata8());
         service.save(entity);
     }
 
@@ -147,6 +156,14 @@ public class ProductionOrderImportBusinessHandler
         data.setOrdRef(entity.getOrdRef());
         data.setCusRef(entity.getCusRef());
         data.setQuantity(entity.getQuantity());
+        data.setUdata1(entity.getUdata1());
+        data.setUdata2(entity.getUdata2());
+        data.setUdata3(entity.getUdata3());
+        data.setUdata4(entity.getUdata4());
+        data.setUdata5(entity.getUdata5());
+        data.setUdata6(entity.getUdata6());
+        data.setUdata7(entity.getUdata7());
+        data.setUdata8(entity.getUdata8());
         data.setExtensions(support.readExtensions(entity.getExtensionsJson()));
         return support.payloadItem(entity.getId(), entity.getRequestItemIndex(), data);
     }

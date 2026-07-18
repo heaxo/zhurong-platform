@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @TableName("Zhurong_ProductionOrder")
@@ -27,6 +25,9 @@ public class ProductionOrder extends ClientImportRecordBase {
     @TableField("WrkRef")
     private String wrkRef;
 
+    @TableField("Image")
+    private String image;
+
     @TableField("MnORef")
     private String mnORef;
 
@@ -38,4 +39,28 @@ public class ProductionOrder extends ClientImportRecordBase {
 
     @TableField("Quantity")
     private Integer quantity;
+
+    @TableField("UData1")
+    private String udata1;
+
+    @TableField("UData2")
+    private String udata2;
+
+    @TableField("UData3")
+    private String udata3;
+
+    @TableField("UData4")
+    private String udata4;
+
+    @TableField("UData5")
+    private String udata5;
+
+    @TableField("UData6")
+    private String udata6;
+
+    @TableField("UData7")
+    private String udata7;
+
+    @TableField("UData8")
+    private String udata8;
 }
