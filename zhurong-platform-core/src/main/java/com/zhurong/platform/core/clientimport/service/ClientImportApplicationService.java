@@ -1,7 +1,7 @@
 package com.zhurong.platform.core.clientimport.service;
 
 import com.zhurong.platform.core.clientimport.dto.ClientImportRequest;
-import com.zhurong.platform.core.clientimport.dto.PartDrawingArchiveRequest;
+import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
 import com.zhurong.platform.core.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.core.clientimport.dto.RawMaterialRequest;
 

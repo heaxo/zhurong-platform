@@ -26,7 +26,7 @@ public class ProductionOrderRequest implements Serializable {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "thickness必须大于0")
     @Schema(description = "厚度，大于0", example = "2.5")
-    private BigDecimal thickness;
+    private Float thickness;
 
     @Schema(description = "机床，可选", example = "LASER-01")
     private String wrkRef;

@@ -1,8 +1,11 @@
 package com.zhurong.platform.base.lantek.expert.lstx;
 
+import lombok.Getter;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Getter
 public class ExpertProductXmlItem {
 
     private String reference = "";

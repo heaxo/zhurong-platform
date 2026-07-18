@@ -3,7 +3,7 @@ package com.zhurong.platform.core.clientimport.business;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.core.clientimport.dto.ClientImportRequest;
-import com.zhurong.platform.core.clientimport.dto.PartDrawingArchiveRequest;
+import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
 import com.zhurong.platform.core.clientimport.entity.PartDrawingArchive;
 import com.zhurong.platform.core.clientimport.enums.DispatchStatus;
 import com.zhurong.platform.core.clientimport.file.StoredImportFile;

@@ -1,7 +1,4 @@
-package com.zhurong.platform.base.lantek.expert.productxml;
-
-import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlExporter;
-import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlItem;
+package com.zhurong.platform.base.lantek.expert.lstx;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

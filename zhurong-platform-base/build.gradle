@@ -12,6 +12,10 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'jakarta.validation:jakarta.validation-api'
+    compileOnly 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.36'
+    testCompileOnly 'jakarta.validation:jakarta.validation-api'
+    testCompileOnly 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.36'
     implementation "com.baomidou:mybatis-plus-boot-starter"
     annotationProcessor "com.baomidou:mybatis-plus-annotation:${mybatisPlusVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"

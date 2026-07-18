@@ -1,5 +1,7 @@
 package com.zhurong.platform.base.lantek.expert.lstx;
 
+import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
+
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +25,7 @@ public final class LstxImportTool {
 
     public static final String LSTX_IMPORT_COMMAND_TEMPLATE = "Expert\\IMPASYSW.EXE {} ";
     public static final String LSTX_IMPORT_EXE_PATH = "Expert\\IMPASYSW.EXE";
-    private static final int DEFAULT_TIMEOUT = 15;
+    private static final int DEFAULT_TIMEOUT = 7;
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MINUTES;
     private static final Charset WINDOWS_CONSOLE_CHARSET = Charset.forName("GBK");
 
@@ -73,6 +76,24 @@ public final class LstxImportTool {
 
     public static ImportExecutionResult exportAndExecute(
             Collection<ExpertProductXmlItem> products,
+            Path lantekPath,
+            ImportType importDrawType
+    ) throws IOException, XMLStreamException {
+        return exportAndExecute(products, defaultOutputDirectory(), lantekPath, importDrawType);
+    }
+
+    public static ImportExecutionResult exportAndExecute(
+            Collection<ExpertProductXmlItem> products,
+            Path lantekPath,
+            ImportType importDrawType,
+            int timeout,
+            TimeUnit timeUnit
+    ) throws IOException, XMLStreamException {
+        return exportAndExecute(products, defaultOutputDirectory(), lantekPath, importDrawType, timeout, timeUnit);
+    }
+
+    public static ImportExecutionResult exportAndExecute(
+            Collection<ExpertProductXmlItem> products,
             Path outputDirectory,
             Path lantekPath,
             ImportType importDrawType
@@ -88,11 +109,65 @@ public final class LstxImportTool {
             int timeout,
             TimeUnit timeUnit
     ) throws IOException, XMLStreamException {
-        Files.createDirectories(outputDirectory);
-        Path lstxFile = outputDirectory.resolve("lstx-" + UUID.randomUUID() + ".lstx");
+        Path directory = outputDirectory == null ? defaultOutputDirectory() : outputDirectory;
+        Files.createDirectories(directory);
+        Path lstxFile = directory.resolve("lstx-" + UUID.randomUUID() + ".lstx");
         String xmlPath = new ExpertProductXmlExporter().export(products, lstxFile);
         ExecResult execResult = executeImport(lantekPath, Path.of(xmlPath), importDrawType, timeout, timeUnit);
         return new ImportExecutionResult(xmlPath, execResult);
+    }
+
+    public static ExpertProductXmlItem toProductXmlItem(PartDrawingArchiveRequest request) {
+        return ExpertProductXmlItem.create()
+                .reference(request.getPrdRef())
+                .name(request.getPrdName())
+                .material(request.getMatRef())
+                .machine(request.getWrkRef())
+                .thickness(request.getThickness())
+                .file(request.getImage())
+                .userData1(request.getUdata1())
+                .userData2(request.getUdata2())
+                .userData3(request.getUdata3())
+                .userData4(request.getUdata4())
+                .userData5(request.getUdata5())
+                .userData6(request.getUdata6())
+                .userData7(request.getUdata7())
+                .userData8(request.getUdata8());
+    }
+
+    public static List<ExpertProductXmlItem> toProductXmlItems(Collection<? extends PartDrawingArchiveRequest> requests) {
+        return requests.stream()
+                .map(LstxImportTool::toProductXmlItem)
+                .toList();
+    }
+
+    public static ImportType importTypeFromDrawingPath(String drawingPath) {
+        if (drawingPath == null || drawingPath.isBlank()) {
+            return ImportType.NoDrawing;
+        }
+        String normalized = drawingPath.toLowerCase(Locale.ROOT);
+        int queryIndex = normalized.indexOf('?');
+        if (queryIndex >= 0) {
+            normalized = normalized.substring(0, queryIndex);
+        }
+        int fragmentIndex = normalized.indexOf('#');
+        if (fragmentIndex >= 0) {
+            normalized = normalized.substring(0, fragmentIndex);
+        }
+        if (normalized.endsWith(".dxf")) {
+            return ImportType.DXF;
+        }
+        if (normalized.endsWith(".dwg")) {
+            return ImportType.DWG;
+        }
+        if (normalized.endsWith(".mec")) {
+            return ImportType.MEC;
+        }
+        throw new IllegalArgumentException("Unsupported LSTX drawing type: " + drawingPath);
+    }
+
+    public static Path defaultOutputDirectory() {
+        return Path.of("").toAbsolutePath().resolve("lstx");
     }
 
     private static ExecResult runProcess(List<String> command, int timeout, TimeUnit timeUnit) {

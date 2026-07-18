@@ -22,13 +22,13 @@ public class RawMaterial extends ClientImportRecordBase {
     private String matRef;
 
     @TableField("Thickness")
-    private BigDecimal thickness;
+    private Float thickness;
 
     @TableField("Length")
-    private BigDecimal length;
+    private Float length;
 
     @TableField("Width")
-    private BigDecimal width;
+    private Float width;
 
     @TableField("Quantity")
     private Integer quantity;

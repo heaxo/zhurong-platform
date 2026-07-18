@@ -26,15 +26,15 @@ public class RawMaterialRequest implements Serializable {
 
     @DecimalMin(value = "0.0", inclusive = false, message = "thickness必须大于0")
     @Schema(description = "厚度，大于0", example = "2.5")
-    private BigDecimal thickness;
+    private Float thickness;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "length必须大于0")
     @Schema(description = "长度，大于0", example = "3000")
-    private BigDecimal length;
+    private Float length;
 
     @DecimalMin(value = "0.0", inclusive = false, message = "width必须大于0")
     @Schema(description = "宽度，大于0", example = "1500")
-    private BigDecimal width;
+    private Float width;
 
     @Min(value = 1, message = "quantity必须大于0")
     @Schema(description = "数量，正整数", example = "3")

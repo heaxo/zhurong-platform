@@ -22,7 +22,7 @@ public class ProductionOrder extends ClientImportRecordBase {
     private String matRef;
 
     @TableField("Thickness")
-    private BigDecimal thickness;
+    private Float thickness;
 
     @TableField("WrkRef")
     private String wrkRef;

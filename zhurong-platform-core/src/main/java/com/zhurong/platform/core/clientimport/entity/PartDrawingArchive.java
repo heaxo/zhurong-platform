@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @TableName("Zhurong_PartDrawingArchive")
@@ -22,7 +20,7 @@ public class PartDrawingArchive extends ClientImportRecordBase {
     private String matRef;
 
     @TableField("Thickness")
-    private BigDecimal thickness;
+    private Float thickness;
 
     @TableField("WrkRef")
     private String wrkRef;
