@@ -268,6 +268,18 @@ public class ExpertProductXmlItem {
         return auxiliarData("CusName", value);
     }
 
+    public String getReference() {
+        return reference;
+    }
+
+    public String getOrdRef() {
+        return auxiliarData.get("OrdRef");
+    }
+
+    public String getCusRef() {
+        return auxiliarData.get("CusRef");
+    }
+
     Map<String, String> productAttributes() {
         Map<String, String> attributes = new LinkedHashMap<>();
         attributes.put("Reference", reference);

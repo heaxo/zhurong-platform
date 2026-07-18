@@ -11,7 +11,7 @@ import com.zhurong.platform.core.clientimport.business.ClientImportBusinessRegis
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.core.clientimport.dto.ClientImportRequest;
 import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
-import com.zhurong.platform.core.clientimport.dto.ProductionOrderRequest;
+import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.core.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.core.clientimport.entity.ClientDispatchTask;
 import com.zhurong.platform.core.clientimport.entity.ClientImportRecordBase;

@@ -1,6 +1,7 @@
 package com.zhurong.platform.base.lantek.expert.lstx;
 
 import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
+import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.BufferedReader;
@@ -135,7 +136,36 @@ public final class LstxImportTool {
                 .userData8(request.getUdata8());
     }
 
+    public static ExpertProductXmlItem toProductXmlItem(ProductionOrderRequest request) {
+        return ExpertProductXmlItem.create()
+                .reference(request.getPrdRef())
+                .name(request.getPrdName())
+                .material(request.getMatRef())
+                .machine(request.getWrkRef())
+                .thickness(request.getThickness())
+                .quantity(request.getQuantity())
+                .file(request.getImage())
+                .ordRef(request.getMnORef())
+                .cusRef(request.getCusRef())
+                .userData1(request.getUdata1())
+                .userData2(request.getUdata2())
+                .userData3(request.getUdata3())
+                .userData4(request.getUdata4())
+                .userData5(request.getUdata5())
+                .userData6(request.getUdata6())
+                .userData7(request.getUdata7())
+                .userData8(request.getUdata8());
+    }
+
     public static List<ExpertProductXmlItem> toProductXmlItems(Collection<? extends PartDrawingArchiveRequest> requests) {
+        return requests.stream()
+                .map(LstxImportTool::toProductXmlItem)
+                .toList();
+    }
+
+    public static List<ExpertProductXmlItem> toProductionOrderProductXmlItems(
+            Collection<? extends ProductionOrderRequest> requests
+    ) {
         return requests.stream()
                 .map(LstxImportTool::toProductXmlItem)
                 .toList();

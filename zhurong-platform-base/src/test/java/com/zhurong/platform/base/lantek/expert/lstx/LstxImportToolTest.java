@@ -1,6 +1,7 @@
 package com.zhurong.platform.base.lantek.expert.lstx;
 
 import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
+import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
@@ -44,6 +45,28 @@ class LstxImportToolTest {
         assertEquals("2.5", item.productAttributes().get("Thickness"));
         assertEquals("D:\\parts\\p001.dxf", item.productAttributes().get("File"));
         assertEquals("U1", item.productAttributes().get("UserData1"));
+    }
+
+    @Test
+    void mapsProductionOrderRequestMnORefToLstxOrdRef() {
+        ProductionOrderRequest request = new ProductionOrderRequest();
+        request.setPrdRef("P-001");
+        request.setPrdName("Part A");
+        request.setMatRef("Q235");
+        request.setWrkRef("LASER-01");
+        request.setThickness(2.5F);
+        request.setImage("D:\\parts\\p001.dxf");
+        request.setMnORef("MO-001");
+        request.setOrdRef("SO-001");
+        request.setCusRef("CUS-001");
+        request.setQuantity(10);
+
+        ExpertProductXmlItem item = LstxImportTool.toProductXmlItem(request);
+
+        assertEquals("P-001", item.productAttributes().get("Reference"));
+        assertEquals("10", item.productAttributes().get("Quantity"));
+        assertEquals("MO-001", item.auxiliarData().get("OrdRef"));
+        assertEquals("CUS-001", item.auxiliarData().get("CusRef"));
     }
 
     @Test
