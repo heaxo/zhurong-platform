@@ -16,9 +16,12 @@ spring:
     listener:
       simple:
         acknowledge-mode: auto
-        concurrency: 3
-        max-concurrency: 10
-        prefetch: 10
+        # goodmate 客户端会调用本机套料软件 exe，PartDrawingArchiveHandler 和
+        # ProductionOrderHandler 使用同一个 exe。该 exe 不支持并行运行，因此这里必须
+        # 保持单消费者、单预取，确保同一客户端内导入任务按队列串行处理。
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
   flyway:
     enabled: true
     locations: classpath:db/migration
