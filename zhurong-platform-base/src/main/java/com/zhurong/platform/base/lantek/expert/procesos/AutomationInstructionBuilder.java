@@ -1,12 +1,22 @@
 package com.zhurong.platform.base.lantek.expert.procesos;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class AutomationInstructionBuilder {
@@ -18,11 +28,16 @@ public class AutomationInstructionBuilder {
         V45
     }
 
+    private static final int DEFAULT_TIMEOUT = 15;
+    private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MINUTES;
+    private static final Charset WINDOWS_CONSOLE_CHARSET = Charset.forName("GBK");
+    private static final Path DEFAULT_PRC_FOLDER = Path.of("").toAbsolutePath().resolve("prc");
+
     private final AutomationInstruction header;
     private final List<AutomationInstruction> instructions = new ArrayList<>();
     private Path lantekPath;
     private Path prcFolder;
-    private String expertAutoTaskExePath;
+    private String expertAutoTaskExePath = "Expert\\Procesos.exe";
 
     public AutomationInstructionBuilder() {
         this(AutomationVersion.V43);
@@ -33,12 +48,45 @@ public class AutomationInstructionBuilder {
         this.instructions.add(header);
     }
 
+    public AutomationInstructionBuilder(String lantekPath) {
+        this(Path.of(lantekPath));
+    }
+
+    public AutomationInstructionBuilder(Path lantekPath) {
+        this();
+        withFileConfig(lantekPath, DEFAULT_PRC_FOLDER, expertAutoTaskExePath);
+    }
+
+    public AutomationInstructionBuilder(AutomationVersion version, String lantekPath) {
+        this(version, Path.of(lantekPath));
+    }
+
+    public AutomationInstructionBuilder(AutomationVersion version, Path lantekPath) {
+        this(version);
+        withFileConfig(lantekPath, DEFAULT_PRC_FOLDER, expertAutoTaskExePath);
+    }
+
+    public AutomationInstructionBuilder(Path lantekPath, String prcFolder) {
+        this();
+        withFileConfig(lantekPath, prcFolder, expertAutoTaskExePath);
+    }
+
     public AutomationInstructionBuilder(Path lantekPath, String prcFolder, String expertAutoTaskExePath) {
         this();
         withFileConfig(lantekPath, prcFolder, expertAutoTaskExePath);
     }
 
-    public AutomationInstructionBuilder(AutomationVersion version, Path lantekPath, String prcFolder, String expertAutoTaskExePath) {
+    public AutomationInstructionBuilder(AutomationVersion version, Path lantekPath, String prcFolder) {
+        this(version);
+        withFileConfig(lantekPath, prcFolder, expertAutoTaskExePath);
+    }
+
+    public AutomationInstructionBuilder(
+            AutomationVersion version,
+            Path lantekPath,
+            String prcFolder,
+            String expertAutoTaskExePath
+    ) {
         this(version);
         withFileConfig(lantekPath, prcFolder, expertAutoTaskExePath);
     }
@@ -56,6 +104,13 @@ public class AutomationInstructionBuilder {
     public AutomationInstructionBuilder withFileConfig(Path lantekPath, String prcFolder, String expertAutoTaskExePath) {
         this.lantekPath = lantekPath;
         this.prcFolder = Path.of(prcFolder);
+        this.expertAutoTaskExePath = expertAutoTaskExePath;
+        return this;
+    }
+
+    public AutomationInstructionBuilder withFileConfig(Path lantekPath, Path prcFolder, String expertAutoTaskExePath) {
+        this.lantekPath = lantekPath;
+        this.prcFolder = prcFolder;
         this.expertAutoTaskExePath = expertAutoTaskExePath;
         return this;
     }
@@ -97,6 +152,24 @@ public class AutomationInstructionBuilder {
         return batchPath;
     }
 
+    public ExecResult execute() throws IOException {
+        return execute(buildPrcPath(), DEFAULT_TIMEOUT, DEFAULT_TIME_UNIT);
+    }
+
+    public ExecResult execute(int timeout, TimeUnit timeUnit) throws IOException {
+        return execute(buildPrcPath(), timeout, timeUnit);
+    }
+
+    public ExecResult execute(Path prcPath) {
+        return execute(prcPath, DEFAULT_TIMEOUT, DEFAULT_TIME_UNIT);
+    }
+
+    public ExecResult execute(Path prcPath, int timeout, TimeUnit timeUnit) {
+        requireFileConfig();
+        Path exePath = lantekPath.resolve(expertAutoTaskExePath);
+        return runProcess(List.of(exePath.toString(), prcPath.toString()), timeout, timeUnit);
+    }
+
     public static String getAutoNestCmd(Path lantekPath, String expertAutoTaskExePath, Path prcPath) {
         StringBuilder sb = new StringBuilder("@ECHO OFF\r\n");
         sb.append(":LOOP\r\n");
@@ -124,6 +197,10 @@ public class AutomationInstructionBuilder {
         return "\"" + value + "\" ";
     }
 
+    public static Path defaultPrcFolder() {
+        return DEFAULT_PRC_FOLDER;
+    }
+
     private Path resolvePrcFolder() {
         return prcFolder.isAbsolute() ? prcFolder : lantekPath.resolve(prcFolder);
     }
@@ -132,5 +209,58 @@ public class AutomationInstructionBuilder {
         if (lantekPath == null || prcFolder == null || expertAutoTaskExePath == null || expertAutoTaskExePath.isBlank()) {
             throw new IllegalStateException("Lantek path, PRC folder and Expert AutoTask executable path must be configured.");
         }
+    }
+
+    private static ExecResult runProcess(List<String> command, int timeout, TimeUnit timeUnit) {
+        try (ExecutorService executor = Executors.newFixedThreadPool(2)) {
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(false);
+
+            Instant start = Instant.now();
+            Process process = pb.start();
+
+            Future<String> stdout = executor.submit(() -> readStream(process.getInputStream()));
+            Future<String> stderr = executor.submit(() -> readStream(process.getErrorStream()));
+
+            boolean finished = process.waitFor(timeout, timeUnit);
+            if (!finished) {
+                process.destroyForcibly();
+                throw new IllegalStateException("Expert PRC execution timeout.");
+            }
+
+            int exitCode = process.exitValue();
+            long duration = Duration.between(start, Instant.now()).toMillis();
+            return new ExecResult(exitCode, getFuture(stdout), getFuture(stderr), exitCode == 0, duration);
+        } catch (Exception e) {
+            throw new IllegalStateException("Execute Expert PRC failed.", e);
+        }
+    }
+
+    private static String readStream(InputStream inputStream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, WINDOWS_CONSOLE_CHARSET))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append(System.lineSeparator());
+            }
+        }
+        return sb.toString();
+    }
+
+    private static String getFuture(Future<String> future) {
+        try {
+            return future.get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public record ExecResult(
+            int exitCode,
+            String stdout,
+            String stderr,
+            boolean success,
+            long durationMs
+    ) {
     }
 }

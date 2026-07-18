@@ -3,6 +3,10 @@ package com.zhurong.platform.base.lantek.expert;
 import com.zhurong.platform.base.lantek.expert.procesos.*;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -76,5 +80,21 @@ class AutomationInstructionBuilderTest {
         assertEquals("46 4 \"B001\"", new SaveAllAsSheets(true, "B001").generateInstructionText());
         assertEquals("46 2 \"\"", new SaveAllAsSheets(SaveAllAsSheets.Params.Workshop).generateInstructionText());
         assertThrows(IllegalArgumentException.class, () -> new SaveAllAsSheets(true));
+    }
+
+    @Test
+    void buildsPrcUnderDefaultWorkingDirectoryFolder() throws Exception {
+        Path prcPath = new AutomationInstructionBuilder(
+                AutomationInstructionBuilder.AutomationVersion.V45,
+                Path.of("D:\\Lantek")
+        ).addInstruction(new CreateAndUpdateBoard("boards.lst")).buildPrcPath();
+
+        try {
+            assertTrue(prcPath.startsWith(AutomationInstructionBuilder.defaultPrcFolder()));
+            assertTrue(Files.exists(prcPath));
+            assertTrue(Files.readString(prcPath, StandardCharsets.UTF_8).contains("39 1 \"boards.lst\""));
+        } finally {
+            Files.deleteIfExists(prcPath);
+        }
     }
 }
