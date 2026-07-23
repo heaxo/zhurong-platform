@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -143,11 +142,10 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         //按订单号分组处理
         Map<String, List<ZhurongButNestingPartsSplitRecords>> groupMap = spliteds.stream()
                 .collect(Collectors.groupingBy(e -> normalizeRef(e.getOrgMnoRef())));
-        //获取原始订单数量
+        //获取订单数量
         List<MmnnMmoo00000300> mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
-                .in(MmnnMmoo00000300::getMnORef, orgMnoRefs)
-                .gt(MmnnMmoo00000300::getMinQuan, 0));
-        log.info("自动拆单查询订单原始数量完成，请求订单数：{}，可拆订单记录数：{}", orgMnoRefs.size(), mmnnMmoo00000300s.size());
+                .in(MmnnMmoo00000300::getMnORef, orgMnoRefs));
+        log.info("自动拆单查询订单数量完成，请求订单数：{}，订单记录数：{}", orgMnoRefs.size(), mmnnMmoo00000300s.size());
 
         if (CollectionUtils.isEmpty(mmnnMmoo00000300s)){
             String msg = String.format("订单没有记录原始数量，无法执行拆单：%s", String.join(",", orgMnoRefs));
@@ -155,15 +153,11 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             return ApiResponse.fail(msg);
         }
 
-        //取各个订单原始数量
-        Map<String, MmnnMmoo00000300> mmnnMmoo00000300Map = mmnnMmoo00000300s.stream().collect(Collectors.toMap(
-                e -> normalizeRef(e.getMnORef()), Function.identity(),
-                BinaryOperator.maxBy(
-                        Comparator.comparing(MmnnMmoo00000300::getCrtDate, Comparator.naturalOrder())
-                )));
+        //按订单聚合当前数量和原始数量
+        Map<String, OrderQuantitySnapshot> orderQuantityMap = buildOrderQuantityMap(mmnnMmoo00000300s);
 
         List<String> missingMnoRefs = orgMnoRefs.stream()
-                .filter(it -> !mmnnMmoo00000300Map.containsKey(normalizeRef(it)))
+                .filter(it -> !orderQuantityMap.containsKey(normalizeRef(it)))
                 .toList();
         if (!missingMnoRefs.isEmpty()){
             String msg = String.format("没有可拆订单，无法执行拆单（订单可能没有记录原始数量），%s", String.join(",", missingMnoRefs));
@@ -195,19 +189,19 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
 
         List<ZhurongButNestingPartsSplitRecordsCreateDTO> creates = new ArrayList<>();
 
-        for(Map.Entry<String, MmnnMmoo00000300> entry : mmnnMmoo00000300Map.entrySet()){
-            MmnnMmoo00000300 mmnn300 = entry.getValue();
-            String mnoRef = mmnn300.getMnORef();
+        for(Map.Entry<String, OrderQuantitySnapshot> entry : orderQuantityMap.entrySet()){
+            OrderQuantitySnapshot orderQuantity = entry.getValue();
+            String mnoRef = orderQuantity.mnoRef();
             String mnoRefKey = entry.getKey();
             //可拆数量（用户手动改的最终数量 - 最开始的原始数量，）
             //比如：原始数量：20，修改后的数量：30
             //30 - 20 = 10（10是可拆分的数量，不能超过这个数量）
-            int detachableQuantity = calculateDetachableQuantity(mmnn300);
+            int detachableQuantity = calculateDetachableQuantity(orderQuantity);
             log.info("自动拆单处理订单，订单：{}，当前数量：{}，原始数量：{}，可拆数量：{}",
-                    mnoRef, mmnn300.getRQ(), mmnn300.getMinQuan(), detachableQuantity);
+                    mnoRef, orderQuantity.currentQuantity(), orderQuantity.originalQuantity(), detachableQuantity);
             if (detachableQuantity <= 0){
                 String msg = String.format("订单：%s，没有可拆单数量，当前数量：%s，原始数量：%s",
-                        mnoRef, mmnn300.getRQ(), mmnn300.getMinQuan());
+                        mnoRef, orderQuantity.currentQuantity(), orderQuantity.originalQuantity());
                 log.warn(msg);
                 return ApiResponse.fail(msg);
             }
@@ -215,7 +209,7 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
             Integer splitedQuantity = 0;
 
             if (!nestPartMap.containsKey(mnoRefKey)){
-                String msg = String.format("工单没有套料程序，无法执行拆单，%s", mmnn300.getMnORef());
+                String msg = String.format("工单没有套料程序，无法执行拆单，%s", mnoRef);
                 log.warn(msg);
                 return ApiResponse.fail(msg);
             }
@@ -321,11 +315,60 @@ public class ZhurongButNestingPartsSplitRecordsController extends BaseController
         return normalizeRef(left).equals(normalizeRef(right));
     }
 
-    private static int calculateDetachableQuantity(MmnnMmoo00000300 order) {
-        if (order.getRQ() == null || order.getMinQuan() == null) {
-            return 0;
+    private static Map<String, OrderQuantitySnapshot> buildOrderQuantityMap(List<MmnnMmoo00000300> orders) {
+        return orders.stream()
+                .filter(it -> !normalizeRef(it.getMnORef()).isEmpty())
+                .collect(Collectors.groupingBy(
+                        it -> normalizeRef(it.getMnORef()),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ))
+                .entrySet()
+                .stream()
+                .map(entry -> buildOrderQuantitySnapshot(entry.getValue()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toMap(
+                        OrderQuantitySnapshot::mnoRefKey,
+                        Function.identity(),
+                        (first, second) -> first,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private static Optional<OrderQuantitySnapshot> buildOrderQuantitySnapshot(List<MmnnMmoo00000300> orders) {
+        Optional<MmnnMmoo00000300> originalOrder = orders.stream()
+                .filter(it -> it.getMinQuan() != null && it.getMinQuan() > 0)
+                .max(Comparator.comparing(MmnnMmoo00000300::getCrtDate, Comparator.nullsFirst(Comparator.naturalOrder())));
+        if (originalOrder.isEmpty()) {
+            return Optional.empty();
         }
-        return (int) Math.floor(order.getRQ() - order.getMinQuan());
+
+        double currentQuantity = orders.stream()
+                .map(MmnnMmoo00000300::getRQ)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        MmnnMmoo00000300 representative = originalOrder.get();
+        return Optional.of(new OrderQuantitySnapshot(
+                normalizeRef(representative.getMnORef()),
+                representative.getMnORef(),
+                currentQuantity,
+                representative.getMinQuan(),
+                orders.size()
+        ));
+    }
+
+    private static int calculateDetachableQuantity(OrderQuantitySnapshot order) {
+        return (int) Math.floor(order.currentQuantity() - order.originalQuantity());
+    }
+
+    private record OrderQuantitySnapshot(
+            String mnoRefKey,
+            String mnoRef,
+            double currentQuantity,
+            double originalQuantity,
+            int rowCount
+    ) {
     }
 
     private static int safeCutQuantity(Integer cutQuantity) {
