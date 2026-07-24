@@ -51,19 +51,17 @@ services:
         #- rabbitmq
     volumes:
       - ./logs/core:/app/logs
-      - /mnt/d/Zhurong/import-files:/app/data/import-files
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
         #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
-      - ZHURONG_IMPORT_FILE_STORAGE_ROOT=/app/data/import-files
     restart: always
     networks:
       - zhurong-network
   # 前端      
   zhurong-nginx:
-    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-but-nginx:0.0.2
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-but-nginx:0.0.13
     container_name: zhurong-but-nginx
     ports:
       - "9001:80"
