@@ -50,10 +50,10 @@ spring:
           driver-class-name: com.sap.db.jdbc.Driver
 
         erp:
-          url: jdbc:oracle:thin:@192.168.30.199:1521:XBUTORCL
+          url: jdbc:postgresql://192.168.30.194:5432/cqpt_xbut
           username: LANTEK
           password: abclantek
-          driver-class-name: oracle.jdbc.OracleDriver
+          driver-class-name: org.postgresql.Driver
 
         erp2:
           url: jdbc:oracle:thin:@192.168.30.199:1521:XBUTORCL
