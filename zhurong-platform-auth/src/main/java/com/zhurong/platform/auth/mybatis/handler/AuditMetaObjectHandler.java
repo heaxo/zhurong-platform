@@ -23,7 +23,9 @@ public class AuditMetaObjectHandler implements MetaObjectHandler {
         if (principal == null) {
             return null;
         }
-        JwtUserDetails user = (JwtUserDetails) principal;
+        if (!(principal instanceof JwtUserDetails user)) {
+            return null;
+        }
         return user.getUserId();
     }
 
