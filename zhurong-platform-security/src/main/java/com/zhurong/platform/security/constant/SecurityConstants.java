@@ -8,7 +8,9 @@ package com.zhurong.platform.security.constant;
 public class SecurityConstants {
     public static final String[] WHITE_LIST = {
             "/auth/login",
+            "/auth/register",
             "/api/auth/auth/login",
+            "/api/auth/auth/register",
             "/staticResources",
             "/staticResources/**",
             "/custom/staticResources",

@@ -1,8 +1,10 @@
 package com.zhurong.platform.auth.api;
 
 import com.zhurong.platform.auth.dto.LoginRequest;
+import com.zhurong.platform.auth.dto.RegisterRequest;
 import com.zhurong.platform.auth.vo.LoginResponse;
 import com.zhurong.platform.base.api.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,13 @@ public interface ISysAuthApi {
      */
     @PostMapping("login")
     ApiResponse<LoginResponse> login(@RequestBody LoginRequest request);
+
+    /**
+     * 注册
+     */
+    @PostMapping("register")
+    ApiResponse<Boolean> register(@Valid @RequestBody RegisterRequest request);
+
     /**
      * 权限码
      */

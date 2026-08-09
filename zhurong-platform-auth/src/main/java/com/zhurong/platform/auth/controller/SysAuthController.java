@@ -2,12 +2,14 @@ package com.zhurong.platform.auth.controller;
 
 import com.zhurong.platform.auth.api.ISysAuthApi;
 import com.zhurong.platform.auth.dto.LoginRequest;
+import com.zhurong.platform.auth.dto.RegisterRequest;
 import com.zhurong.platform.auth.service.ISysAuthService;
 import com.zhurong.platform.auth.vo.LoginResponse;
 import com.zhurong.platform.auth.web.BaseController;
 import com.zhurong.platform.base.api.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +40,15 @@ public class SysAuthController extends BaseController implements ISysAuthApi {
             httpResponse.addHeader("Set-Cookie", cookie);
             return ApiResponse.success(response);
         }catch (Exception e){
+            return ApiResponse.fail(e.getMessage());
+        }
+    }
+
+    @Override
+    public ApiResponse<Boolean> register(@Valid @RequestBody RegisterRequest request) {
+        try {
+            return ApiResponse.success(authService.register(request));
+        } catch (Exception e) {
             return ApiResponse.fail(e.getMessage());
         }
     }

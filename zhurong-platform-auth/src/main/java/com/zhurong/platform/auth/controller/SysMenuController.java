@@ -123,9 +123,15 @@ public class SysMenuController extends BaseController implements ISysMenuApi {
         List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class)
                 .eq(SysUserRole::getUserId, getCurrentUserId()));
         List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+        if (roleIds.isEmpty()) {
+            return ApiResponse.success(List.of());
+        }
         List<SysRoleMenu> roleMenus = sysRoleMenuService.list(Wrappers.lambdaQuery(SysRoleMenu.class)
                 .in(SysRoleMenu::getRoleId, roleIds));
         List<Long> menuIds = roleMenus.stream().map(SysRoleMenu::getMenuId).distinct().toList();
+        if (menuIds.isEmpty()) {
+            return ApiResponse.success(List.of());
+        }
         List<SysMenu> menus = service.list(Wrappers.lambdaQuery(SysMenu.class).in(BaseEntity::getId, menuIds));
         List<SysMenuVO> vos = convert.toVO(menus);
         vos.forEach(vo -> {
