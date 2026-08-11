@@ -74,7 +74,7 @@ xybaoyuan:
   lantek:
     install: C:\Lantek
   erp:
-    steel-plate-url: http://36.152.232.98:9089/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
+    steel-plate-url: http://223.105.87.10:8089/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
     secret-key: grmm12345678
   feedback:
     url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc

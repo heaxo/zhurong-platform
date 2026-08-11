@@ -40,6 +40,7 @@ public class XyImportTaskService {
     public XyImportTask importSynchronously(String businessType, List<Long> ids) {
         if (ids == null || ids.isEmpty()) throw new IllegalArgumentException("请选择要导入的数据");
         List<Long> distinctIds = ids.stream().filter(Objects::nonNull).distinct().toList();
+        if (distinctIds.isEmpty()) throw new IllegalArgumentException("请选择要导入的数据");
         validateRecords(businessType, distinctIds);
         try {
             XyImportTask task = new XyImportTask();
@@ -88,6 +89,7 @@ public class XyImportTaskService {
     private void importOrders(List<Long> ids) throws Exception {
         String install = requireInstall();
         List<XyManufacturingOrder> orders = dataService.ordersByIds(ids);
+        validateOrderAssignments(orders);
         Map<String, XyBasePart> parts;
         // Base-part IDs differ from order IDs; resolve by querying the page-independent service data.
         Set<String> importedKeys = findImportedOrderKeys(orders);
@@ -98,9 +100,9 @@ public class XyImportTaskService {
             List<String> refs = pending.stream().map(XyManufacturingOrder::getPrdRef).distinct().toList();
             parts = dataService.findBasePartsByRefs(refs).stream()
                     .collect(Collectors.toMap(XyBasePart::getPrdRef, Function.identity(), (left, right) -> left));
-            Map<String, List<XyManufacturingOrder>> byJob = pending.stream().collect(Collectors.groupingBy(XyManufacturingOrder::getJobRef));
+            Map<String, List<XyManufacturingOrder>> byJob = pending.stream()
+                    .collect(Collectors.groupingBy(XyManufacturingOrder::getJobRef));
             for (Map.Entry<String, List<XyManufacturingOrder>> entry : byJob.entrySet()) {
-                requireText(entry.getKey(), "生产订单未选择作业");
                 List<ExpertProductXmlItem> products = new ArrayList<>();
                 for (XyManufacturingOrder order : entry.getValue()) {
                     XyBasePart part = parts.get(order.getPrdRef());
@@ -123,6 +125,7 @@ public class XyImportTaskService {
                 new ExpertProductXmlExporter().export(products, lstx);
                 AutomationInstructionBuilder.ExecResult result = new AutomationInstructionBuilder(
                         AutomationInstructionBuilder.AutomationVersion.V45, install)
+                        .withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
                         .addInstruction(new OpenExpert(true))
                         .addInstruction(new OpenJob(entry.getKey()))
                         .addInstruction(new ImportPartsFromDatabase(false, lstx.toAbsolutePath().toString()))
@@ -151,6 +154,7 @@ public class XyImportTaskService {
         String lstPath = PlateAndRemnantLstTool.exportRawMaterials(requests);
         AutomationInstructionBuilder.ExecResult result = new AutomationInstructionBuilder(
                 AutomationInstructionBuilder.AutomationVersion.V45, install)
+                .withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
                 .addInstruction(new CreateAndUpdateBoard(lstPath)).execute();
         if (!result.success()) throw new IllegalStateException("钢板自动化导入失败: " + result.stderr());
         Set<String> imported = partService.list(Wrappers.lambdaQuery(PprrPprr00000100.class)
@@ -184,10 +188,38 @@ public class XyImportTaskService {
 
     private void validateRecords(String businessType, List<Long> ids) {
         int count;
-        if (ORDER.equals(businessType)) count = dataService.ordersByIds(ids).size();
-        else if (STEEL_PLATE.equals(businessType)) count = dataService.steelPlatesByIds(ids).size();
+        if (ORDER.equals(businessType)) {
+            List<XyManufacturingOrder> orders = dataService.ordersByIds(ids);
+            count = orders.size();
+            if (count == ids.size()) validateOrderAssignments(orders);
+        } else if (STEEL_PLATE.equals(businessType)) count = dataService.steelPlatesByIds(ids).size();
         else throw new IllegalArgumentException("不支持的导入业务: " + businessType);
         if (count != ids.size()) throw new IllegalArgumentException("部分待导入记录不存在或已删除");
+    }
+
+    static void validateOrderAssignments(List<XyManufacturingOrder> orders) {
+        List<String> missingJobs = orders.stream()
+                .filter(order -> !StringUtils.hasText(order.getJobRef()))
+                .map(XyImportTaskService::orderLabel)
+                .toList();
+        List<String> missingMachines = orders.stream()
+                .filter(order -> !StringUtils.hasText(order.getWrkRef()))
+                .map(XyImportTaskService::orderLabel)
+                .toList();
+        List<String> errors = new ArrayList<>();
+        if (!missingJobs.isEmpty()) errors.add("未设置作业: " + String.join("、", missingJobs));
+        if (!missingMachines.isEmpty()) errors.add("未设置设备: " + String.join("、", missingMachines));
+        if (!errors.isEmpty()) throw new IllegalArgumentException(String.join("；", errors));
+    }
+
+    private static String orderLabel(XyManufacturingOrder order) {
+        if (StringUtils.hasText(order.getProductionOrderNumber())) {
+            return order.getProductionOrderNumber();
+        }
+        if (StringUtils.hasText(order.getProductionOrderErpInternalCode())) {
+            return order.getProductionOrderErpInternalCode();
+        }
+        return String.valueOf(order.getId());
     }
 
     private void attachTask(XyImportTask task, List<Long> ids) {
@@ -218,6 +250,7 @@ public class XyImportTaskService {
         requireText(order.getProductionOrderNumber(), "生产订单号不能为空");
         requireText(order.getProductionOrderErpInternalCode(), "生产订单ERP内码不能为空");
         requireText(order.getCusRef(), "计划跟踪号不能为空");
+        requireText(order.getJobRef(), "生产订单未选择作业");
         requireText(order.getWrkRef(), "生产订单未选择设备");
         requireText(part.getDrawingCode(), "基础零件图号不能为空");
         requireText(part.getUdata3(), "基础零件ERP物料内码不能为空: " + part.getPrdRef());

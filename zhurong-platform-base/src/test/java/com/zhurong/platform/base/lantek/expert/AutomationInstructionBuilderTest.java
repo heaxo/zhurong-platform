@@ -3,10 +3,12 @@ package com.zhurong.platform.base.lantek.expert;
 import com.zhurong.platform.base.lantek.expert.procesos.*;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -95,6 +97,34 @@ class AutomationInstructionBuilderTest {
             assertTrue(Files.readString(prcPath, StandardCharsets.UTF_8).contains("39 1 \"boards.lst\""));
         } finally {
             Files.deleteIfExists(prcPath);
+        }
+    }
+
+    @Test
+    void writesPrcAsAnsiByDefaultAndAllowsBusinessToChooseUtf8() throws Exception {
+        Path ansiPath = Files.createTempFile("prc-ansi-", ".prc");
+        Path utf8Path = Files.createTempFile("prc-utf8-", ".prc");
+        try {
+            AutomationInstructionBuilder ansiBuilder = new AutomationInstructionBuilder()
+                    .addInstruction(new CreateJob("中文作业", false, "100000001"));
+            ansiBuilder.buildPrcPath(ansiPath);
+
+            AutomationInstructionBuilder utf8Builder = new AutomationInstructionBuilder()
+                    .withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.UTF8)
+                    .addInstruction(new CreateJob("中文作业", false, "100000001"));
+            utf8Builder.buildPrcPath(utf8Path);
+
+            assertArrayEquals(
+                    ansiBuilder.build().getBytes(Charset.forName("GBK")),
+                    Files.readAllBytes(ansiPath)
+            );
+            assertArrayEquals(
+                    utf8Builder.build().getBytes(StandardCharsets.UTF_8),
+                    Files.readAllBytes(utf8Path)
+            );
+        } finally {
+            Files.deleteIfExists(ansiPath);
+            Files.deleteIfExists(utf8Path);
         }
     }
 }

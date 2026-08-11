@@ -27,7 +27,7 @@ public class XySteelPlateController {
     }
 
     @PostMapping("/sync-erp")
-    public ApiResponse<Integer> syncErp(@RequestBody XyRequests.SteelPlatePage query) {
+    public ApiResponse<Integer> syncErp(@Valid @RequestBody XyRequests.SteelPlateSync query) {
         return ApiResponse.success(erpService.synchronize(query.getPrdRef(), query.getLotNumber()));
     }
 

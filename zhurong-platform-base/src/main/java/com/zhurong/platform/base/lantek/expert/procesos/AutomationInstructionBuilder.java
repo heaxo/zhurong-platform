@@ -28,6 +28,20 @@ public class AutomationInstructionBuilder {
         V45
     }
 
+    /**
+     * PRC文件编码。ANSI对应当前Lantek中文Windows环境使用的GBK编码。
+     */
+    public enum PrcEncoding {
+        ANSI(Charset.forName("GBK")),
+        UTF8(StandardCharsets.UTF_8);
+
+        private final Charset charset;
+
+        PrcEncoding(Charset charset) {
+            this.charset = charset;
+        }
+    }
+
     private static final int DEFAULT_TIMEOUT = 15;
     private static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MINUTES;
     private static final Charset WINDOWS_CONSOLE_CHARSET = Charset.forName("GBK");
@@ -38,6 +52,7 @@ public class AutomationInstructionBuilder {
     private Path lantekPath;
     private Path prcFolder;
     private String expertAutoTaskExePath = "Expert\\Procesos.exe";
+    private PrcEncoding prcEncoding = PrcEncoding.ANSI;
 
     public AutomationInstructionBuilder() {
         this(AutomationVersion.V43);
@@ -121,6 +136,14 @@ public class AutomationInstructionBuilder {
         return this;
     }
 
+    /**
+     * 设置当前业务生成PRC时使用的编码；不调用或传入null时默认使用ANSI。
+     */
+    public AutomationInstructionBuilder withPrcEncoding(PrcEncoding encoding) {
+        this.prcEncoding = encoding == null ? PrcEncoding.ANSI : encoding;
+        return this;
+    }
+
     public String build() {
         return instructions.stream()
                 .map(AutomationInstruction::generateInstructionText)
@@ -140,7 +163,7 @@ public class AutomationInstructionBuilder {
         if (prcPath.getParent() != null) {
             Files.createDirectories(prcPath.getParent());
         }
-        Files.writeString(prcPath, build(), StandardCharsets.UTF_8);
+        Files.writeString(prcPath, build(), prcEncoding.charset);
     }
 
     public Path buildPrcBat() throws IOException {

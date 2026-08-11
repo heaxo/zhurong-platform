@@ -37,7 +37,14 @@ public class XyManufacturingOrderController {
     }
 
     @GetMapping("/job-exists")
-    public ApiResponse<Boolean> jobExists(@RequestParam String jobName) { return ApiResponse.success(jobService.exists(jobName)); }
+    public ApiResponse<Boolean> jobExists(
+            @RequestParam String jobName,
+            @RequestParam(required = false) String jobPath
+    ) {
+        return ApiResponse.success(jobPath == null
+                ? jobService.exists(jobName)
+                : jobService.exists(jobName, jobPath));
+    }
 
     @PostMapping("/jobs")
     public ApiResponse<String> createJob(@Valid @RequestBody XyRequests.JobCreate request) {

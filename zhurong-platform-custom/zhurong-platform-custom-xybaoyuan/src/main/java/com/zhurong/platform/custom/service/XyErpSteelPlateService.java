@@ -35,11 +35,11 @@ public class XyErpSteelPlateService {
                 .body(request).retrieve().body(String.class);
         try {
             JsonNode response = objectMapper.readTree(body);
-            if (response.path("code").asInt(-1) != 0) {
-                throw new IllegalArgumentException(text(response, "message", text(response, "msg", "ERP钢板查询失败")));
+            if (response.path("Code").asInt(-1) != 0) {
+                throw new IllegalArgumentException(text(response, "Message", text(response, "msg", "ERP钢板查询失败")));
             }
             List<Map<String, JsonNode>> rows = new ArrayList<>();
-            response.path("data").forEach(node -> rows.add(caseInsensitive(node)));
+            response.path("Data").forEach(node -> rows.add(caseInsensitive(node)));
             Map<GroupKey, Aggregate> aggregates = new LinkedHashMap<>();
             for (Map<String, JsonNode> row : rows) {
                 if (StringUtils.hasText(text(row, "shtRef"))) continue;

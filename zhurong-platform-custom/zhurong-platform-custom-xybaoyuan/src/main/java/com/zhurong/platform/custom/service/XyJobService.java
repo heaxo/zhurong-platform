@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
 
 @Service
@@ -22,6 +23,7 @@ public class XyJobService {
     static final String JOB_SEQUENCE_KEY = "JOB";
     private static final long FIRST_JOB_REF = 100_000_001L;
     private static final long MAX_JOB_REF = 999_999_999L;
+    private static final ReentrantLock CREATE_JOB_LOCK = new ReentrantLock(true);
 
     private final DisMmnnBwsr00000100FeignClient browserClient;
     private final XyBaoyuanProperties properties;
@@ -32,21 +34,28 @@ public class XyJobService {
         return findJobByName(jobName, jobTree()).isPresent();
     }
 
+    public boolean exists(String jobName, String jobPath) {
+        String normalizedName = normalizeJobName(jobName);
+        String normalizedPath = normalizeJobPath(jobPath);
+        return jobExistsInFolder(normalizedName, normalizedPath, jobTree());
+    }
+
     public String create(String jobName, String jobPath) {
         String normalizedName = normalizeJobName(jobName);
         String normalizedPath = normalizeJobPath(jobPath);
-        List<JobBrowserTreeVO> tree = jobTree();
-        if (findJobByName(normalizedName, tree).isPresent()) {
-            throw new IllegalArgumentException("套料软件中已存在同名作业: " + normalizedName);
-        }
-        if (!folderExists(normalizedPath, tree)) {
-            throw new IllegalArgumentException("套料软件中不存在指定作业目录: " + normalizedPath);
-        }
-
-        String install = properties.getLantek().getInstall();
-        requireText(install, "未配置Lantek安装目录");
-        String jobRef = allocateJobRef();
+        CREATE_JOB_LOCK.lock();
         try {
+            List<JobBrowserTreeVO> tree = jobTree();
+            if (!folderExists(normalizedPath, tree)) {
+                throw new IllegalArgumentException("套料软件中不存在指定作业目录: " + normalizedPath);
+            }
+            if (jobExistsInFolder(normalizedName, normalizedPath, tree)) {
+                throw new IllegalArgumentException("所选目录中已存在同名作业: " + normalizedName);
+            }
+
+            String install = properties.getLantek().getInstall();
+            requireText(install, "未配置Lantek安装目录");
+            String jobRef = allocateJobRef();
             AutomationInstructionBuilder.ExecResult result = automationExecutor.createJob(
                     install,
                     jobRef,
@@ -62,6 +71,8 @@ public class XyJobService {
                 throw runtimeException;
             }
             throw new IllegalStateException("作业创建失败", exception);
+        } finally {
+            CREATE_JOB_LOCK.unlock();
         }
     }
 
@@ -93,6 +104,36 @@ public class XyJobService {
 
     private boolean folderExists(String targetPath, List<JobBrowserTreeVO> tree) {
         return folderPaths(tree, "").anyMatch(targetPath::equalsIgnoreCase);
+    }
+
+    private boolean jobExistsInFolder(String jobName, String targetPath, List<JobBrowserTreeVO> nodes) {
+        return jobExistsInFolder(jobName, targetPath, nodes, "");
+    }
+
+    private boolean jobExistsInFolder(
+            String jobName,
+            String targetPath,
+            List<JobBrowserTreeVO> nodes,
+            String parentPath
+    ) {
+        if (nodes == null) {
+            return false;
+        }
+        for (JobBrowserTreeVO node : nodes) {
+            if (!Boolean.TRUE.equals(node.getIsFolder())) {
+                continue;
+            }
+            String currentPath = parentPath + "\\" + safePathSegment(node.getLabel());
+            if (targetPath.equalsIgnoreCase(currentPath)) {
+                return Optional.ofNullable(node.getChildren()).orElse(List.of()).stream()
+                        .filter(child -> !Boolean.TRUE.equals(child.getIsFolder()))
+                        .anyMatch(child -> jobName.equalsIgnoreCase(child.getLabel()));
+            }
+            if (jobExistsInFolder(jobName, targetPath, node.getChildren(), currentPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Stream<String> folderPaths(List<JobBrowserTreeVO> nodes, String parentPath) {

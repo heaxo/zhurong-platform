@@ -1,10 +1,12 @@
 package com.zhurong.platform.custom.dto;
 
 import com.zhurong.platform.base.model.BasePageQuery;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +30,17 @@ public final class XyRequests {
     public static class JobCreate {
         @NotBlank private String jobName;
         @NotBlank private String jobPath;
+    }
+
+    @Data
+    public static class SteelPlateSync {
+        private String prdRef;
+        private String lotNumber;
+
+        @AssertTrue(message = "物料编号或物料批号不能为空")
+        public boolean isQuerySpecified() {
+            return StringUtils.hasText(prdRef) || StringUtils.hasText(lotNumber);
+        }
     }
 
     @Data

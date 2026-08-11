@@ -63,6 +63,22 @@ class XyJobServiceTest {
     }
 
     @Test
+    void rejectsDuplicateJobNameOnlyInsideSelectedFolder() {
+        when(browserClient.getJobBrowserTree()).thenReturn(ApiResponse.success(List.of(folder(
+                "1",
+                "Root",
+                folder("2", "First", job("10", "重复作业")),
+                folder("3", "Second", job("11", "其他作业"))
+        ))));
+
+        assertThatThrownBy(() -> service().create("重复作业", "\\Root\\First"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("所选目录中已存在同名作业");
+
+        assertThat(service().exists("重复作业", "\\Root\\Second")).isFalse();
+    }
+
+    @Test
     void rejectsPrcControlCharacters() {
         assertThatThrownBy(() -> XyJobService.normalizeJobPath("\\Root\n3 1"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -79,6 +95,15 @@ class XyJobServiceTest {
         node.setLabel(label);
         node.setIsFolder(true);
         node.setChildren(List.of(children));
+        return node;
+    }
+
+    private static JobBrowserTreeVO job(String id, String label) {
+        JobBrowserTreeVO node = new JobBrowserTreeVO();
+        node.setId(id);
+        node.setLabel(label);
+        node.setIsFolder(false);
+        node.setChildren(List.of());
         return node;
     }
 }
