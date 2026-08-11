@@ -63,7 +63,7 @@ def webServiceProjects = [
         ':zhurong-platform-gateway',
         ':zhurong-platform-core',
         ':zhurong-platform-auth',
-        ':zhurong-platform-custom:zhurong-platform-custom-but'
+        ':zhurong-platform-custom:zhurong-platform-custom-xybaoyuan'
 ]
 
 tasks.register('bootJarWebServices') {

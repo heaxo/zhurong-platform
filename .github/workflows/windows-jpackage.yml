@@ -24,6 +24,7 @@ on:
           - haobao
           - crun
           - but
+          - xybaoyuan
 
 permissions:
   contents: read
