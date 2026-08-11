@@ -19,19 +19,15 @@ public final class XyRequests {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    public static class ImportTask extends Ids { private boolean syncTask; }
-
-    @Data
-    @EqualsAndHashCode(callSuper = true)
     public static class Feedback extends Ids {
         @NotBlank private String productionWorkshopCode;
         private boolean materialReceived = true;
     }
 
     @Data
-    public static class Job {
+    public static class JobCreate {
         @NotBlank private String jobName;
-        private boolean useOldJob = true;
+        @NotBlank private String jobPath;
     }
 
     @Data

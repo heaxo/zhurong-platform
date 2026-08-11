@@ -12,7 +12,6 @@ import com.zhurong.platform.custom.entity.*;
 import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -38,7 +37,7 @@ public class XyImportTaskService {
     private final IMmnnMmoo00000300Service manufacturingOrderService;
     private final IPprrPprr00000100Service partService;
 
-    public XyImportTask create(String businessType, List<Long> ids, boolean synchronous) {
+    public XyImportTask importSynchronously(String businessType, List<Long> ids) {
         if (ids == null || ids.isEmpty()) throw new IllegalArgumentException("请选择要导入的数据");
         List<Long> distinctIds = ids.stream().filter(Objects::nonNull).distinct().toList();
         validateRecords(businessType, distinctIds);
@@ -50,7 +49,7 @@ public class XyImportTaskService {
             task.setRecordIdsJson(objectMapper.writeValueAsString(distinctIds));
             dataService.insertTask(task);
             attachTask(task, distinctIds);
-            if (synchronous) execute(task.getId());
+            execute(task.getId());
             return dataService.taskById(task.getId());
         } catch (Exception exception) {
             if (exception instanceof RuntimeException runtimeException) throw runtimeException;
@@ -58,22 +57,7 @@ public class XyImportTaskService {
         }
     }
 
-    public XyImportTask restart(Long id) {
-        XyImportTask task = requireTask(id);
-        if (!"FAILED".equals(task.getStatus())) throw new IllegalArgumentException("只有失败任务可以重试");
-        task.setStatus("RETRY");
-        task.setAttempts(0);
-        task.setMessage(null);
-        dataService.updateTask(task);
-        return task;
-    }
-
-    @Scheduled(fixedDelayString = "${xybaoyuan.import-task.fixed-delay-ms:10000}")
-    public void executePendingTask() {
-        dataService.pendingTasks().stream().findFirst().ifPresent(task -> execute(task.getId()));
-    }
-
-    public void execute(Long id) {
+    private void execute(Long id) {
         XyImportTask task = requireTask(id);
         if (Set.of("RUNNING", "SUCCESS").contains(task.getStatus())) return;
         IMPORT_LOCK.lock();
@@ -92,7 +76,7 @@ public class XyImportTaskService {
             task.setMessage("导入完成");
         } catch (Exception exception) {
             log.error("象屿宝元导入任务执行失败, taskId={}", id, exception);
-            task.setStatus(Optional.ofNullable(task.getAttempts()).orElse(0) < 3 ? "RETRY" : "FAILED");
+            task.setStatus("FAILED");
             task.setMessage(limit(exception.getMessage(), 1000));
         } finally {
             task.setExecutionTime(LocalDateTime.now());
@@ -108,7 +92,7 @@ public class XyImportTaskService {
         // Base-part IDs differ from order IDs; resolve by querying the page-independent service data.
         Set<String> importedKeys = findImportedOrderKeys(orders);
         List<XyManufacturingOrder> pending = orders.stream()
-                .filter(order -> !importedKeys.contains(orderKey(order.getProductionOrderNumber(), order.getJobRef())))
+                .filter(order -> !importedKeys.contains(orderKey(order.getProductionOrderErpInternalCode(), order.getJobRef())))
                 .toList();
         if (!pending.isEmpty()) {
             List<String> refs = pending.stream().map(XyManufacturingOrder::getPrdRef).distinct().toList();
@@ -149,8 +133,8 @@ public class XyImportTaskService {
         Set<String> verified = findImportedOrderKeys(orders);
         LocalDateTime now = LocalDateTime.now();
         for (XyManufacturingOrder order : orders) {
-            if (!verified.contains(orderKey(order.getProductionOrderNumber(), order.getJobRef()))) {
-                throw new IllegalStateException("Lantek未找到导入结果: " + order.getProductionOrderNumber());
+            if (!verified.contains(orderKey(order.getProductionOrderErpInternalCode(), order.getJobRef()))) {
+                throw new IllegalStateException("Lantek未找到导入结果: " + order.getProductionOrderErpInternalCode());
             }
             order.setReadState(true);
             order.setReadTime(now);
@@ -195,7 +179,7 @@ public class XyImportTaskService {
         if (orderNumbers.isEmpty()) return Set.of();
         return manufacturingOrderService.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
                         .in(MmnnMmoo00000300::getOrdRef, orderNumbers))
-                .stream().map(item -> orderKey(item.getOrdRef(), item.getDIS_JobRef())).collect(Collectors.toSet());
+                .stream().map(item -> importedOrderKey(item.getCusRef(), item.getDIS_JobRef())).collect(Collectors.toSet());
     }
 
     private void validateRecords(String businessType, List<Long> ids) {
@@ -267,7 +251,13 @@ public class XyImportTaskService {
         return install;
     }
 
-    private static String orderKey(String orderNumber, String jobRef) { return String.valueOf(orderNumber) + "\u0000" + String.valueOf(jobRef); }
+    static String importedOrderKey(String compositeCusRef, String jobRef) {
+        return orderKey(splitErpIdentity(compositeCusRef).erpInternalCode(), jobRef);
+    }
+
+    private static String orderKey(String erpInternalCode, String jobRef) {
+        return String.valueOf(erpInternalCode) + "\u0000" + String.valueOf(jobRef);
+    }
     private static Float floatValue(Double value) { return value == null ? null : value.floatValue(); }
     private static void requireText(String value, String message) { if (!StringUtils.hasText(value)) throw new IllegalArgumentException(message); }
     private static String limit(String value, int max) { return value == null ? "未知错误" : value.substring(0, Math.min(value.length(), max)); }

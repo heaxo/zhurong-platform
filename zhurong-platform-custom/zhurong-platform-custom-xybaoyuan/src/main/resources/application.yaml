@@ -71,8 +71,6 @@ xybaoyuan:
     drawing-root: '\\192.168.2.57\图纸库\'
     # DXF图纸文件后缀，用于拼接Excel中的“图纸路径”
     drawing-extension: '.dxf'
-  import-task:
-    fixed-delay-ms: 10000
   lantek:
     install: C:\Lantek
   erp:

@@ -19,4 +19,12 @@ class XyImportTaskServiceTest {
         assertThat(identity.erpInternalCode()).isEqualTo("12345");
         assertThat(identity.planNumber()).isEmpty();
     }
+
+    @Test
+    void importedOrderIdentityUsesErpCodeInsteadOfRepeatedOrderNumber() {
+        String first = XyImportTaskService.importedOrderKey("10001-PLAN-001", "JOB-01");
+        String second = XyImportTaskService.importedOrderKey("10002-PLAN-001", "JOB-01");
+
+        assertThat(first).isNotEqualTo(second);
+    }
 }

@@ -37,7 +37,7 @@ CREATE UNIQUE INDEX UX_XyMO_ErpCode ON dbo.Zhurong_Xybaoyuan_ManufacturingOrder(
 CREATE TABLE dbo.Zhurong_Xybaoyuan_SteelPlate (
     id BIGINT NOT NULL PRIMARY KEY, is_deleted BIT NOT NULL DEFAULT 0, version INT NOT NULL DEFAULT 0,
     created_by BIGINT NULL, created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(), updated_by BIGINT NULL,
-    updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(), is_read BIT NOT NULL DEFAULT 0, is_reviewed BIT NOT NULL DEFAULT 0,
+    updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(), is_read     BIT NOT NULL DEFAULT 0, is_reviewed BIT NOT NULL DEFAULT 0,
     erp_material_id INT NULL, prd_ref NVARCHAR(255) NOT NULL, prd_name NVARCHAR(255) NULL, specification NVARCHAR(255) NULL,
     mat_ref NVARCHAR(80) NULL, stock_name NVARCHAR(255) NULL, stock_number NVARCHAR(80) NULL, tons FLOAT NULL,
     quantity FLOAT NOT NULL, thickness FLOAT NULL, width FLOAT NULL, length FLOAT NULL, lot_number NVARCHAR(255) NULL,

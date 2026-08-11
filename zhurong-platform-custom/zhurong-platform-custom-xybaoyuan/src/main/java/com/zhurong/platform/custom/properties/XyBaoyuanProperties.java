@@ -9,7 +9,6 @@ public class XyBaoyuanProperties {
     private final Lantek lantek = new Lantek();
     private final Erp erp = new Erp();
     private final Feedback feedback = new Feedback();
-    private final ImportTask importTask = new ImportTask();
     private final Inbound inbound = new Inbound();
 
     @Data
@@ -38,9 +37,6 @@ public class XyBaoyuanProperties {
         private String cncVirtualRoot;
         private String pdfVirtualRoot;
     }
-
-    @Data
-    public static class ImportTask { private long fixedDelayMs = 10_000L; }
 
     @Data
     public static class Inbound {

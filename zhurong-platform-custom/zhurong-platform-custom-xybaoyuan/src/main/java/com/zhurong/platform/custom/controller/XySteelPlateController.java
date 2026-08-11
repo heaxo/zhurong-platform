@@ -31,9 +31,9 @@ public class XySteelPlateController {
         return ApiResponse.success(erpService.synchronize(query.getPrdRef(), query.getLotNumber()));
     }
 
-    @PostMapping("/import-tasks")
-    public ApiResponse<XyImportTask> createImportTask(@Valid @RequestBody XyRequests.ImportTask request) {
-        return ApiResponse.success(importTaskService.create(XyImportTaskService.STEEL_PLATE, request.getIds(), request.isSyncTask()));
+    @PostMapping("/import")
+    public ApiResponse<XyImportTask> importNow(@Valid @RequestBody XyRequests.Ids request) {
+        return ApiResponse.success(importTaskService.importSynchronously(XyImportTaskService.STEEL_PLATE, request.getIds()));
     }
 
     @DeleteMapping

@@ -40,8 +40,8 @@ public class XyManufacturingOrderController {
     public ApiResponse<Boolean> jobExists(@RequestParam String jobName) { return ApiResponse.success(jobService.exists(jobName)); }
 
     @PostMapping("/jobs")
-    public ApiResponse<String> createJob(@Valid @RequestBody XyRequests.Job request) {
-        return ApiResponse.success(jobService.resolveOrCreate(request.getJobName(), request.isUseOldJob()));
+    public ApiResponse<String> createJob(@Valid @RequestBody XyRequests.JobCreate request) {
+        return ApiResponse.success(jobService.create(request.getJobName(), request.getJobPath()));
     }
 
     @PutMapping("/batch")
@@ -49,13 +49,10 @@ public class XyManufacturingOrderController {
         dataService.batchUpdateOrders(updates); return ApiResponse.success();
     }
 
-    @PostMapping("/import-tasks")
-    public ApiResponse<XyImportTask> createImportTask(@Valid @RequestBody XyRequests.ImportTask request) {
-        return ApiResponse.success(importTaskService.create(XyImportTaskService.ORDER, request.getIds(), request.isSyncTask()));
+    @PostMapping("/import")
+    public ApiResponse<XyImportTask> importNow(@Valid @RequestBody XyRequests.Ids request) {
+        return ApiResponse.success(importTaskService.importSynchronously(XyImportTaskService.ORDER, request.getIds()));
     }
-
-    @PostMapping("/import-tasks/{taskId}/restart")
-    public ApiResponse<XyImportTask> restart(@PathVariable Long taskId) { return ApiResponse.success(importTaskService.restart(taskId)); }
 
     @GetMapping("/export")
     public ResponseEntity<byte[]> export(@ModelAttribute XyRequests.ManufacturingOrderPage query) {

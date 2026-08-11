@@ -20,9 +20,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,6 +92,29 @@ class XyInboundServiceTest {
         request.setProductionOrders(List.of(order("MO-001", "10001"), order("MO-002", "10002")));
 
         assertThat(service().receiveManufacturingOrders(request)).isTrue();
+        verify(orderMapper, never()).insert(any(XyManufacturingOrder.class));
+    }
+
+    @Test
+    void duplicateOrderNumbersWithDifferentErpCodesAreAccepted() {
+        when(orderMapper.selectCount(any(Wrapper.class))).thenReturn(0L);
+        when(orderMapper.insert(any(XyManufacturingOrder.class))).thenReturn(1);
+        XyInboundRequests.ManufacturingOrders request = new XyInboundRequests.ManufacturingOrders();
+        request.setProductionOrders(List.of(order("MO-001", "10001"), order("MO-001", "10002")));
+
+        assertThat(service().receiveManufacturingOrders(request)).isTrue();
+        verify(orderMapper, times(2)).insert(any(XyManufacturingOrder.class));
+    }
+
+    @Test
+    void duplicateErpCodesAreRejectedEvenWhenOrderNumbersDiffer() {
+        XyInboundRequests.ManufacturingOrders request = new XyInboundRequests.ManufacturingOrders();
+        request.setProductionOrders(List.of(order("MO-001", "10001"), order("MO-002", "10001")));
+
+        assertThatThrownBy(() -> service().receiveManufacturingOrders(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("生产订单ERP内码不能重复");
+        verify(orderMapper, never()).selectCount(any(Wrapper.class));
         verify(orderMapper, never()).insert(any(XyManufacturingOrder.class));
     }
 

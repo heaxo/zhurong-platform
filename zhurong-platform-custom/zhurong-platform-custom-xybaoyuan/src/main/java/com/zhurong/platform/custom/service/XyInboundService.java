@@ -104,14 +104,11 @@ public class XyInboundService {
         ORDER_LOCK.lock();
         try {
             List<XyInboundRequests.ManufacturingOrder> items = request.getProductionOrders();
-            assertUnique(items, XyInboundRequests.ManufacturingOrder::getProductionOrderNumber, "生产订单号不能重复");
             assertUnique(items, XyInboundRequests.ManufacturingOrder::getProductionOrderErpInternalCode, "生产订单ERP内码不能重复");
 
-            List<String> orderNumbers = items.stream()
-                    .map(XyInboundRequests.ManufacturingOrder::getProductionOrderNumber).map(String::trim).toList();
             List<String> erpCodes = items.stream()
                     .map(XyInboundRequests.ManufacturingOrder::getProductionOrderErpInternalCode).map(String::trim).toList();
-            if (manufacturingOrderExists(orderNumbers, erpCodes)) {
+            if (manufacturingOrderErpCodeExists(erpCodes)) {
                 log.info("象屿宝元生产订单批次已存在，按0111幂等规则忽略整批, size={}", items.size());
                 return true;
             }
@@ -147,14 +144,11 @@ public class XyInboundService {
         return result;
     }
 
-    private boolean manufacturingOrderExists(List<String> orderNumbers, List<String> erpCodes) {
-        for (int start = 0; start < orderNumbers.size(); start += QUERY_BATCH_SIZE) {
-            int end = Math.min(start + QUERY_BATCH_SIZE, orderNumbers.size());
-            Set<String> numberBatch = new HashSet<>(orderNumbers.subList(start, end));
+    private boolean manufacturingOrderErpCodeExists(List<String> erpCodes) {
+        for (int start = 0; start < erpCodes.size(); start += QUERY_BATCH_SIZE) {
+            int end = Math.min(start + QUERY_BATCH_SIZE, erpCodes.size());
             Set<String> erpBatch = new HashSet<>(erpCodes.subList(start, end));
             Long count = manufacturingOrderMapper.selectCount(Wrappers.lambdaQuery(XyManufacturingOrder.class)
-                    .in(XyManufacturingOrder::getProductionOrderNumber, numberBatch)
-                    .or()
                     .in(XyManufacturingOrder::getProductionOrderErpInternalCode, erpBatch));
             if (count != null && count > 0) return true;
         }
