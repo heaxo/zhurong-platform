@@ -141,7 +141,9 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
 
                             // 相同标签数据合并后数量累加
                             existing.setQuantity(existingQuantity + currentQuantity);
-                            existing.setIOrder(String.format("%s,%s",existing.getIOrder(),current.getIOrder()));
+                            if (!(existing.getIOrder().contains(current.getIOrder()))){
+                                existing.setIOrder(String.format("%s,%s",existing.getIOrder(),current.getIOrder()));
+                            }
                             return existing;
                         },
                         LinkedHashMap::new
