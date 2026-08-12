@@ -92,6 +92,11 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
                             // 日期
                             vo.setDate(nestPart.getCrtDate());
 
+                            vo.setIOrder(nestPart.getWorkOrder().getIOrder().toString());
+                            vo.setMatRef(nestPart.getWorkOrder().getDIS_MatRef());
+                            vo.setThickness(nestPart.getWorkOrder().getDIS_Thickness());
+
+
                             return new LabelRow(nestPart.getNstRef(), vo);
                         }))
                 .toList();
@@ -136,7 +141,7 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
 
                             // 相同标签数据合并后数量累加
                             existing.setQuantity(existingQuantity + currentQuantity);
-
+                            existing.setIOrder(String.format("%s,%s",existing.getIOrder(),current.getIOrder()));
                             return existing;
                         },
                         LinkedHashMap::new

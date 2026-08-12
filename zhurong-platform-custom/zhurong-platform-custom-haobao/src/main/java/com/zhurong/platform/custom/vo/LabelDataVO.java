@@ -33,4 +33,13 @@ public class LabelDataVO {
 
     @Schema(description = "二维码内容")
     private String qrCodeContent;
+
+    @Schema(description = "序号")
+    private String iOrder;
+
+    @Schema(description = "材质")
+    private String matRef;
+
+    @Schema(description = "厚度")
+    private Double thickness;
 }
