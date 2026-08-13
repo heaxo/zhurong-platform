@@ -87,7 +87,7 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
                             vo.setPrdName(nestPart.getWorkOrder().getPrdNameDst());
 
                             // 数量
-                            vo.setQuantity(nestPart.getQuantity());
+                            vo.setQuantity(nestPart.getQuantity() * nest.getQuantity());
 
                             // 日期
                             vo.setDate(nestPart.getCrtDate());
