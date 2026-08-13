@@ -207,7 +207,10 @@ public class DisNestNest00000100ServiceImpl
             wrapper.in(DisNestNest00000100::getNstRef, nstRefs);
         }
         if (StringUtils.isNotBlank(req.getNstRef())) {
-            wrapper.eq(DisNestNest00000100::getNstRef, req.getNstRef());
+            wrapper.like(DisNestNest00000100::getNstRef, req.getNstRef());
+        }
+        if (StringUtils.isNotBlank(req.getCnc())) {
+            wrapper.eq(DisNestNest00000100::getCNC, req.getCnc());
         }
         if (StringUtils.isNotBlank(req.getJobRef())) {
             wrapper.eq(DisNestNest00000100::getJobRef, req.getJobRef());
