@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlExporter;
 import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlItem;
+import com.zhurong.platform.base.lantek.expert.lstx.LstxImportTool;
 import com.zhurong.platform.base.lantek.expert.procesos.AutomationInstructionBuilder;
 import com.zhurong.platform.base.lantek.expert.procesos.ImportPartsFromDatabase;
 import com.zhurong.platform.base.lantek.expert.procesos.OpenExpert;
@@ -86,7 +87,7 @@ public class XyProductionOrderHandler implements ClientImportHandler<ProductionO
                     .map(ClientImportTaskPayloadItem::getData)
                     .map(this::toProduct)
                     .toList();
-            Path directory = Path.of(install).resolve("AutoImport").resolve("xybaoyuan");
+            Path directory = LstxImportTool.defaultOutputDirectory();
             Files.createDirectories(directory);
             Path lstx = directory.resolve("order-" + UUID.randomUUID() + ".lstx");
             new ExpertProductXmlExporter().export(products, lstx);
