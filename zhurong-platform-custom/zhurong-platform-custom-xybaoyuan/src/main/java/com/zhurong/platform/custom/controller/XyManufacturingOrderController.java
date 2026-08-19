@@ -10,6 +10,7 @@ import com.zhurong.platform.custom.service.XyDataService;
 import com.zhurong.platform.custom.service.XyImportTaskService;
 import com.zhurong.platform.custom.service.XyInboundService;
 import com.zhurong.platform.custom.service.XyJobService;
+import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/xybaoyuan/manufacturing-orders")
-public class XyManufacturingOrderController {
+public class XyManufacturingOrderController extends BaseController {
     private final XyDataService dataService;
     private final XyImportTaskService importTaskService;
     private final XyJobService jobService;
@@ -58,7 +59,10 @@ public class XyManufacturingOrderController {
 
     @PostMapping("/import")
     public ApiResponse<XyImportTask> importNow(@Valid @RequestBody XyRequests.Ids request) {
-        return ApiResponse.success(importTaskService.importSynchronously(XyImportTaskService.ORDER, request.getIds()));
+        return ApiResponse.success(importTaskService.importSynchronously(
+                XyImportTaskService.ORDER,
+                request.getIds()
+        ));
     }
 
     @GetMapping("/export")

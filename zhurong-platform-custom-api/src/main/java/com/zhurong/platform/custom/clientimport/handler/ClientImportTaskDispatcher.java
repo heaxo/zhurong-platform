@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
+import com.zhurong.platform.core.clientimport.mq.ClientMessageKinds;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.custom.clientimport.feign.ClientImportCoreFeignClient;
 import com.zhurong.platform.custom.clientimport.mq.ClientStatusReporter;
@@ -25,23 +26,30 @@ public class ClientImportTaskDispatcher {
     private final ObjectMapper objectMapper;
     private final ClientImportCoreFeignClient coreFeignClient;
     private final ClientStatusReporter statusReporter;
+    private final ClientCommandDispatcher commandDispatcher;
     private final Map<String, ClientImportHandler<?>> handlerMap;
 
     public ClientImportTaskDispatcher(
             ObjectMapper objectMapper,
             ClientImportCoreFeignClient coreFeignClient,
             ClientStatusReporter statusReporter,
+            ClientCommandDispatcher commandDispatcher,
             List<ClientImportHandler<?>> handlers) {
 
         this.objectMapper = objectMapper;
         this.coreFeignClient = coreFeignClient;
         this.statusReporter = statusReporter;
+        this.commandDispatcher = commandDispatcher;
         // 自动收集所有ClientImportHandler，后续新增业务类型只需要新增处理器Bean并返回唯一businessType。
         this.handlerMap = handlers.stream()
                 .collect(Collectors.toMap(ClientImportHandler::businessType, Function.identity()));
     }
 
     public void dispatch(ClientImportTaskMessage task) {
+        if (ClientMessageKinds.COMMAND.equals(task.getMessageKind())) {
+            commandDispatcher.dispatch(task);
+            return;
+        }
         if (ClientImportBusinessTypes.PING.equals(task.getBusinessType())) {
             // PING只用于验证定向队列通信，不进入业务导入流程。
             statusReporter.pong(task);

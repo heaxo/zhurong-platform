@@ -4,14 +4,14 @@ setlocal
 cd /d %~dp0
 
 set "JDK21=D:\software\developmentTools\Java\jdk-21.0.10+7"
-set "BASE=D:\heaxo\zhurong-platform\zhurong-platform-custom\zhurong-platform-custom-template\build"
+set "BASE=D:\heaxo\zhurong-platform\zhurong-platform-custom\zhurong-platform-custom-xybaoyuan\build"
 set "INPUT=%BASE%\libs"
 set "APPIMG_OUT=%BASE%\app-image"
 set "OUTPUT=%BASE%\publish"
 
-set "APP_NAME=zhurong-custom-template"
-set "APP_VERSION=0.0.4"
-set "MAIN_JAR=zhurong-platform-custom-template-%APP_VERSION%.jar"
+set "APP_NAME=zhurong-custom-xybaoyuan"
+set "APP_VERSION=0.0.1"
+set "MAIN_JAR=zhurong-platform-custom-xybaoyuan-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
 
 if exist "%APPIMG_OUT%" rmdir /s /q "%APPIMG_OUT%"

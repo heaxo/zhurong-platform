@@ -1,8 +1,6 @@
 package com.zhurong.platform.custom.service;
 
-import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.lantek.expert.procesos.AutomationInstructionBuilder;
-import com.zhurong.platform.custom.feign.DisMmnnBwsr00000100FeignClient;
 import com.zhurong.platform.custom.mapper.XyCodeSequenceMapper;
 import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
 import com.zhurong.platform.core.lantek.vo.JobBrowserTreeVO;
@@ -17,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class XyJobServiceTest {
-    private final DisMmnnBwsr00000100FeignClient browserClient = mock(DisMmnnBwsr00000100FeignClient.class);
+    private final XyJobTreeProvider jobTreeProvider = mock(XyJobTreeProvider.class);
     private final XyCodeSequenceMapper sequenceMapper = mock(XyCodeSequenceMapper.class);
     private final XyJobAutomationExecutor automationExecutor = mock(XyJobAutomationExecutor.class);
     private final XyBaoyuanProperties properties = new XyBaoyuanProperties();
@@ -25,11 +23,11 @@ class XyJobServiceTest {
     @Test
     void createsFirstNineDigitJobRefInSelectedFolder() throws Exception {
         properties.getLantek().setInstall("C:\\Lantek");
-        when(browserClient.getJobBrowserTree()).thenReturn(ApiResponse.success(List.of(folder(
+        when(jobTreeProvider.getTree()).thenReturn(List.of(folder(
                 "1",
                 "CAMAssistantTest",
                 folder("2", "Level1", folder("3", "Level2"))
-        ))));
+        )));
         when(sequenceMapper.allocateNextValue(XyJobService.JOB_SEQUENCE_KEY)).thenReturn(100_000_001L);
         when(automationExecutor.createJob(
                 "C:\\Lantek",
@@ -51,11 +49,11 @@ class XyJobServiceTest {
 
     @Test
     void rejectsCreationWhenSelectedPathIsNotAnExistingFolder() {
-        when(browserClient.getJobBrowserTree()).thenReturn(ApiResponse.success(List.of(folder(
+        when(jobTreeProvider.getTree()).thenReturn(List.of(folder(
                 "1",
                 "Root",
                 folder("2", "Actual")
-        ))));
+        )));
 
         assertThatThrownBy(() -> service().create("新作业", "\\Root\\Missing"))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -64,18 +62,19 @@ class XyJobServiceTest {
 
     @Test
     void rejectsDuplicateJobNameOnlyInsideSelectedFolder() {
-        when(browserClient.getJobBrowserTree()).thenReturn(ApiResponse.success(List.of(folder(
+        when(jobTreeProvider.getTree()).thenReturn(List.of(folder(
                 "1",
                 "Root",
                 folder("2", "First", job("10", "重复作业")),
                 folder("3", "Second", job("11", "其他作业"))
-        ))));
+        )));
 
         assertThatThrownBy(() -> service().create("重复作业", "\\Root\\First"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("所选目录中已存在同名作业");
 
         assertThat(service().exists("重复作业", "\\Root\\Second")).isFalse();
+        assertThat(service().findJobRef("重复作业", "\\Root\\First")).isEqualTo("10");
     }
 
     @Test
@@ -86,7 +85,7 @@ class XyJobServiceTest {
     }
 
     private XyJobService service() {
-        return new XyJobService(browserClient, properties, sequenceMapper, automationExecutor);
+        return new XyJobService(jobTreeProvider, properties, sequenceMapper, automationExecutor);
     }
 
     private static JobBrowserTreeVO folder(String id, String label, JobBrowserTreeVO... children) {

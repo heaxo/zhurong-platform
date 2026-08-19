@@ -2,7 +2,6 @@ package com.zhurong.platform.custom.service;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.zhurong.platform.base.lantek.expert.procesos.AutomationInstructionBuilder;
-import com.zhurong.platform.custom.feign.DisMmnnBwsr00000100FeignClient;
 import com.zhurong.platform.custom.mapper.XyCodeSequenceMapper;
 import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
 import com.zhurong.platform.core.lantek.vo.JobBrowserTreeVO;
@@ -25,7 +24,7 @@ public class XyJobService {
     private static final long MAX_JOB_REF = 999_999_999L;
     private static final ReentrantLock CREATE_JOB_LOCK = new ReentrantLock(true);
 
-    private final DisMmnnBwsr00000100FeignClient browserClient;
+    private final XyJobTreeProvider jobTreeProvider;
     private final XyBaoyuanProperties properties;
     private final XyCodeSequenceMapper codeSequenceMapper;
     private final XyJobAutomationExecutor automationExecutor;
@@ -35,9 +34,16 @@ public class XyJobService {
     }
 
     public boolean exists(String jobName, String jobPath) {
+        return findJobRef(jobName, jobPath) != null;
+    }
+
+    /** 返回指定目录下的作业编码；不存在时返回 null。 */
+    public String findJobRef(String jobName, String jobPath) {
         String normalizedName = normalizeJobName(jobName);
         String normalizedPath = normalizeJobPath(jobPath);
-        return jobExistsInFolder(normalizedName, normalizedPath, jobTree());
+        return findJobInFolder(normalizedName, normalizedPath, jobTree())
+                .map(JobBrowserTreeVO::getId)
+                .orElse(null);
     }
 
     public String create(String jobName, String jobPath) {
@@ -88,7 +94,7 @@ public class XyJobService {
     }
 
     private List<JobBrowserTreeVO> jobTree() {
-        List<JobBrowserTreeVO> nodes = browserClient.getJobBrowserTree().unwrap();
+        List<JobBrowserTreeVO> nodes = jobTreeProvider.getTree();
         return nodes == null ? List.of() : nodes;
     }
 
@@ -107,17 +113,25 @@ public class XyJobService {
     }
 
     private boolean jobExistsInFolder(String jobName, String targetPath, List<JobBrowserTreeVO> nodes) {
-        return jobExistsInFolder(jobName, targetPath, nodes, "");
+        return findJobInFolder(jobName, targetPath, nodes).isPresent();
     }
 
-    private boolean jobExistsInFolder(
+    private Optional<JobBrowserTreeVO> findJobInFolder(
+            String jobName,
+            String targetPath,
+            List<JobBrowserTreeVO> nodes
+    ) {
+        return findJobInFolder(jobName, targetPath, nodes, "");
+    }
+
+    private Optional<JobBrowserTreeVO> findJobInFolder(
             String jobName,
             String targetPath,
             List<JobBrowserTreeVO> nodes,
             String parentPath
     ) {
         if (nodes == null) {
-            return false;
+            return Optional.empty();
         }
         for (JobBrowserTreeVO node : nodes) {
             if (!Boolean.TRUE.equals(node.getIsFolder())) {
@@ -127,13 +141,20 @@ public class XyJobService {
             if (targetPath.equalsIgnoreCase(currentPath)) {
                 return Optional.ofNullable(node.getChildren()).orElse(List.of()).stream()
                         .filter(child -> !Boolean.TRUE.equals(child.getIsFolder()))
-                        .anyMatch(child -> jobName.equalsIgnoreCase(child.getLabel()));
+                        .filter(child -> jobName.equalsIgnoreCase(child.getLabel()))
+                        .findFirst();
             }
-            if (jobExistsInFolder(jobName, targetPath, node.getChildren(), currentPath)) {
-                return true;
+            Optional<JobBrowserTreeVO> found = findJobInFolder(
+                    jobName,
+                    targetPath,
+                    node.getChildren(),
+                    currentPath
+            );
+            if (found.isPresent()) {
+                return found;
             }
         }
-        return false;
+        return Optional.empty();
     }
 
     private Stream<String> folderPaths(List<JobBrowserTreeVO> nodes, String parentPath) {

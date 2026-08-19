@@ -1,5 +1,7 @@
 server:
   port: 9300
+  # xybaoyuan 只在 Windows 客户端本机提供给反向代理访问，不直接暴露到局域网。
+  address: 127.0.0.1
 
 spring:
   profiles:
@@ -16,9 +18,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: auto
-        concurrency: 3
-        max-concurrency: 10
-        prefetch: 10
+        # 本机 Lantek 自动化程序不支持并发执行，客户端命令必须串行消费。
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -42,8 +45,8 @@ spring:
       password: nacos
       discovery:
         server-addr: 192.168.1.125:8848
-        ip: 192.168.1.76
-        port: ${server.port}
+        # 客户端需要发现 core/auth，但不能注册成可被 Gateway 负载均衡的 HTTP 服务。
+        register-enabled: false
       config:
         server-addr: 192.168.1.125:8848
         file-extension: yaml
@@ -87,3 +90,16 @@ xybaoyuan:
       password: 123
       cnc-virtual-root: CNC
       pdf-virtual-root: Nestings
+
+zhurong:
+  client-communication:
+    # 本模块只部署到 Windows 客户端，启动后直接注册本机专属 MQ 队列。
+    enabled: true
+    client-id-from-hostname: true
+    client-id:
+    user-name:
+    version: 1.0.0
+    heartbeat-seconds: 30
+    local-base-url: http://127.0.0.1:${server.port}
+    proxy-connect-timeout-seconds: 10
+    proxy-max-response-bytes: 52428800

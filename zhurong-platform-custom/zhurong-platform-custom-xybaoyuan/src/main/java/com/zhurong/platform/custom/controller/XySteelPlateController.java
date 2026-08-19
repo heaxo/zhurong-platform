@@ -8,6 +8,7 @@ import com.zhurong.platform.custom.entity.XySteelPlate;
 import com.zhurong.platform.custom.service.XyDataService;
 import com.zhurong.platform.custom.service.XyErpSteelPlateService;
 import com.zhurong.platform.custom.service.XyImportTaskService;
+import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/xybaoyuan/steel-plates")
-public class XySteelPlateController {
+public class XySteelPlateController extends BaseController {
     private final XyDataService dataService;
     private final XyErpSteelPlateService erpService;
     private final XyImportTaskService importTaskService;
@@ -33,7 +34,10 @@ public class XySteelPlateController {
 
     @PostMapping("/import")
     public ApiResponse<XyImportTask> importNow(@Valid @RequestBody XyRequests.Ids request) {
-        return ApiResponse.success(importTaskService.importSynchronously(XyImportTaskService.STEEL_PLATE, request.getIds()));
+        return ApiResponse.success(importTaskService.importSynchronously(
+                XyImportTaskService.STEEL_PLATE,
+                request.getIds()
+        ));
     }
 
     @DeleteMapping

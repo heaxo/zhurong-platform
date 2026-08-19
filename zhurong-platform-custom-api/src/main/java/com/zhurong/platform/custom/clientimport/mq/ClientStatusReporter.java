@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.core.clientimport.mq.ClientImportMqConstants;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskStatusMessage;
+import com.zhurong.platform.core.clientimport.dto.ClientCommandResultReport;
 import com.zhurong.platform.custom.clientimport.configuration.ClientCommunicationProperties;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.custom.clientimport.feign.ClientImportCoreFeignClient;
+import com.zhurong.platform.custom.clientimport.handler.ClientCommandResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
@@ -42,6 +44,16 @@ public class ClientStatusReporter {
 
     public void heartbeat() {
         send(baseStatus("HEARTBEAT", "客户端心跳"));
+    }
+
+    public void reportCommand(ClientImportTaskMessage command, ClientCommandResult result) {
+        ClientCommandResultReport report = new ClientCommandResultReport();
+        report.setClientId(properties.getClientId());
+        report.setCommandType(command.getBusinessType());
+        report.setSuccess(result.isSuccess());
+        report.setMessage(result.getMessage());
+        report.setData(objectMapper.valueToTree(result.getData()));
+        coreFeignClient.updateCommandResult(command.getTaskId(), report).unwrap();
     }
 
     public void pong(ClientImportTaskMessage task) {

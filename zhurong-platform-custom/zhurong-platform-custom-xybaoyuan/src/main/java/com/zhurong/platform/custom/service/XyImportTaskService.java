@@ -1,189 +1,202 @@
 package com.zhurong.platform.custom.service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.base.clientimport.dto.RawMaterialRequest;
-import com.zhurong.platform.base.lantek.expert.lst.PlateAndRemnantLstTool;
-import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlExporter;
-import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlItem;
-import com.zhurong.platform.base.lantek.expert.procesos.*;
-import com.zhurong.platform.custom.entity.*;
-import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
+import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
+import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
+import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
+import com.zhurong.platform.custom.clientimport.handler.ClientImportContext;
+import com.zhurong.platform.custom.clientimport.handler.ClientImportResult;
+import com.zhurong.platform.custom.clientimport.handler.XyProductionOrderHandler;
+import com.zhurong.platform.custom.clientimport.handler.XyRawMaterialHandler;
+import com.zhurong.platform.custom.entity.XyBasePart;
+import com.zhurong.platform.custom.entity.XyImportTask;
+import com.zhurong.platform.custom.entity.XyManufacturingOrder;
+import com.zhurong.platform.custom.entity.XySteelPlate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Windows 客户端本机同步导入编排。
+ *
+ * <p>前端请求已经由 core 透明代理到当前客户端，本服务必须直接执行本机 LSTX/PRC，
+ * 不能再次向 core 派发同一客户端的 MQ 任务，否则单消费者会等待自身而形成死锁。</p>
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class XyImportTaskService {
+
     public static final String ORDER = "MANUFACTURING_ORDER";
     public static final String STEEL_PLATE = "STEEL_PLATE";
-    private static final ReentrantLock IMPORT_LOCK = new ReentrantLock(true);
 
     private final XyDataService dataService;
     private final ObjectMapper objectMapper;
-    private final XyBaoyuanProperties properties;
-    private final IMmnnMmoo00000300Service manufacturingOrderService;
-    private final IPprrPprr00000100Service partService;
+    private final XyProductionOrderHandler productionOrderHandler;
+    private final XyRawMaterialHandler rawMaterialHandler;
 
     public XyImportTask importSynchronously(String businessType, List<Long> ids) {
-        if (ids == null || ids.isEmpty()) throw new IllegalArgumentException("请选择要导入的数据");
-        List<Long> distinctIds = ids.stream().filter(Objects::nonNull).distinct().toList();
-        if (distinctIds.isEmpty()) throw new IllegalArgumentException("请选择要导入的数据");
+        List<Long> distinctIds = normalizeIds(ids);
         validateRecords(businessType, distinctIds);
+
+        XyImportTask task = new XyImportTask();
+        task.setBusinessType(businessType);
+        task.setStatus("PENDING");
+        task.setAttempts(0);
         try {
-            XyImportTask task = new XyImportTask();
-            task.setBusinessType(businessType);
-            task.setStatus("PENDING");
-            task.setAttempts(0);
             task.setRecordIdsJson(objectMapper.writeValueAsString(distinctIds));
             dataService.insertTask(task);
             attachTask(task, distinctIds);
-            execute(task.getId());
-            return dataService.taskById(task.getId());
+            execute(task, distinctIds);
         } catch (Exception exception) {
-            if (exception instanceof RuntimeException runtimeException) throw runtimeException;
-            throw new IllegalStateException("创建导入任务失败", exception);
-        }
-    }
-
-    private void execute(Long id) {
-        XyImportTask task = requireTask(id);
-        if (Set.of("RUNNING", "SUCCESS").contains(task.getStatus())) return;
-        IMPORT_LOCK.lock();
-        try {
-            task = requireTask(id);
-            if (Set.of("RUNNING", "SUCCESS").contains(task.getStatus())) return;
-            task.setStatus("RUNNING");
-            task.setAttempts(Optional.ofNullable(task.getAttempts()).orElse(0) + 1);
-            task.setExecutionTime(LocalDateTime.now());
-            dataService.updateTask(task);
-            List<Long> recordIds = objectMapper.readValue(task.getRecordIdsJson(), new TypeReference<>() {});
-            if (ORDER.equals(task.getBusinessType())) importOrders(recordIds);
-            else if (STEEL_PLATE.equals(task.getBusinessType())) importSteelPlates(recordIds);
-            else throw new IllegalArgumentException("不支持的导入业务: " + task.getBusinessType());
-            task.setStatus("SUCCESS");
-            task.setMessage("导入完成");
-        } catch (Exception exception) {
-            log.error("象屿宝元导入任务执行失败, taskId={}", id, exception);
+            log.error("象屿宝元客户端本机导入失败, taskId={}, businessType={}",
+                    task.getId(), businessType, exception);
             task.setStatus("FAILED");
-            task.setMessage(limit(exception.getMessage(), 1000));
-        } finally {
+            task.setMessage(limit(safeMessage(exception), 1000));
             task.setExecutionTime(LocalDateTime.now());
-            dataService.updateTask(task);
-            IMPORT_LOCK.unlock();
+            if (task.getId() != null) {
+                dataService.updateTask(task);
+            }
         }
+        return task.getId() == null ? task : dataService.taskById(task.getId());
     }
 
-    private void importOrders(List<Long> ids) throws Exception {
-        String install = requireInstall();
+    private void execute(XyImportTask task, List<Long> ids) {
+        task.setStatus("RUNNING");
+        task.setAttempts(1);
+        task.setExecutionTime(LocalDateTime.now());
+        dataService.updateTask(task);
+
+        ClientImportResult result;
+        if (ORDER.equals(task.getBusinessType())) {
+            result = productionOrderHandler.execute(buildProductionOrderContext(task, ids));
+        } else if (STEEL_PLATE.equals(task.getBusinessType())) {
+            result = rawMaterialHandler.execute(buildRawMaterialContext(task, ids));
+        } else {
+            throw new IllegalArgumentException("不支持的导入业务: " + task.getBusinessType());
+        }
+
+        if (result.getImportedRecordIds() != null && !result.getImportedRecordIds().isEmpty()) {
+            markBusinessRowsImported(task.getBusinessType(), result.getImportedRecordIds());
+        }
+        if (!result.isSuccess()) {
+            throw new IllegalStateException(StringUtils.hasText(result.getMessage())
+                    ? result.getMessage()
+                    : "客户端本机导入失败");
+        }
+
+        task.setStatus("SUCCESS");
+        task.setMessage(StringUtils.hasText(result.getMessage()) ? result.getMessage() : "导入完成");
+        task.setExecutionTime(LocalDateTime.now());
+        dataService.updateTask(task);
+    }
+
+    private ClientImportContext<ProductionOrderRequest> buildProductionOrderContext(
+            XyImportTask task,
+            List<Long> ids
+    ) {
         List<XyManufacturingOrder> orders = dataService.ordersByIds(ids);
         validateOrderAssignments(orders);
-        Map<String, XyBasePart> parts;
-        // Base-part IDs differ from order IDs; resolve by querying the page-independent service data.
-        Set<String> importedKeys = findImportedOrderKeys(orders);
-        List<XyManufacturingOrder> pending = orders.stream()
-                .filter(order -> !importedKeys.contains(orderKey(order.getProductionOrderErpInternalCode(), order.getJobRef())))
-                .toList();
-        if (!pending.isEmpty()) {
-            List<String> refs = pending.stream().map(XyManufacturingOrder::getPrdRef).distinct().toList();
-            parts = dataService.findBasePartsByRefs(refs).stream()
-                    .collect(Collectors.toMap(XyBasePart::getPrdRef, Function.identity(), (left, right) -> left));
-            Map<String, List<XyManufacturingOrder>> byJob = pending.stream()
-                    .collect(Collectors.groupingBy(XyManufacturingOrder::getJobRef));
-            for (Map.Entry<String, List<XyManufacturingOrder>> entry : byJob.entrySet()) {
-                List<ExpertProductXmlItem> products = new ArrayList<>();
-                for (XyManufacturingOrder order : entry.getValue()) {
-                    XyBasePart part = parts.get(order.getPrdRef());
-                    if (part == null) throw new IllegalArgumentException("未维护基础零件: " + order.getPrdRef());
-                    validateOrder(order, part);
-                    products.add(ExpertProductXmlItem.create()
-                            .reference(part.getDrawingCode())
-                            .name(order.getPrdName())
-                            .material(order.getMatRef())
-                            .machine(order.getWrkRef())
-                            .thickness(order.getThickness())
-                            .quantity(order.getQuantity())
-                            .ordRef(order.getProductionOrderNumber())
-                            .cusRef(combineErpIdentity(order.getProductionOrderErpInternalCode(), order.getCusRef()))
-                            .userData1(part.getUdata1()).userData2(part.getUdata2()).userData3(part.getUdata3()));
-                }
-                Path directory = Path.of(install).resolve("AutoImport").resolve("xybaoyuan");
-                Files.createDirectories(directory);
-                Path lstx = directory.resolve("order-" + UUID.randomUUID() + ".lstx");
-                new ExpertProductXmlExporter().export(products, lstx);
-                AutomationInstructionBuilder.ExecResult result = new AutomationInstructionBuilder(
-                        AutomationInstructionBuilder.AutomationVersion.V45, install)
-                        .withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
-                        .addInstruction(new OpenExpert(true))
-                        .addInstruction(new OpenJob(entry.getKey()))
-                        .addInstruction(new ImportPartsFromDatabase(false, lstx.toAbsolutePath().toString()))
-                        .execute();
-                if (!result.success()) throw new IllegalStateException("LSTX自动化导入失败: " + result.stderr());
+        Map<String, XyBasePart> parts = dataService.findBasePartsByRefs(orders.stream()
+                        .map(XyManufacturingOrder::getPrdRef)
+                        .filter(StringUtils::hasText)
+                        .collect(Collectors.toSet()))
+                .stream()
+                .collect(Collectors.toMap(XyBasePart::getPrdRef, Function.identity(), (left, right) -> left));
+
+        List<ClientImportTaskPayloadItem<ProductionOrderRequest>> items = new ArrayList<>(orders.size());
+        for (int index = 0; index < orders.size(); index++) {
+            XyManufacturingOrder order = orders.get(index);
+            XyBasePart part = parts.get(order.getPrdRef());
+            if (part == null) {
+                throw new IllegalArgumentException("未维护基础零件: " + order.getPrdRef());
             }
+            validateOrder(order, part);
+            ClientImportTaskPayloadItem<ProductionOrderRequest> item = new ClientImportTaskPayloadItem<>();
+            item.setRecordId(order.getId());
+            item.setRequestItemIndex(index);
+            item.setData(toProductionOrder(order, part));
+            items.add(item);
         }
-        Set<String> verified = findImportedOrderKeys(orders);
-        LocalDateTime now = LocalDateTime.now();
-        for (XyManufacturingOrder order : orders) {
-            if (!verified.contains(orderKey(order.getProductionOrderErpInternalCode(), order.getJobRef()))) {
-                throw new IllegalStateException("Lantek未找到导入结果: " + order.getProductionOrderErpInternalCode());
-            }
-            order.setReadState(true);
-            order.setReadTime(now);
-            order.setSendState(true);
-            order.setSendTime(now);
-            dataService.updateOrder(order);
-        }
+        return new ClientImportContext<>(taskMessage(task, ClientImportBusinessTypes.PRODUCTION_ORDER), items);
     }
 
-    private void importSteelPlates(List<Long> ids) throws Exception {
-        String install = requireInstall();
+    private ClientImportContext<RawMaterialRequest> buildRawMaterialContext(
+            XyImportTask task,
+            List<Long> ids
+    ) {
         List<XySteelPlate> plates = dataService.steelPlatesByIds(ids);
-        List<RawMaterialRequest> requests = plates.stream().map(this::toRawMaterial).toList();
-        String lstPath = PlateAndRemnantLstTool.exportRawMaterials(requests);
-        AutomationInstructionBuilder.ExecResult result = new AutomationInstructionBuilder(
-                AutomationInstructionBuilder.AutomationVersion.V45, install)
-                .withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
-                .addInstruction(new CreateAndUpdateBoard(lstPath)).execute();
-        if (!result.success()) throw new IllegalStateException("钢板自动化导入失败: " + result.stderr());
-        Set<String> imported = partService.list(Wrappers.lambdaQuery(PprrPprr00000100.class)
-                        .in(PprrPprr00000100::getPrdRef, plates.stream().map(XySteelPlate::getPrdRef).toList()))
-                .stream().map(PprrPprr00000100::getPrdRef).collect(Collectors.toSet());
-        LocalDateTime now = LocalDateTime.now();
-        for (XySteelPlate plate : plates) {
-            if (!imported.contains(plate.getPrdRef())) throw new IllegalStateException("Lantek未找到钢板: " + plate.getPrdRef());
-            PprrPprr00000100 material = partService.getOne(Wrappers.lambdaQuery(PprrPprr00000100.class)
-                    .eq(PprrPprr00000100::getPrdRef, plate.getPrdRef()));
-            material.setDIS_UData1_Sht(plate.getStockName());
-            material.setDIS_UData2_Sht(plate.getErpMaterialId() == null ? null : String.valueOf(plate.getErpMaterialId()));
-            material.setDIS_UData3_Sht(plate.getLotNumber());
-            partService.updateById(material);
-            plate.setReadState(true);
-            plate.setReadTime(now);
-            plate.setSendState(true);
-            plate.setSendTime(now);
-            dataService.updateSteelPlate(plate);
+        List<ClientImportTaskPayloadItem<RawMaterialRequest>> items = new ArrayList<>(plates.size());
+        for (int index = 0; index < plates.size(); index++) {
+            XySteelPlate plate = plates.get(index);
+            ClientImportTaskPayloadItem<RawMaterialRequest> item = new ClientImportTaskPayloadItem<>();
+            item.setRecordId(plate.getId());
+            item.setRequestItemIndex(index);
+            item.setData(toRawMaterial(plate));
+            items.add(item);
         }
+        return new ClientImportContext<>(taskMessage(task, ClientImportBusinessTypes.RAW_MATERIAL), items);
     }
 
-    private Set<String> findImportedOrderKeys(List<XyManufacturingOrder> orders) {
-        List<String> orderNumbers = orders.stream().map(XyManufacturingOrder::getProductionOrderNumber)
-                .filter(StringUtils::hasText).distinct().toList();
-        if (orderNumbers.isEmpty()) return Set.of();
-        return manufacturingOrderService.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
-                        .in(MmnnMmoo00000300::getOrdRef, orderNumbers))
-                .stream().map(item -> importedOrderKey(item.getCusRef(), item.getDIS_JobRef())).collect(Collectors.toSet());
+    private static ClientImportTaskMessage taskMessage(XyImportTask task, String businessType) {
+        String taskId = String.valueOf(task.getId());
+        ClientImportTaskMessage message = new ClientImportTaskMessage();
+        message.setTaskId(taskId);
+        message.setRequestId(taskId);
+        message.setBusinessType(businessType);
+        message.setSchemaVersion("1.0");
+        message.setCreateTime(Instant.now());
+        return message;
+    }
+
+    private ProductionOrderRequest toProductionOrder(XyManufacturingOrder order, XyBasePart part) {
+        ProductionOrderRequest request = new ProductionOrderRequest();
+        request.setPrdRef(part.getDrawingCode());
+        request.setPrdName(order.getPrdName());
+        request.setMatRef(order.getMatRef());
+        request.setThickness(floatValue(order.getThickness()));
+        request.setWrkRef(order.getWrkRef());
+        request.setMnORef(order.getProductionOrderErpInternalCode());
+        request.setOrdRef(order.getProductionOrderNumber());
+        request.setCusRef(combineErpIdentity(order.getProductionOrderErpInternalCode(), order.getCusRef()));
+        request.setQuantity(integerQuantity(order.getQuantity(), "生产订单数量必须为正整数"));
+        request.setUdata1(part.getUdata1());
+        request.setUdata2(part.getUdata2());
+        request.setUdata3(part.getUdata3());
+        Map<String, Object> extensions = new LinkedHashMap<>();
+        extensions.put("jobRef", order.getJobRef());
+        extensions.put("sourcePrdRef", order.getPrdRef());
+        request.setExtensions(extensions);
+        return request;
+    }
+
+    private RawMaterialRequest toRawMaterial(XySteelPlate plate) {
+        requireText(plate.getPrdRef(), "钢板编号不能为空");
+        RawMaterialRequest request = new RawMaterialRequest();
+        request.setPrdRef(plate.getPrdRef());
+        request.setPrdName(plate.getPrdName());
+        request.setMatRef(plate.getMatRef());
+        request.setThickness(floatValue(plate.getThickness()));
+        request.setLength(floatValue(plate.getLength()));
+        request.setWidth(floatValue(plate.getWidth()));
+        request.setQuantity(integerQuantity(plate.getQuantity(), "钢板数量必须为正整数"));
+        request.setUdata1(plate.getStockName());
+        request.setUdata2(plate.getErpMaterialId() == null ? null : String.valueOf(plate.getErpMaterialId()));
+        request.setUdata3(plate.getLotNumber());
+        return request;
     }
 
     private void validateRecords(String businessType, List<Long> ids) {
@@ -191,10 +204,17 @@ public class XyImportTaskService {
         if (ORDER.equals(businessType)) {
             List<XyManufacturingOrder> orders = dataService.ordersByIds(ids);
             count = orders.size();
-            if (count == ids.size()) validateOrderAssignments(orders);
-        } else if (STEEL_PLATE.equals(businessType)) count = dataService.steelPlatesByIds(ids).size();
-        else throw new IllegalArgumentException("不支持的导入业务: " + businessType);
-        if (count != ids.size()) throw new IllegalArgumentException("部分待导入记录不存在或已删除");
+            if (count == ids.size()) {
+                validateOrderAssignments(orders);
+            }
+        } else if (STEEL_PLATE.equals(businessType)) {
+            count = dataService.steelPlatesByIds(ids).size();
+        } else {
+            throw new IllegalArgumentException("不支持的导入业务: " + businessType);
+        }
+        if (count != ids.size()) {
+            throw new IllegalArgumentException("部分待导入记录不存在或已删除");
+        }
     }
 
     static void validateOrderAssignments(List<XyManufacturingOrder> orders) {
@@ -207,9 +227,101 @@ public class XyImportTaskService {
                 .map(XyImportTaskService::orderLabel)
                 .toList();
         List<String> errors = new ArrayList<>();
-        if (!missingJobs.isEmpty()) errors.add("未设置作业: " + String.join("、", missingJobs));
-        if (!missingMachines.isEmpty()) errors.add("未设置设备: " + String.join("、", missingMachines));
-        if (!errors.isEmpty()) throw new IllegalArgumentException(String.join("；", errors));
+        if (!missingJobs.isEmpty()) {
+            errors.add("未设置作业: " + String.join("、", missingJobs));
+        }
+        if (!missingMachines.isEmpty()) {
+            errors.add("未设置设备: " + String.join("、", missingMachines));
+        }
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException(String.join("；", errors));
+        }
+    }
+
+    private void attachTask(XyImportTask task, List<Long> ids) {
+        LocalDateTime now = LocalDateTime.now();
+        if (ORDER.equals(task.getBusinessType())) {
+            dataService.ordersByIds(ids).forEach(item -> {
+                item.setLastTaskId(task.getId());
+                item.setReadState(true);
+                item.setReadTime(now);
+                dataService.updateOrder(item);
+            });
+        } else {
+            dataService.steelPlatesByIds(ids).forEach(item -> {
+                item.setLastTaskId(task.getId());
+                item.setReadState(true);
+                item.setReadTime(now);
+                dataService.updateSteelPlate(item);
+            });
+        }
+    }
+
+    private void markBusinessRowsImported(String businessType, List<Long> ids) {
+        LocalDateTime now = LocalDateTime.now();
+        if (ORDER.equals(businessType)) {
+            dataService.ordersByIds(ids).forEach(item -> {
+                item.setSendState(true);
+                item.setSendTime(now);
+                dataService.updateOrder(item);
+            });
+        } else {
+            dataService.steelPlatesByIds(ids).forEach(item -> {
+                item.setSendState(true);
+                item.setSendTime(now);
+                dataService.updateSteelPlate(item);
+            });
+        }
+    }
+
+    private static void validateOrder(XyManufacturingOrder order, XyBasePart part) {
+        requireText(order.getProductionOrderNumber(), "生产订单号不能为空");
+        requireText(order.getProductionOrderErpInternalCode(), "生产订单ERP内码不能为空");
+        requireText(order.getCusRef(), "计划跟踪号不能为空");
+        requireText(order.getJobRef(), "生产订单未选择作业");
+        requireText(order.getWrkRef(), "生产订单未选择设备");
+        requireText(part.getDrawingCode(), "基础零件图号不能为空");
+        requireText(part.getUdata3(), "基础零件ERP物料内码不能为空: " + part.getPrdRef());
+        integerQuantity(order.getQuantity(), "生产订单数量必须为正整数");
+    }
+
+    public static String combineErpIdentity(String erpInternalCode, String planNumber) {
+        requireText(erpInternalCode, "ERP内码不能为空");
+        requireText(planNumber, "计划跟踪号不能为空");
+        return erpInternalCode.trim() + "-" + planNumber.trim();
+    }
+
+    public static ErpIdentity splitErpIdentity(String composite) {
+        if (!StringUtils.hasText(composite)) {
+            return new ErpIdentity("", "");
+        }
+        int separator = composite.indexOf('-');
+        if (separator < 0) {
+            return new ErpIdentity(composite, "");
+        }
+        return new ErpIdentity(composite.substring(0, separator), composite.substring(separator + 1));
+    }
+
+    public static String importedOrderKey(String compositeCusRef, String jobRef) {
+        return orderKey(splitErpIdentity(compositeCusRef).erpInternalCode(), jobRef);
+    }
+
+    static String orderKey(String erpInternalCode, String jobRef) {
+        return String.valueOf(erpInternalCode) + "\u0000" + String.valueOf(jobRef);
+    }
+
+    public record ErpIdentity(String erpInternalCode, String planNumber) {
+    }
+
+    private static List<Long> normalizeIds(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("请选择要导入的数据");
+        }
+        List<Long> result = ids.stream().filter(Objects::nonNull).distinct().toList();
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("请选择要导入的数据");
+        }
+        return result;
     }
 
     private static String orderLabel(XyManufacturingOrder order) {
@@ -222,76 +334,30 @@ public class XyImportTaskService {
         return String.valueOf(order.getId());
     }
 
-    private void attachTask(XyImportTask task, List<Long> ids) {
-        LocalDateTime now = LocalDateTime.now();
-        if (ORDER.equals(task.getBusinessType())) {
-            dataService.ordersByIds(ids).forEach(item -> {
-                item.setLastTaskId(task.getId()); item.setReadState(true); item.setReadTime(now); dataService.updateOrder(item);
-            });
-        } else {
-            dataService.steelPlatesByIds(ids).forEach(item -> {
-                item.setLastTaskId(task.getId()); item.setReadState(true); item.setReadTime(now); dataService.updateSteelPlate(item);
-            });
+    private static Integer integerQuantity(Double value, String message) {
+        if (value == null || value <= 0 || value > Integer.MAX_VALUE || value != Math.rint(value)) {
+            throw new IllegalArgumentException(message);
+        }
+        return Math.toIntExact(Math.round(value));
+    }
+
+    private static Float floatValue(Double value) {
+        return value == null ? null : value.floatValue();
+    }
+
+    private static void requireText(String value, String message) {
+        if (!StringUtils.hasText(value)) {
+            throw new IllegalArgumentException(message);
         }
     }
 
-    private RawMaterialRequest toRawMaterial(XySteelPlate plate) {
-        requireText(plate.getPrdRef(), "钢板编号不能为空");
-        RawMaterialRequest request = new RawMaterialRequest();
-        request.setPrdRef(plate.getPrdRef()); request.setPrdName(plate.getPrdName()); request.setMatRef(plate.getMatRef());
-        request.setThickness(floatValue(plate.getThickness())); request.setLength(floatValue(plate.getLength()));
-        request.setWidth(floatValue(plate.getWidth())); request.setQuantity(Math.max(1, (int) Math.round(plate.getQuantity())));
-        request.setUdata1(plate.getStockName()); request.setUdata2(plate.getErpMaterialId() == null ? null : String.valueOf(plate.getErpMaterialId()));
-        request.setUdata3(plate.getLotNumber());
-        return request;
+    private static String safeMessage(Exception exception) {
+        return StringUtils.hasText(exception.getMessage())
+                ? exception.getMessage()
+                : exception.getClass().getSimpleName();
     }
 
-    private static void validateOrder(XyManufacturingOrder order, XyBasePart part) {
-        requireText(order.getProductionOrderNumber(), "生产订单号不能为空");
-        requireText(order.getProductionOrderErpInternalCode(), "生产订单ERP内码不能为空");
-        requireText(order.getCusRef(), "计划跟踪号不能为空");
-        requireText(order.getJobRef(), "生产订单未选择作业");
-        requireText(order.getWrkRef(), "生产订单未选择设备");
-        requireText(part.getDrawingCode(), "基础零件图号不能为空");
-        requireText(part.getUdata3(), "基础零件ERP物料内码不能为空: " + part.getPrdRef());
-        if (order.getQuantity() == null || order.getQuantity() <= 0) throw new IllegalArgumentException("生产订单数量必须大于0");
+    private static String limit(String value, int max) {
+        return value.substring(0, Math.min(value.length(), max));
     }
-
-    public static String combineErpIdentity(String erpInternalCode, String planNumber) {
-        requireText(erpInternalCode, "ERP内码不能为空");
-        requireText(planNumber, "计划跟踪号不能为空");
-        return erpInternalCode.trim() + "-" + planNumber.trim();
-    }
-
-    public static ErpIdentity splitErpIdentity(String composite) {
-        if (!StringUtils.hasText(composite)) return new ErpIdentity("", "");
-        int separator = composite.indexOf('-');
-        if (separator < 0) return new ErpIdentity(composite, "");
-        return new ErpIdentity(composite.substring(0, separator), composite.substring(separator + 1));
-    }
-
-    public record ErpIdentity(String erpInternalCode, String planNumber) {}
-
-    private XyImportTask requireTask(Long id) {
-        XyImportTask task = dataService.taskById(id);
-        if (task == null) throw new IllegalArgumentException("导入任务不存在: " + id);
-        return task;
-    }
-
-    private String requireInstall() {
-        String install = properties.getLantek().getInstall();
-        requireText(install, "未配置Lantek安装目录");
-        return install;
-    }
-
-    static String importedOrderKey(String compositeCusRef, String jobRef) {
-        return orderKey(splitErpIdentity(compositeCusRef).erpInternalCode(), jobRef);
-    }
-
-    private static String orderKey(String erpInternalCode, String jobRef) {
-        return String.valueOf(erpInternalCode) + "\u0000" + String.valueOf(jobRef);
-    }
-    private static Float floatValue(Double value) { return value == null ? null : value.floatValue(); }
-    private static void requireText(String value, String message) { if (!StringUtils.hasText(value)) throw new IllegalArgumentException(message); }
-    private static String limit(String value, int max) { return value == null ? "未知错误" : value.substring(0, Math.min(value.length(), max)); }
 }

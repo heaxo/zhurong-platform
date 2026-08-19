@@ -1,5 +1,7 @@
 server:
   port: 9300
+  # 客户端 custom 仅供本机透明代理调用，不直接暴露给局域网。
+  address: 127.0.0.1
 
 spring:
   profiles:
@@ -16,9 +18,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: auto
-        concurrency: 3
-        max-concurrency: 10
-        prefetch: 10
+        # Lantek/Expert 自动化通常不支持并发，模板默认串行消费。
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -42,8 +45,8 @@ spring:
       password: nacos
       discovery:
         server-addr: localhost:8848
-#        ip: 192.168.1.76
-#        port: ${server.port}
+        # 客户端要发现 core/auth，但不能注册成 Gateway 可访问的服务。
+        register-enabled: false
       config:
         server-addr: localhost:8848
         file-extension: yaml
@@ -63,5 +66,16 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
 
-but-config:
-  sync-nesting-reporting-maximum-days: 30
+zhurong:
+  client-communication:
+    # 客户端部署模板：用 Windows 主机名声明专属 MQ 队列。
+    enabled: true
+    client-id-from-hostname: true
+    client-id:
+    user-name:
+    version: 1.0.0
+    heartbeat-seconds: 30
+    # core 透明代理命令在客户端上调用的本机 custom HTTP 地址。
+    local-base-url: http://127.0.0.1:${server.port}
+    proxy-connect-timeout-seconds: 10
+    proxy-max-response-bytes: 52428800
