@@ -12,10 +12,10 @@ public final class ClientImportMqConstants {
     public static final String STATUS_ROUTING_KEY = "client.status";
 
     public static String commandQueue(String clientId) {
-        return "zhurong.platform.client." + clientId + ".command";
+        return "zhurong.platform.client." + ClientIds.normalize(clientId) + ".command";
     }
 
     public static String commandRoutingKey(String clientId) {
-        return "client." + clientId;
+        return "client." + ClientIds.normalize(clientId);
     }
 }

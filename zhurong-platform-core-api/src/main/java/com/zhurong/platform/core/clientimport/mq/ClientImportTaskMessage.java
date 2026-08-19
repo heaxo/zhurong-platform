@@ -11,6 +11,12 @@ import java.time.Instant;
 @Schema(description = "客户端导入任务MQ消息")
 public class ClientImportTaskMessage implements Serializable {
 
+    /**
+     * STANDARD_IMPORT 表示客户端收到通知后再从 core 拉取数据；
+     * COMMAND 表示 payload 是一个由客户模块解释的轻量命令参数。
+     */
+    private String messageKind = ClientMessageKinds.STANDARD_IMPORT;
+
     private String taskId;
 
     private String requestId;

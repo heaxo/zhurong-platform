@@ -28,6 +28,7 @@ dependencies {
     implementation project(':zhurong-platform-base')
     implementation project(':zhurong-platform-security')
     implementation project(':zhurong-platform-core-api')
+    implementation project(':zhurong-platform-auth-api')
 
     implementation 'org.mapstruct:mapstruct'
     annotationProcessor 'org.mapstruct:mapstruct-processor'

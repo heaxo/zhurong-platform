@@ -10,6 +10,7 @@ import com.zhurong.platform.core.clientimport.business.ClientImportBusinessHandl
 import com.zhurong.platform.core.clientimport.business.ClientImportBusinessRegistry;
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.core.clientimport.dto.ClientImportRequest;
+import com.zhurong.platform.core.clientimport.dto.ClientImportSubmission;
 import com.zhurong.platform.base.clientimport.dto.PartDrawingArchiveRequest;
 import com.zhurong.platform.base.clientimport.dto.ProductionOrderRequest;
 import com.zhurong.platform.base.clientimport.dto.RawMaterialRequest;
@@ -25,6 +26,7 @@ import com.zhurong.platform.core.clientimport.mq.ClientImportMqConstants;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
 import com.zhurong.platform.core.clientimport.service.ClientDispatchTaskService;
 import com.zhurong.platform.core.clientimport.service.ClientImportApplicationService;
+import com.zhurong.platform.core.clientimport.service.ClientRegistryService;
 import com.zhurong.platform.core.clientimport.service.EntityAuditHelper;
 import com.zhurong.platform.core.clientimport.target.ClientTargetResolveContext;
 import com.zhurong.platform.core.clientimport.target.ClientTargetResolver;
@@ -67,6 +69,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
     private final ClientDispatchPublishService dispatchPublishService;
     private final ClientDispatchTaskService dispatchTaskService;
     private final ClientImportBusinessRegistry businessRegistry;
+    private final ClientRegistryService clientRegistryService;
 
     @Override
     public boolean importPartDrawing(ClientImportRequest<List<PartDrawingArchiveRequest>> request) {
@@ -83,6 +86,12 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
 
     @Override
     public boolean importProductionOrder(ClientImportRequest<List<ProductionOrderRequest>> request) {
+        submitProductionOrder(request);
+        return true;
+    }
+
+    @Override
+    public ClientImportSubmission submitProductionOrder(ClientImportRequest<List<ProductionOrderRequest>> request) {
         String batchRequestId = newBatchRequestId();
         logIncomingRequest(request, batchRequestId, ClientImportBusinessTypes.PRODUCTION_ORDER);
         BatchPersistResult result = persistBatch(
@@ -91,11 +100,17 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
                 businessRegistry.get(ClientImportBusinessTypes.PRODUCTION_ORDER)
         );
         publishAfterCommit(result);
-        return true;
+        return result.toSubmission();
     }
 
     @Override
     public boolean importRawMaterial(ClientImportRequest<List<RawMaterialRequest>> request) {
+        submitRawMaterial(request);
+        return true;
+    }
+
+    @Override
+    public ClientImportSubmission submitRawMaterial(ClientImportRequest<List<RawMaterialRequest>> request) {
         String batchRequestId = newBatchRequestId();
         logIncomingRequest(request, batchRequestId, ClientImportBusinessTypes.RAW_MATERIAL);
         BatchPersistResult result = persistBatch(
@@ -104,7 +119,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
                 businessRegistry.get(ClientImportBusinessTypes.RAW_MATERIAL)
         );
         publishAfterCommit(result);
-        return true;
+        return result.toSubmission();
     }
 
     @Override
@@ -177,6 +192,7 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
                     .businessType(businessHandler.businessType())
                     .businessData(request.getData())
                     .build());
+            targetClientId = clientRegistryService.requireOnline(targetClientId);
 
             String taskId = "TASK-" + IdWorker.getIdStr();
             for (IndexedItem<T> indexedItem : newItems) {
@@ -187,7 +203,12 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
             ClientDispatchTask task = buildDispatchTask(batchRequestId, businessHandler.businessType(), targetClientId, taskId, message);
             dispatchTaskService.save(task);
 
-            return BatchPersistResult.toPublish(taskId, batchRequestId, businessHandler.businessType());
+            return BatchPersistResult.toPublish(
+                    taskId,
+                    batchRequestId,
+                    businessHandler.businessType(),
+                    targetClientId
+            );
         });
 
         if (result == null) {
@@ -375,10 +396,24 @@ public class ClientImportApplicationServiceImpl implements ClientImportApplicati
     private record IndexedItem<T>(int index, String businessKey, T value) {
     }
 
-    private record BatchPersistResult(String taskId, String requestId, String businessType) {
+    private record BatchPersistResult(
+            String taskId,
+            String requestId,
+            String businessType,
+            String targetClientId
+    ) {
 
-        static BatchPersistResult toPublish(String taskId, String requestId, String businessType) {
-            return new BatchPersistResult(taskId, requestId, businessType);
+        static BatchPersistResult toPublish(
+                String taskId,
+                String requestId,
+                String businessType,
+                String targetClientId
+        ) {
+            return new BatchPersistResult(taskId, requestId, businessType, targetClientId);
+        }
+
+        ClientImportSubmission toSubmission() {
+            return new ClientImportSubmission(taskId, requestId, businessType, targetClientId);
         }
     }
 }

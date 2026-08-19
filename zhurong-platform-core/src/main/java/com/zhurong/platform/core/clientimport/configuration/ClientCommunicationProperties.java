@@ -17,4 +17,13 @@ public class ClientCommunicationProperties {
 
     // MQ发布失败后的后台补偿间隔；小于等于0时补偿任务会直接跳过。
     private long publishRetryDelayMillis = 60000L;
+
+    /** 超过该时长未收到心跳时，客户端按离线处理。 */
+    private long clientOnlineTimeoutSeconds = 90L;
+
+    /** 前端经 core 透明调用客户端本机 HTTP 接口的最长等待时间。 */
+    private int proxyTimeoutSeconds = 600;
+
+    /** 单次代理请求体上限，避免任意大请求占满 core 与 RabbitMQ 内存。 */
+    private long proxyMaxRequestBytes = 20L * 1024L * 1024L;
 }

@@ -6,9 +6,11 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableFeignClients
 @MapperScan(basePackages = {
         "com.zhurong.platform.core.lantek.mapper",
         "com.zhurong.platform.core.clientimport.mapper"

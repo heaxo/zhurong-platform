@@ -6,6 +6,7 @@ import com.zhurong.platform.base.exception.BusinessException;
 import com.zhurong.platform.core.clientimport.business.ClientImportBusinessRegistry;
 import com.zhurong.platform.core.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.core.clientimport.entity.ClientDispatchTask;
+import com.zhurong.platform.core.clientimport.dto.ClientImportTaskResult;
 import com.zhurong.platform.core.clientimport.enums.DispatchStatus;
 import com.zhurong.platform.core.clientimport.mq.ClientDispatchPublishService;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskMessage;
@@ -40,6 +41,19 @@ public class ClientImportTaskRuntimeServiceImpl implements ClientImportTaskRunti
     public ClientImportTaskMessage getPendingData(String taskId) {
         ClientDispatchTask task = getRequiredTask(taskId);
         return buildPendingTaskMessage(task);
+    }
+
+    @Override
+    public ClientImportTaskResult getResult(String taskId) {
+        ClientDispatchTask task = getRequiredTask(taskId);
+        ClientImportTaskResult result = new ClientImportTaskResult();
+        result.setTaskId(task.getTaskId());
+        result.setRequestId(task.getRequestId());
+        result.setBusinessType(task.getBusinessType());
+        result.setTargetClientId(task.getTargetClientId());
+        result.setStatus(task.getStatus());
+        result.setMessage(task.getErrorMessage());
+        return result;
     }
 
     @Override

@@ -44,8 +44,9 @@ public class ClientDispatchPublishServiceImpl implements ClientDispatchPublishSe
         try {
             // RequestSnapshot只保存轻量任务通知；业务数据由客户端收到通知后通过Feign按taskId实时查询SQL Server。
             ClientImportTaskMessage message = objectMapper.readValue(task.getRequestSnapshot(), ClientImportTaskMessage.class);
-            publish(message);
+            // 状态必须先落库，避免客户端极速回执后又被当前发布线程覆盖回 PUBLISHED。
             dispatchTaskService.updateStatus(taskId, DispatchStatus.PUBLISHED, null);
+            publish(message);
         } catch (Exception ex) {
             dispatchTaskService.updateStatus(taskId, DispatchStatus.PUBLISH_FAILED, ex.getMessage());
             throw new BusinessException("CLIENT_DISPATCH_PUBLISH_FAILED: 客户端任务发布失败：" + ex.getMessage());
