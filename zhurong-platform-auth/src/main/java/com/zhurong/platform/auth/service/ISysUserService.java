@@ -15,5 +15,7 @@ public interface ISysUserService extends IService<SysUser> {
 
     Boolean updateFromDTO(Long id, SysUserDTO dto);
 
+    Boolean updateClientId(Long id, String clientId);
+
     boolean createUser(SysUserDTO request);
 }

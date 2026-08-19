@@ -1,6 +1,8 @@
 package com.zhurong.platform.auth.api;
 
+import com.zhurong.platform.auth.dto.CreateUserRequest;
 import com.zhurong.platform.auth.dto.SysUserDTO;
+import com.zhurong.platform.auth.dto.SysUserClientBindingDTO;
 import com.zhurong.platform.auth.dto.SysUserPageQuery;
 import com.zhurong.platform.auth.vo.SysUserVO;
 import com.zhurong.platform.base.api.ApiResponse;
@@ -42,6 +44,12 @@ public interface ISysUserApi {
             <Long> save(@Valid @RequestBody SysUserDTO dto);
 
     /**
+     * 创建可登录账号并绑定角色、部门及可选的 Windows 客户端主机名。
+     */
+    @PostMapping("/create")
+    ApiResponse<Boolean> create(@Valid @RequestBody CreateUserRequest request);
+
+    /**
      * 更新
      */
     @PutMapping("/{id}")
@@ -49,6 +57,13 @@ public interface ISysUserApi {
             <Boolean> update(
             @PathVariable Long id,
             @Valid @RequestBody SysUserDTO dto
+    );
+
+    /** 绑定或解除账号对应的 Windows 客户端。 */
+    @PutMapping("/{id}/client-binding")
+    ApiResponse<Boolean> updateClientBinding(
+            @PathVariable Long id,
+            @Valid @RequestBody SysUserClientBindingDTO dto
     );
 
     /**

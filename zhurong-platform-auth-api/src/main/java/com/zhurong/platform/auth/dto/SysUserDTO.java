@@ -23,6 +23,7 @@ public class SysUserDTO implements Serializable {
     private String username;
     private String password;
     private String realName;
+    private String clientId;
     private Long deptId;
     private Integer status;
     private LocalDateTime lastLoginTime;

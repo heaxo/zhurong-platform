@@ -49,6 +49,9 @@ public class SysUserPageQuery extends BasePageQuery {
      */
     private String realName;
 
+    /** 绑定的 Windows 客户端主机标识。 */
+    private String clientId;
+
 
     /**
      *

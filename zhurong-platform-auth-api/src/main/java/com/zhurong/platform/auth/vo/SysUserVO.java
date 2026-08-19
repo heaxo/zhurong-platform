@@ -22,6 +22,7 @@ public class SysUserVO implements Serializable {
     private Integer version;
     private String username;
     private String realName;
+    private String clientId;
     private String deptId;
     private Integer status;
     private LocalDateTime lastLoginTime;

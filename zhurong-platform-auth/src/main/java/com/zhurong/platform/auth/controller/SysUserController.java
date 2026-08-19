@@ -4,6 +4,7 @@ import com.zhurong.platform.auth.api.ISysUserApi;
 import com.zhurong.platform.auth.convert.SysUserConvert;
 import com.zhurong.platform.auth.dto.CreateUserRequest;
 import com.zhurong.platform.auth.dto.SysUserDTO;
+import com.zhurong.platform.auth.dto.SysUserClientBindingDTO;
 import com.zhurong.platform.auth.dto.SysUserPageQuery;
 import com.zhurong.platform.auth.entity.SysUser;
 import com.zhurong.platform.auth.service.ISysUserService;
@@ -19,8 +20,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -86,6 +85,11 @@ public class SysUserController extends BaseController implements ISysUserApi {
     }
 
     @Override
+    public ApiResponse<Boolean> updateClientBinding(Long id, @Valid SysUserClientBindingDTO dto) {
+        return ApiResponse.success(service.updateClientId(id, dto == null ? null : dto.getClientId()));
+    }
+
+    @Override
     public ApiResponse
             <Boolean> remove(Long id) {
         boolean remove = service.removeById(id);
@@ -99,8 +103,8 @@ public class SysUserController extends BaseController implements ISysUserApi {
         return ApiResponse.success(remove);
     }
 
-    @PostMapping("create")
-    public ApiResponse<Boolean> create(@Valid @RequestBody CreateUserRequest request) {
+    @Override
+    public ApiResponse<Boolean> create(@Valid CreateUserRequest request) {
         SysUserDTO sysUserDTO = convert.toDTO(request);
         boolean create = service.createUser(sysUserDTO);
         return ApiResponse.success(create);

@@ -45,6 +45,10 @@ public class SysUserServiceImpl
         SysUserVO vo = convert.toVO(entity);
         List<SysUserRole> sysUserRoles = sysUserRoleService.list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserId, id));
         List<Long> roleIds = sysUserRoles.stream().map(SysUserRole::getRoleId).toList();
+        if (roleIds.isEmpty()) {
+            vo.setRoles(List.of());
+            return vo;
+        }
         List<SysRole> roles = sysRoleService.list(Wrappers.lambdaQuery(SysRole.class).in(BaseEntity::getId, roleIds));
         vo.setRoles(roles.stream().map(SysRole::getCode).toList());
         return vo;
@@ -52,6 +56,7 @@ public class SysUserServiceImpl
 
     @Override
     public Long saveFromDTO(SysUserDTO dto) {
+        dto.setClientId(normalizeClientId(dto.getClientId()));
         SysUser entity = convert.toEntity(dto);
         if (entity.getTenantId() == null){
             entity.setTenantId(0L);
@@ -63,7 +68,18 @@ public class SysUserServiceImpl
     @Override
     public Boolean updateFromDTO(Long id, SysUserDTO dto) {
         SysUser entity = this.getById(id);
+        dto.setClientId(normalizeClientId(dto.getClientId()));
         convert.updateFromDTO(dto, entity);
+        return this.updateById(entity);
+    }
+
+    @Override
+    public Boolean updateClientId(Long id, String clientId) {
+        SysUser entity = this.getById(id);
+        if (entity == null) {
+            throw new BusinessException("用户不存在");
+        }
+        entity.setClientId(normalizeClientId(clientId));
         return this.updateById(entity);
     }
 
@@ -72,26 +88,40 @@ public class SysUserServiceImpl
     public boolean createUser(SysUserDTO request) {
 
         Long tenantId = getCurrentTenantId();
+        String username = request.getUsername().trim();
+        List<Long> roleIds = request.getRoleIds() == null
+                ? List.of()
+                : request.getRoleIds().stream().filter(java.util.Objects::nonNull).distinct().toList();
 
         // 校验租户内用户名唯一
         long count = count(
                 Wrappers.lambdaQuery(SysUser.class)
                         .eq(SysUser::getTenantId, tenantId)
-                        .eq(SysUser::getUsername, request.getUsername())
+                        .eq(SysUser::getUsername, username)
         );
 
         if (count > 0) {
             throw new BusinessException("用户名已存在");
         }
 
+        if (!roleIds.isEmpty()) {
+            long existingRoleCount = sysRoleService.count(Wrappers.lambdaQuery(SysRole.class)
+                    .eq(SysRole::getTenantId, tenantId)
+                    .in(BaseEntity::getId, roleIds));
+            if (existingRoleCount != roleIds.size()) {
+                throw new BusinessException("部分角色不存在或不属于当前租户");
+            }
+        }
+
         // 构建用户
         SysUser user = new SysUser()
                 .setTenantId(tenantId)
-                .setUsername(request.getUsername())
+                .setUsername(username)
                 .setPassword(passwordEncoder.encode(request.getPassword()))
-                .setRealName(request.getRealName())
+                .setRealName(request.getRealName().trim())
+                .setClientId(normalizeClientId(request.getClientId()))
                 .setDeptId(request.getDeptId())
-                .setStatus(request.getStatus())
+                .setStatus(request.getStatus() == null ? 1 : request.getStatus())
                 .setRemark(request.getRemark());
 
         boolean save = save(user);
@@ -101,17 +131,25 @@ public class SysUserServiceImpl
         }
 
         // 绑定角色
-        if (request.getRoleIds() != null && !request.getRoleIds().isEmpty()) {
-            List<SysUserRole> userRoles = request.getRoleIds()
+        if (!roleIds.isEmpty()) {
+            List<SysUserRole> userRoles = roleIds
                     .stream()
                     .map(roleId -> new SysUserRole()
                             .setTenantId(tenantId)
                             .setUserId(user.getId())
                             .setRoleId(roleId)
                     ).toList();
-            return save && sysUserRoleService.saveBatch(userRoles);
+            if (!sysUserRoleService.saveBatch(userRoles)) {
+                throw new BusinessException("用户角色绑定失败");
+            }
         }
-        return false;
+        return true;
+    }
+
+    private static String normalizeClientId(String clientId) {
+        return clientId == null || clientId.isBlank()
+                ? null
+                : clientId.trim().toUpperCase(java.util.Locale.ROOT);
     }
 
     private Long getCurrentTenantId() {

@@ -1,6 +1,7 @@
 package com.zhurong.platform.auth.entity;
 
 import com.zhurong.platform.base.model.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,6 +47,12 @@ public class SysUser extends BaseEntity implements Serializable {
      *
      */
     private String realName;
+
+    /**
+     * 与该登录账号绑定的 Windows 客户端主机标识，用于定向投递本机 Lantek 任务。
+     */
+    @TableField("client_id")
+    private String clientId;
 
 
     /**
