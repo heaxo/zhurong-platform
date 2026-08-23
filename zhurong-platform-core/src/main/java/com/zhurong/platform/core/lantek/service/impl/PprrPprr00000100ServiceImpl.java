@@ -19,6 +19,7 @@ import com.zhurong.platform.core.lantek.service.IDisShprPptt00000200Service;
 import com.zhurong.platform.core.lantek.service.IPprrPprr00000100Service;
 import com.zhurong.platform.core.lantek.service.ISystOwnd00000100Service;
 import com.zhurong.platform.core.lantek.util.LantekFilePathBuilder;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import com.zhurong.platform.core.lantek.vo.PprrPprr00000100VO;
 import com.zhurong.platform.core.properties.LantekConfigProperties;
 import lombok.RequiredArgsConstructor;
@@ -74,9 +75,11 @@ public class PprrPprr00000100ServiceImpl
             return Collections.emptyList();
         }
 
-        List<PprrPprr00000100> entities = this.list(
-                Wrappers.lambdaQuery(PprrPprr00000100.class)
-                        .in(PprrPprr00000100::getPrdRef, productRefs)
+        List<PprrPprr00000100> entities = SqlServerInClauseBatcher.listByIn(
+                this,
+                Wrappers.lambdaQuery(PprrPprr00000100.class),
+                PprrPprr00000100::getPrdRef,
+                productRefs
         );
 
         List<PprrPprr00000100VO> views = convert.toVOList(entities);
@@ -121,9 +124,11 @@ public class PprrPprr00000100ServiceImpl
             return Collections.emptyList();
         }
 
-        List<DisShprPptt00000200> rows = disShprPptt00000200Service.list(
-                Wrappers.lambdaQuery(DisShprPptt00000200.class)
-                        .in(DisShprPptt00000200::getPartRef, productRefs)
+        List<DisShprPptt00000200> rows = SqlServerInClauseBatcher.listByIn(
+                disShprPptt00000200Service,
+                Wrappers.lambdaQuery(DisShprPptt00000200.class),
+                DisShprPptt00000200::getPartRef,
+                productRefs
         );
 
         Map<String, List<DisShprPptt00000200>> grouped = rows.stream()
@@ -170,10 +175,12 @@ public class PprrPprr00000100ServiceImpl
             return Collections.emptyList();
         }
 
-        List<SystOwnd00000100> docs = systOwnd00000100Service.list(
+        List<SystOwnd00000100> docs = SqlServerInClauseBatcher.listByIn(
+                systOwnd00000100Service,
                 Wrappers.lambdaQuery(SystOwnd00000100.class)
-                        .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.PART)
-                        .in(SystOwnd00000100::getRecordID, recIds)
+                        .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.PART),
+                SystOwnd00000100::getRecordID,
+                recIds
         );
 
         Map<Integer, List<SystOwnd00000100>> grouped = docs.stream()

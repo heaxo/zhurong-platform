@@ -10,6 +10,7 @@ import com.zhurong.platform.core.clientimport.file.StoredImportFile;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.core.clientimport.service.RawMaterialService;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -57,8 +58,11 @@ public class RawMaterialImportBusinessHandler
         if (CollectionUtils.isEmpty(businessKeys)) {
             return List.of();
         }
-        return service.list(Wrappers.lambdaQuery(RawMaterial.class)
-                .in(RawMaterial::getPrdRef, businessKeys));
+        return SqlServerInClauseBatcher.listByIn(
+                service,
+                Wrappers.lambdaQuery(RawMaterial.class),
+                RawMaterial::getPrdRef,
+                businessKeys);
     }
 
     @Override
@@ -107,12 +111,12 @@ public class RawMaterialImportBusinessHandler
         if (CollectionUtils.isEmpty(importedRecordIds)) {
             return;
         }
-        service.update(Wrappers.lambdaUpdate(RawMaterial.class)
+        SqlServerInClauseBatcher.forEachBatch(importedRecordIds, batch -> service.update(Wrappers.lambdaUpdate(RawMaterial.class)
                 .set(RawMaterial::getImported, true)
                 .set(RawMaterial::getDispatchStatus, DispatchStatus.IMPORTED.name())
                 .set(RawMaterial::getDispatchMessage, message)
                 .eq(RawMaterial::getRequestId, requestId)
-                .in(RawMaterial::getId, importedRecordIds));
+                .in(RawMaterial::getId, batch)));
     }
 
     @Override

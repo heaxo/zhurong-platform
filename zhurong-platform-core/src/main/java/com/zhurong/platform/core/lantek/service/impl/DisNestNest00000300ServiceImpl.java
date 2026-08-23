@@ -9,6 +9,7 @@ import com.zhurong.platform.core.lantek.entity.DisNestNest00000300;
 import com.zhurong.platform.core.lantek.mapper.DisNestNest00000300Mapper;
 import com.zhurong.platform.core.lantek.service.IDisNestNest00000300Service;
 import com.zhurong.platform.core.lantek.service.IPprrPprr00000100Service;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import com.zhurong.platform.core.lantek.vo.DisNestNest00000300VO;
 import com.zhurong.platform.core.lantek.vo.PprrPprr00000100VO;
 import lombok.RequiredArgsConstructor;
@@ -61,9 +62,11 @@ public class DisNestNest00000300ServiceImpl
             return Collections.emptyList();
         }
 
-        List<DisNestNest00000300> rows = this.list(
-                Wrappers.lambdaQuery(DisNestNest00000300.class)
-                        .in(DisNestNest00000300::getNstRef, nestRefs)
+        List<DisNestNest00000300> rows = SqlServerInClauseBatcher.listByIn(
+                this,
+                Wrappers.lambdaQuery(DisNestNest00000300.class),
+                DisNestNest00000300::getNstRef,
+                nestRefs
         );
 
         List<DisNestNest00000300VO> views = convert.toVOList(rows);

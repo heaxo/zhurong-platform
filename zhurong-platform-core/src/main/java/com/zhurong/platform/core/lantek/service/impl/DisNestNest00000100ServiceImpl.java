@@ -24,6 +24,7 @@ import com.zhurong.platform.core.lantek.util.LantekFilePathBuilder;
 import com.zhurong.platform.core.lantek.vo.*;
 import com.zhurong.platform.core.properties.LantekConfigProperties;
 import com.zhurong.platform.core.util.OrderByAssembler;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -142,9 +143,12 @@ public class DisNestNest00000100ServiceImpl
 
         List<Integer> partRecIds = parts.stream().map(PprrPprr00000100::getRecID).toList();
 
-        List<SystOwnd00000100> partDocs = systOwnd00000100Service.list(Wrappers.lambdaQuery(SystOwnd00000100.class)
-                .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.PART)
-                .in(SystOwnd00000100::getRecordID, partRecIds));
+        List<SystOwnd00000100> partDocs = SqlServerInClauseBatcher.listByIn(
+                systOwnd00000100Service,
+                Wrappers.lambdaQuery(SystOwnd00000100.class)
+                        .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.PART),
+                SystOwnd00000100::getRecordID,
+                partRecIds);
 
         Map<Integer, List<SystOwnd00000100>> partDocMap = partDocs.stream()
                 .collect(Collectors.groupingBy(SystOwnd00000100::getRecordID));
@@ -201,8 +205,11 @@ public class DisNestNest00000100ServiceImpl
             wrapper.in(DisNestNest00000100::getRecID, req.getRecIds());
         }
         if (req.getNestPartRecIds() != null && CollectionUtils.isNotEmpty(req.getNestPartRecIds())) {
-            List<DisNestNest00000500> nestParts = disNestNest00000500Service.list(Wrappers.lambdaQuery(DisNestNest00000500.class)
-                    .in(DisNestNest00000500::getRecID, req.getNestPartRecIds()));
+            List<DisNestNest00000500> nestParts = SqlServerInClauseBatcher.listByIn(
+                    disNestNest00000500Service,
+                    Wrappers.lambdaQuery(DisNestNest00000500.class),
+                    DisNestNest00000500::getRecID,
+                    req.getNestPartRecIds());
             List<String> nstRefs = nestParts.stream().map(DisNestNest00000500::getNstRef).distinct().toList();
             wrapper.in(DisNestNest00000100::getNstRef, nstRefs);
         }
@@ -328,9 +335,11 @@ public class DisNestNest00000100ServiceImpl
             return Collections.emptyList();
         }
 
-        List<DisNestNest00000200> metricRows = disNestNest00000200Service.list(
-                Wrappers.lambdaQuery(DisNestNest00000200.class)
-                        .in(DisNestNest00000200::getNstRef, nestRefs)
+        List<DisNestNest00000200> metricRows = SqlServerInClauseBatcher.listByIn(
+                disNestNest00000200Service,
+                Wrappers.lambdaQuery(DisNestNest00000200.class),
+                DisNestNest00000200::getNstRef,
+                nestRefs
         );
 
         Map<String, List<DisNestNest00000200>> groupMap = metricRows.stream()
@@ -369,10 +378,12 @@ public class DisNestNest00000100ServiceImpl
             return Collections.emptyList();
         }
 
-        List<SystOwnd00000100> docs = systOwnd00000100Service.list(
+        List<SystOwnd00000100> docs = SqlServerInClauseBatcher.listByIn(
+                systOwnd00000100Service,
                 Wrappers.lambdaQuery(SystOwnd00000100.class)
-                        .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.NEST)
-                        .in(SystOwnd00000100::getRecordID, recIds)
+                        .eq(SystOwnd00000100::getTblRef, OwndConstant.TblRef.NEST),
+                SystOwnd00000100::getRecordID,
+                recIds
         );
 
         Map<Integer, List<SystOwnd00000100>> groupMap = docs.stream()

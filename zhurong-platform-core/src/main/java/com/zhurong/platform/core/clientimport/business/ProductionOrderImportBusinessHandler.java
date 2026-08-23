@@ -10,6 +10,7 @@ import com.zhurong.platform.core.clientimport.file.StoredImportFile;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.core.clientimport.service.ProductionOrderService;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -61,8 +62,11 @@ public class ProductionOrderImportBusinessHandler
         if (CollectionUtils.isEmpty(businessKeys)) {
             return List.of();
         }
-        return service.list(Wrappers.lambdaQuery(ProductionOrder.class)
-                .in(ProductionOrder::getMnORef, businessKeys));
+        return SqlServerInClauseBatcher.listByIn(
+                service,
+                Wrappers.lambdaQuery(ProductionOrder.class),
+                ProductionOrder::getMnORef,
+                businessKeys);
     }
 
     @Override
@@ -118,12 +122,12 @@ public class ProductionOrderImportBusinessHandler
         if (CollectionUtils.isEmpty(importedRecordIds)) {
             return;
         }
-        service.update(Wrappers.lambdaUpdate(ProductionOrder.class)
+        SqlServerInClauseBatcher.forEachBatch(importedRecordIds, batch -> service.update(Wrappers.lambdaUpdate(ProductionOrder.class)
                 .set(ProductionOrder::getImported, true)
                 .set(ProductionOrder::getDispatchStatus, DispatchStatus.IMPORTED.name())
                 .set(ProductionOrder::getDispatchMessage, message)
                 .eq(ProductionOrder::getRequestId, requestId)
-                .in(ProductionOrder::getId, importedRecordIds));
+                .in(ProductionOrder::getId, batch)));
     }
 
     @Override

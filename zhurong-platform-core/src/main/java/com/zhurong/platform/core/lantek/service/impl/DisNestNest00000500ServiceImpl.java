@@ -12,6 +12,7 @@ import com.zhurong.platform.core.lantek.mapper.DisNestNest00000500Mapper;
 import com.zhurong.platform.core.lantek.service.IDisNestNest00000500Service;
 import com.zhurong.platform.core.lantek.service.IMmnnMmoo00000300Service;
 import com.zhurong.platform.core.lantek.service.IPprrPprr00000100Service;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import com.zhurong.platform.core.lantek.vo.DisNestNest00000500VO;
 import com.zhurong.platform.core.lantek.vo.MmnnMmoo00000300VO;
 import com.zhurong.platform.core.lantek.vo.PprrPprr00000100VO;
@@ -66,9 +67,11 @@ public class DisNestNest00000500ServiceImpl
             return Collections.emptyList();
         }
 
-        List<DisNestNest00000500> rows = this.list(
-                Wrappers.lambdaQuery(DisNestNest00000500.class)
-                        .in(DisNestNest00000500::getNstRef, nestRefs)
+        List<DisNestNest00000500> rows = SqlServerInClauseBatcher.listByIn(
+                this,
+                Wrappers.lambdaQuery(DisNestNest00000500.class),
+                DisNestNest00000500::getNstRef,
+                nestRefs
         );
 
         List<DisNestNest00000500VO> views = convert.toVOList(rows);
@@ -101,9 +104,12 @@ public class DisNestNest00000500ServiceImpl
                     .distinct()
                     .toList();
 
-            List<MmnnMmoo00000300> list = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
-                    .in(MmnnMmoo00000300::getMnORef, mnoRefs)
-                    .in(MmnnMmoo00000300::getOprID, oprIds));
+            List<MmnnMmoo00000300> list = SqlServerInClauseBatcher.listByTwoIn(
+                    (mnoBatch, oprBatch) -> mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                            .in(MmnnMmoo00000300::getMnORef, mnoBatch)
+                            .in(MmnnMmoo00000300::getOprID, oprBatch)),
+                    mnoRefs,
+                    oprIds);
 
             record GroupKey(String mnoRef,Integer oprId){}
             Map<GroupKey, MmnnMmoo00000300VO> workOrderMap = list.stream()

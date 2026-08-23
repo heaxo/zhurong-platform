@@ -10,6 +10,7 @@ import com.zhurong.platform.core.clientimport.file.StoredImportFile;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.core.clientimport.service.PartDrawingArchiveService;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -61,8 +62,11 @@ public class PartDrawingArchiveImportBusinessHandler
         if (CollectionUtils.isEmpty(businessKeys)) {
             return List.of();
         }
-        return service.list(Wrappers.lambdaQuery(PartDrawingArchive.class)
-                .in(PartDrawingArchive::getPrdRef, businessKeys));
+        return SqlServerInClauseBatcher.listByIn(
+                service,
+                Wrappers.lambdaQuery(PartDrawingArchive.class),
+                PartDrawingArchive::getPrdRef,
+                businessKeys);
     }
 
     @Override
@@ -113,12 +117,12 @@ public class PartDrawingArchiveImportBusinessHandler
         if (CollectionUtils.isEmpty(importedRecordIds)) {
             return;
         }
-        service.update(Wrappers.lambdaUpdate(PartDrawingArchive.class)
+        SqlServerInClauseBatcher.forEachBatch(importedRecordIds, batch -> service.update(Wrappers.lambdaUpdate(PartDrawingArchive.class)
                 .set(PartDrawingArchive::getImported, true)
                 .set(PartDrawingArchive::getDispatchStatus, DispatchStatus.IMPORTED.name())
                 .set(PartDrawingArchive::getDispatchMessage, message)
                 .eq(PartDrawingArchive::getRequestId, requestId)
-                .in(PartDrawingArchive::getId, importedRecordIds));
+                .in(PartDrawingArchive::getId, batch)));
     }
 
     @Override

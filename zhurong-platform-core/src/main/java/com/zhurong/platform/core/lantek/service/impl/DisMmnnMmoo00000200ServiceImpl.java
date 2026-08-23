@@ -13,6 +13,7 @@ import com.zhurong.platform.core.lantek.mapper.DisMmnnMmoo00000200Mapper;
 import com.zhurong.platform.core.lantek.service.IDisMmnnBwsr00000100Service;
 import com.zhurong.platform.core.lantek.service.IDisMmnnBwsr00000200Service;
 import com.zhurong.platform.core.lantek.service.IDisMmnnMmoo00000200Service;
+import com.zhurong.platform.core.util.SqlServerInClauseBatcher;
 import com.zhurong.platform.core.lantek.vo.DisMmnnMmoo00000200VO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,11 @@ public class DisMmnnMmoo00000200ServiceImpl
             return Collections.emptyList();
         }
 
-        List<DisMmnnMmoo00000200> jobs = this.list(
-                Wrappers.lambdaQuery(DisMmnnMmoo00000200.class)
-                        .in(DisMmnnMmoo00000200::getJobRef, jobRefs)
+        List<DisMmnnMmoo00000200> jobs = SqlServerInClauseBatcher.listByIn(
+                this,
+                Wrappers.lambdaQuery(DisMmnnMmoo00000200.class),
+                DisMmnnMmoo00000200::getJobRef,
+                jobRefs
         );
 
         List<DisMmnnMmoo00000200VO> views = convert.toVOList(jobs);
@@ -62,9 +65,11 @@ public class DisMmnnMmoo00000200ServiceImpl
 
         List<DisMmnnMmoo00000200> jobs;
         if (CollectionUtils.isEmpty(seedJobs)) {
-            jobs = this.list(
-                    Wrappers.lambdaQuery(DisMmnnMmoo00000200.class)
-                            .in(DisMmnnMmoo00000200::getJobRef, jobRefs)
+            jobs = SqlServerInClauseBatcher.listByIn(
+                    this,
+                    Wrappers.lambdaQuery(DisMmnnMmoo00000200.class),
+                    DisMmnnMmoo00000200::getJobRef,
+                    jobRefs
             );
         } else {
             jobs = seedJobs;
@@ -84,9 +89,11 @@ public class DisMmnnMmoo00000200ServiceImpl
                 .filter(Objects::nonNull)
                 .toList();
 
-        List<DisMmnnBwsr00000200> links = disMmnnBwsr00000200Service.list(
-                Wrappers.lambdaQuery(DisMmnnBwsr00000200.class)
-                        .in(DisMmnnBwsr00000200::getRecordID, recIds)
+        List<DisMmnnBwsr00000200> links = SqlServerInClauseBatcher.listByIn(
+                disMmnnBwsr00000200Service,
+                Wrappers.lambdaQuery(DisMmnnBwsr00000200.class),
+                DisMmnnBwsr00000200::getRecordID,
+                recIds
         );
 
         Map<Integer, DisMmnnBwsr00000200> linkMap = links.stream()
