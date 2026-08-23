@@ -57,7 +57,7 @@ zhurong:
     enabled: false
   client-communication:
     # core 负责根据当前登录账号的 client_id 定向代理到 Windows 客户端。
-    enabled: true
+    enabled: false
     default-client-id:
     publish-retry-delay-millis: 60000
     # 心跳超过该秒数即视为离线，定向任务会在发布前明确失败。

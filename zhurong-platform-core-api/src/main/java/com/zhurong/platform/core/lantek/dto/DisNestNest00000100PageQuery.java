@@ -1,5 +1,7 @@
 package com.zhurong.platform.core.lantek.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.zhurong.platform.base.model.BasePageQuery;
 import com.zhurong.platform.core.dto.SortInstructionDTO;
 import lombok.Getter;
@@ -68,12 +70,16 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("nOrder")
+        @JsonAlias("NOrder")
         private Integer nOrder;
 
 
         /**
         * 
         */
+        @JsonProperty("cDate")
+        @JsonAlias("CDate")
         private LocalDateTime cDate;
 
 
@@ -86,12 +92,16 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("nCategory")
+        @JsonAlias("NCategory")
         private Integer nCategory;
 
 
         /**
         * 
         */
+        @JsonProperty("mState")
+        @JsonAlias("MState")
         private Integer mState;
 
 
@@ -134,84 +144,112 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("sLength")
+        @JsonAlias("SLength")
         private Double sLength;
 
 
         /**
         * 
         */
+        @JsonProperty("sWidth")
+        @JsonAlias("SWidth")
         private Double sWidth;
 
 
         /**
         * 
         */
+        @JsonProperty("sThickness")
+        @JsonAlias("SThickness")
         private Double sThickness;
 
 
         /**
         * 
         */
+        @JsonProperty("sArea")
+        @JsonAlias("SArea")
         private Double sArea;
 
 
         /**
         * 
         */
+        @JsonProperty("sUArea")
+        @JsonAlias("SUArea")
         private Double sUArea;
 
 
         /**
         * 
         */
+        @JsonProperty("sWeight")
+        @JsonAlias("SWeight")
         private Double sWeight;
 
 
         /**
         * 
         */
+        @JsonProperty("sUWeight")
+        @JsonAlias("SUWeight")
         private Double sUWeight;
 
 
         /**
         * 
         */
+        @JsonProperty("sXMax")
+        @JsonAlias("SXMax")
         private Double sXMax;
 
 
         /**
         * 
         */
+        @JsonProperty("sYMax")
+        @JsonAlias("SYMax")
         private Double sYMax;
 
 
         /**
         * 
         */
+        @JsonProperty("sPriority")
+        @JsonAlias("SPriority")
         private Double sPriority;
 
 
         /**
         * 
         */
+        @JsonProperty("sProfit")
+        @JsonAlias("SProfit")
         private Double sProfit;
 
 
         /**
         * 
         */
+        @JsonProperty("sProfitS")
+        @JsonAlias("SProfitS")
         private Double sProfitS;
 
 
         /**
         * 
         */
+        @JsonProperty("sMSQuant")
+        @JsonAlias("SMSQuant")
         private Integer sMSQuant;
 
 
         /**
         * 
         */
+        @JsonProperty("eTime")
+        @JsonAlias("ETime")
         private Double eTime;
 
 
@@ -230,36 +268,48 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("rTime")
+        @JsonAlias("RTime")
         private Double rTime;
 
 
         /**
         * 
         */
+        @JsonProperty("sDate")
+        @JsonAlias("SDate")
         private LocalDateTime sDate;
 
 
         /**
         * 
         */
+        @JsonProperty("eDate")
+        @JsonAlias("EDate")
         private LocalDateTime eDate;
 
 
         /**
         * 
         */
+        @JsonProperty("uData1")
+        @JsonAlias("UData1")
         private String uData1;
 
 
         /**
         * 
         */
+        @JsonProperty("uData2")
+        @JsonAlias("UData2")
         private String uData2;
 
 
         /**
         * 
         */
+        @JsonProperty("uData3")
+        @JsonAlias("UData3")
         private String uData3;
 
 
@@ -272,6 +322,8 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("eDuration")
+        @JsonAlias("EDuration")
         private Double eDuration;
 
 
@@ -398,6 +450,8 @@ public class DisNestNest00000100PageQuery extends BasePageQuery {
         /**
         * 
         */
+        @JsonProperty("mStateCloudStatus")
+        @JsonAlias("MStateCloudStatus")
         private Integer mStateCloudStatus;
 
 

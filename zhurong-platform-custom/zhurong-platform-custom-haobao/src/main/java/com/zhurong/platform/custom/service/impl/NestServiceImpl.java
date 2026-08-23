@@ -37,6 +37,7 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
         DisNestNest00000100PageQuery query = new DisNestNest00000100PageQuery();
         query.setRecIds(labelDataQueryDTO.getNestRecIds());
         query.setNestPartRecIds(labelDataQueryDTO.getNestPartRecIds());
+        query.setPageSize(-1L);
         query.setLoadPlan(new RelationLoadPlan()
                 .setIncludeNestParts(true)
                 .setIncludePlanMaster(true));

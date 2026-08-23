@@ -219,6 +219,7 @@ public class DisNestNest00000100ServiceImpl
         if (StringUtils.isNotBlank(req.getCnc())) {
             wrapper.eq(DisNestNest00000100::getCNC, req.getCnc());
         }
+        log.info(String.format("过滤作业：%s",req.getJobRef()));
         if (StringUtils.isNotBlank(req.getJobRef())) {
             wrapper.eq(DisNestNest00000100::getJobRef, req.getJobRef());
         }
@@ -228,6 +229,7 @@ public class DisNestNest00000100ServiceImpl
         if (StringUtils.isNotBlank(req.getMatRef())) {
             wrapper.eq(DisNestNest00000100::getMatRef, req.getMatRef());
         }
+        log.info(String.format("过滤厚度：%s",req.getSThickness()));
         if (req.getSThickness() != null) {
             wrapper.eq(DisNestNest00000100::getSThickness, req.getSThickness());
         }
