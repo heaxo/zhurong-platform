@@ -13,6 +13,7 @@ set "APP_NAME=zhurong-custom-xybaoyuan"
 set "APP_VERSION=0.0.1"
 set "MAIN_JAR=zhurong-platform-custom-xybaoyuan-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
+set "EXTERNAL_CONFIG=file:$APPDIR/../config/"
 
 if exist "%APPIMG_OUT%" rmdir /s /q "%APPIMG_OUT%"
 if exist "%OUTPUT%" rmdir /s /q "%OUTPUT%"
@@ -26,7 +27,9 @@ echo ===== Step 1: build app-image =====
   --main-jar "%MAIN_JAR%" ^
   --main-class org.springframework.boot.loader.launch.JarLauncher ^
   --dest "%APPIMG_OUT%" ^
-  --java-options "-Dspring.profiles.active=prod"
+  --java-options "-Dspring.profiles.active=prod" ^
+  --java-options "-Dspring.config.location=%EXTERNAL_CONFIG%"
+
 
 if errorlevel 1 (
   echo.
@@ -58,3 +61,4 @@ echo.
 echo Build finished.
 echo App image: %APPIMG_DIR%
 echo Installer output: %OUTPUT%
+echo External config after install: ^<install directory^>\config\

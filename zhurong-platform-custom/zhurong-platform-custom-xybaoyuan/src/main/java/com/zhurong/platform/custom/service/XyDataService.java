@@ -168,6 +168,14 @@ public class XyDataService {
     public int insertTask(XyImportTask task) { return importTaskMapper.insert(task); }
     public int updateTask(XyImportTask task) { return importTaskMapper.updateById(task); }
     public int updateOrder(XyManufacturingOrder order) { return manufacturingOrderMapper.updateById(order); }
+    public int deleteOrderByProductionOrderERPInternalCode(String productionOrderERPInternalCode) {
+        return manufacturingOrderMapper.delete(Wrappers.lambdaQuery(XyManufacturingOrder.class)
+            .eq(XyManufacturingOrder::getProductionOrderErpInternalCode, productionOrderERPInternalCode));
+    }
+    public int deleteOrderByProductionOrderERPInternalCodes(List<String> productionOrderERPInternalCodes) {
+        return manufacturingOrderMapper.delete(Wrappers.lambdaQuery(XyManufacturingOrder.class)
+            .in(XyManufacturingOrder::getProductionOrderErpInternalCode, productionOrderERPInternalCodes));
+    }
     public int updateSteelPlate(XySteelPlate plate) { return steelPlateMapper.updateById(plate); }
     public int insertSteelPlate(XySteelPlate plate) { return steelPlateMapper.insert(plate); }
     public int updateSteelPlateById(XySteelPlate plate) { return steelPlateMapper.updateById(plate); }

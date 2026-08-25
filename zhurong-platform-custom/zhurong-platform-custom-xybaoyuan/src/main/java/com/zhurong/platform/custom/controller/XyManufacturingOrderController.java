@@ -1,22 +1,23 @@
 package com.zhurong.platform.custom.controller;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
-import com.zhurong.platform.custom.dto.XyRequests;
 import com.zhurong.platform.custom.dto.XyInboundRequests;
+import com.zhurong.platform.custom.dto.XyRequests;
+import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
 import com.zhurong.platform.custom.entity.XyImportTask;
 import com.zhurong.platform.custom.entity.XyManufacturingOrder;
-import com.zhurong.platform.custom.service.XyDataService;
-import com.zhurong.platform.custom.service.XyImportTaskService;
-import com.zhurong.platform.custom.service.XyInboundService;
-import com.zhurong.platform.custom.service.XyJobService;
+import com.zhurong.platform.custom.service.*;
 import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class XyManufacturingOrderController extends BaseController {
     private final XyImportTaskService importTaskService;
     private final XyJobService jobService;
     private final XyInboundService inboundService;
+    private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
 
     @GetMapping
     public ApiResponse<PageResponse<XyManufacturingOrder>> page(@ModelAttribute XyRequests.ManufacturingOrderPage query) {
@@ -35,6 +37,53 @@ public class XyManufacturingOrderController extends BaseController {
     @PostMapping("/creates")
     public ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.ManufacturingOrders request) {
         return ApiResponse.success(inboundService.receiveManufacturingOrders(request));
+    }
+
+    @PostMapping("/delete")
+    public ApiResponse<Boolean> delete(@Valid @RequestBody XyInboundRequests.ManufacturingOrderDeletes request) {
+
+        List<String> reqProductionOrderErpInternalCodes = request.getProductionOrderERPInternalCodes();
+        if (reqProductionOrderErpInternalCodes.isEmpty())
+        {
+            return ApiResponse.fail("生产订单ERP内码不能为空");
+        }
+
+        List<MmnnMmoo00000300> mmnnMmoo00000300s = new ArrayList();
+
+        boolean single = reqProductionOrderErpInternalCodes.size() == 1;
+
+        if (single)
+        {
+            mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                    .eq(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes.get(0)));
+        }
+        else
+        {
+            mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                    .in(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes));
+        }
+
+        boolean expertNotExists = mmnnMmoo00000300s.isEmpty();
+
+
+        if (!expertNotExists)
+        {
+            return ApiResponse.fail(String.format("该生产订单ERP内码%s，已导入至LantekExpert中，删除失败", reqProductionOrderErpInternalCodes
+                    .stream()
+                    .collect(Collectors.joining(","))));
+        }
+
+        boolean deleteAsync = false;
+        if (single)
+        {
+            deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCode(reqProductionOrderErpInternalCodes.get(0)) > 0;
+        }
+        else
+        {
+            deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCodes(reqProductionOrderErpInternalCodes) == reqProductionOrderErpInternalCodes.size();
+        }
+
+        return deleteAsync ? ApiResponse.success(true): ApiResponse.fail("删除失败");
     }
 
     @GetMapping("/job-exists")

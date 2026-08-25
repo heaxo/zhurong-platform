@@ -44,6 +44,11 @@ public final class XyInboundRequests {
         @NotEmpty(message = "生产订单信息不能为空")
         private List<@Valid ManufacturingOrder> productionOrders;
     }
+    @Data
+    public static class ManufacturingOrderDeletes {
+        @NotEmpty(message = "ERP内码不能为空")
+        private List<@Valid String> productionOrderERPInternalCodes;
+    }
 
     @Data
     public static class ManufacturingOrder {
