@@ -12,7 +12,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "zhurong.import-file")
 public class ImportFileProperties {
 
-    // core看到的物理归档目录；Windows开发通常是D:/Zhurong/import-files，Docker内通常是/app/data/import-files。
+    // core看到的物理归档目录；Windows开发通常是D:/Zhurong/shared-files，Docker内通常是/app/data/shared-files。
     private String storageRoot;
 
     private boolean autoCreateStorageRoot = false;
@@ -28,7 +28,7 @@ public class ImportFileProperties {
 
     /*
      * 外部调用方传入的Windows共享源路径到core本地可读路径的映射。
-     * 例如Docker内将\\SERVER\ZhurongImportFiles映射到/app/data/import-files。
+     * 例如Docker内将\\SERVER\ZhurongImportFiles映射到/app/data/shared-files。
      */
     private List<WindowsShareSourceMapping> windowsShareSourceMappings = new ArrayList<>();
 

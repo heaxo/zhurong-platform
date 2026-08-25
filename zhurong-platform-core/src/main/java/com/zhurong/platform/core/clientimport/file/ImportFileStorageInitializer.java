@@ -40,6 +40,6 @@ public class ImportFileStorageInitializer implements InitializingBean {
         if (!Files.isDirectory(root) || !Files.isWritable(root)) {
             throw new BusinessException("IMPORT_FILE_STORAGE_ROOT_NOT_WRITABLE: 文件归档目录不可写");
         }
-        // Windows开发环境可配置D:/Zhurong/import-files，Docker/WSL环境可配置/app/data/import-files，代码不写死任一路径。
+        // Windows开发环境可配置D:/Zhurong/shared-files，Docker/WSL环境可配置/app/data/shared-files，代码不写死任一路径。
     }
 }

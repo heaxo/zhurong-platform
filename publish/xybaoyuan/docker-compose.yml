@@ -1,6 +1,5 @@
 include:
   - standalone-mysql.yaml
-  - custom-crun.yml
 
 services:
   rabbitmq:
@@ -15,24 +14,9 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
     networks:
       - zhurong-network
-  zhurong-postgres:
-    image: postgres:16
-    container_name: zhurong-postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-      - ./postgres-init:/docker-entrypoint-initdb.d
-    networks:
-      - zhurong-network
-
   # zhurong-platform-gateway 服务
   zhurong-platform-gateway:
-    image: zhurong-platform/gateway  # 使用你打包的 Spring Boot 镜像
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-gateway:0.0.9
     container_name: zhurong-platform-gateway
     ports:
       - "9000:9000"
@@ -41,8 +25,9 @@ services:
     volumes:
       - ./logs/gateway:/app/logs
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+        #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
     restart: always
     networks:
@@ -50,7 +35,7 @@ services:
 
   # zhurong-platform-auth 服务
   zhurong-platform-auth:
-    image: zhurong-platform/auth
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-auth:0.0.14
     container_name: zhurong-platform-auth
     ports:
       - "9100:9100"
@@ -59,8 +44,9 @@ services:
     volumes:
       - ./logs/auth:/app/logs
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+      #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
     restart: always
     networks:
@@ -68,14 +54,13 @@ services:
 
   # zhurong-platform-core 服务
   zhurong-platform-core:
-    image: zhurong-platform/core
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-core:0.0.30
     container_name: zhurong-platform-core
-    profiles: ["prod"]
     ports:
       - "9200:9200"
     depends_on:
       - nacos
-      - rabbitmq
+        #- rabbitmq
     volumes:
       - ./logs/core:/app/logs
       # 宿主windows机文件夹挂载
@@ -88,11 +73,21 @@ services:
       # 共享目录映射（外部系统可能会发共享文件夹图纸路径，如果是其他协议就不需要做这个映射，部署在docker容器内的core使用/app/source/shared-files查找文件）
       - windows-share:/app/source/shared-files
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=prod
       - SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR=nacos:8848
+        #- SPRING_CLOUD_NACOS_DISCOVERY_IP=192.168.30.221
       - SPRING_CLOUD_NACOS_CONFIG_SERVER_ADDR=nacos:8848
-      # Java应用看到的是容器内路径，不要配置成D:/或/mnt/d。
-      - ZHURONG_IMPORT_FILE_STORAGE_ROOT=/app/data/shared-files
+    restart: always
+    networks:
+      - zhurong-network
+  # 前端      
+  zhurong-nginx:
+    image: crpi-8o01gg1zrswkepyk.cn-shenzhen.personal.cr.aliyuncs.com/nbaliyun/zhurong-platform-custom-xybaoyuan-nginx:0.0.2
+    container_name: zhurong-platform-custom-xybaoyuan-nginx
+    ports:
+      - "9001:80"
+    depends_on:
+      - zhurong-platform-gateway
     restart: always
     networks:
       - zhurong-network
@@ -103,7 +98,7 @@ volumes:
     driver: local
     driver_opts:
       type: cifs
-      device: "//192.168.1.101/Lantek"
+      device: "//192.168.20.212/database$"
       o: "username=${SMB_USERNAME},password=${SMB_PASSWORD},file_mode=0777,dir_mode=0777"
 
 networks:

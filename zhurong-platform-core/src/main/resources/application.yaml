@@ -66,7 +66,7 @@ zhurong:
     proxy-timeout-seconds: 600
     proxy-max-request-bytes: 20971520
   import-file:
-    storage-root: ${ZHURONG_IMPORT_FILE_STORAGE_ROOT:D:/Zhurong/import-files}
+    storage-root: ${ZHURONG_IMPORT_FILE_STORAGE_ROOT:D:/Zhurong/shared-files}
     auto-create-storage-root: true
     max-file-size: 104857600
     connect-timeout-seconds: 20
@@ -76,7 +76,7 @@ zhurong:
     # Docker Desktop示例：
     # windows-share-source-mappings:
     #   - share-root: "\\\\192.168.1.10\\ZhurongImportFiles"
-    #     mounted-root: /app/data/import-files
+    #     mounted-root: /app/data/shared-files
     allow-private-network: false
     max-redirects: 5
 
