@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -17,6 +18,8 @@ public final class XyInboundRequests {
     @Data
     public static class BaseParts {
         @NotEmpty(message = "零件基础信息不能为空")
+        @JsonProperty("Parts")
+        @JsonAlias({"parts", "PARTS", "PartList", "partList"})
         private List<@Valid BasePart> parts;
     }
 
@@ -42,11 +45,15 @@ public final class XyInboundRequests {
     @Data
     public static class ManufacturingOrders {
         @NotEmpty(message = "生产订单信息不能为空")
+        @JsonProperty("ProductionOrders")
+        @JsonAlias({"productionOrders", "PRODUCTION_ORDERS"})
         private List<@Valid ManufacturingOrder> productionOrders;
     }
     @Data
     public static class ManufacturingOrderDeletes {
         @NotEmpty(message = "ERP内码不能为空")
+        @JsonProperty("ProductionOrderERPInternalCodes")
+        @JsonAlias({"productionOrderERPInternalCodes", "PRODUCTION_ORDER_ERP_INTERNAL_CODES"})
         private List<@Valid String> productionOrderERPInternalCodes;
     }
 
