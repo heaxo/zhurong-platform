@@ -1,6 +1,8 @@
 package com.zhurong.platform.custom.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.zhurong.platform.custom.dto.XyInboundRequests;
 import com.zhurong.platform.custom.entity.XyBasePart;
 import com.zhurong.platform.custom.entity.XyManufacturingOrder;
@@ -36,6 +38,25 @@ class XyInboundServiceTest {
     private final XyManufacturingOrderMapper orderMapper = mock(XyManufacturingOrderMapper.class);
     private final IPprrPprr00000100Service partService = mock(IPprrPprr00000100Service.class);
     private final XyBaoyuanProperties properties = new XyBaoyuanProperties();
+
+    @Test
+    void manufacturingOrderDdateAcceptsSecondPrecisionDatetime() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule());
+
+        XyInboundRequests.ManufacturingOrders request = objectMapper.readValue("""
+                {
+                  "ProductionOrders": [
+                    {
+                      "ddate": "2026-08-27 00:00:00"
+                    }
+                  ]
+                }
+                """, XyInboundRequests.ManufacturingOrders.class);
+
+        assertThat(request.getProductionOrders().getFirst().getDeliveryDate())
+                .isEqualTo(LocalDateTime.of(2026, 8, 27, 0, 0, 0));
+    }
 
     @Test
     void basePartInboundPersistsAndProducesCompatibleWorkbook() throws Exception {

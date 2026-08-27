@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -77,6 +78,7 @@ public final class XyInboundRequests {
         private String matRef;
         @NotNull(message = "交付日期不能为空")
         @JsonProperty("ddate")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime deliveryDate;
         @NotNull(message = "厚度不能为空")
         @DecimalMin(value = "0", inclusive = false, message = "板厚不能为0")
