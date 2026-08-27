@@ -35,17 +35,17 @@ public class XyManufacturingOrderController extends BaseController {
     }
 
     @PostMapping("/creates")
-    public ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.ManufacturingOrders request) {
-        return ApiResponse.success(inboundService.receiveManufacturingOrders(request));
+    public com.zhurong.platform.custom.api.ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.ManufacturingOrders request) {
+        return com.zhurong.platform.custom.api.ApiResponse.success(inboundService.receiveManufacturingOrders(request));
     }
 
     @PostMapping("/delete")
-    public ApiResponse<Boolean> delete(@Valid @RequestBody XyInboundRequests.ManufacturingOrderDeletes request) {
+    public com.zhurong.platform.custom.api.ApiResponse<Boolean> delete(@Valid @RequestBody XyInboundRequests.ManufacturingOrderDeletes request) {
 
         List<String> reqProductionOrderErpInternalCodes = request.getProductionOrderERPInternalCodes();
         if (reqProductionOrderErpInternalCodes.isEmpty())
         {
-            return ApiResponse.fail("生产订单ERP内码不能为空");
+            return com.zhurong.platform.custom.api.ApiResponse.fail("生产订单ERP内码不能为空");
         }
 
         List<MmnnMmoo00000300> mmnnMmoo00000300s = new ArrayList();
@@ -68,7 +68,7 @@ public class XyManufacturingOrderController extends BaseController {
 
         if (!expertNotExists)
         {
-            return ApiResponse.fail(String.format("该生产订单ERP内码%s，已导入至LantekExpert中，删除失败", reqProductionOrderErpInternalCodes
+            return com.zhurong.platform.custom.api.ApiResponse.fail(String.format("该生产订单ERP内码%s，已导入至LantekExpert中，删除失败", reqProductionOrderErpInternalCodes
                     .stream()
                     .collect(Collectors.joining(","))));
         }
@@ -83,7 +83,7 @@ public class XyManufacturingOrderController extends BaseController {
             deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCodes(reqProductionOrderErpInternalCodes) == reqProductionOrderErpInternalCodes.size();
         }
 
-        return deleteAsync ? ApiResponse.success(true): ApiResponse.fail("删除失败");
+        return deleteAsync ? com.zhurong.platform.custom.api.ApiResponse.success(true): com.zhurong.platform.custom.api.ApiResponse.fail("删除失败");
     }
 
     @GetMapping("/job-exists")

@@ -32,8 +32,8 @@ public class XyBasePartController {
     public ApiResponse<XyBasePart> create(@RequestBody XyBasePart item) { return ApiResponse.success(dataService.createBasePart(item)); }
 
     @PostMapping("/creates")
-    public ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.BaseParts request) {
-        return ApiResponse.success(inboundService.receiveBaseParts(request));
+    public com.zhurong.platform.custom.api.ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.BaseParts request) {
+        return com.zhurong.platform.custom.api.ApiResponse.success(inboundService.receiveBaseParts(request));
     }
 
     @DeleteMapping
