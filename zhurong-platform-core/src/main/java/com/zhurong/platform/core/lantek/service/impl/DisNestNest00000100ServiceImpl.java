@@ -195,12 +195,12 @@ public class DisNestNest00000100ServiceImpl
     @Override
     public PageResponse<DisNestNest00000100VO> pageNestOverview(DisNestNest00000100PageQuery req){
 
-        QueryWrapper<DisNestNest00000100> rootWrapper = new QueryWrapper<>();
+        String nstRef = req.getNstRef();
+        DisNestNest00000100 entity = convert.toEntity(req);
+        entity.setNstRef(null);
+        QueryWrapper<DisNestNest00000100> rootWrapper = new QueryWrapper<>(entity);
         LambdaQueryWrapper<DisNestNest00000100> wrapper = rootWrapper.lambda();
 
-        if (req.getRecID() != null) {
-            wrapper.eq(DisNestNest00000100::getRecID, req.getRecID());
-        }
         if (req.getRecIds() != null && CollectionUtils.isNotEmpty(req.getRecIds())) {
             wrapper.in(DisNestNest00000100::getRecID, req.getRecIds());
         }
@@ -213,27 +213,9 @@ public class DisNestNest00000100ServiceImpl
             List<String> nstRefs = nestParts.stream().map(DisNestNest00000500::getNstRef).distinct().toList();
             wrapper.in(DisNestNest00000100::getNstRef, nstRefs);
         }
-        if (StringUtils.isNotBlank(req.getNstRef())) {
-            wrapper.like(DisNestNest00000100::getNstRef, req.getNstRef());
+        if (StringUtils.isNotBlank(nstRef)) {
+            wrapper.like(DisNestNest00000100::getNstRef, nstRef);
         }
-        if (StringUtils.isNotBlank(req.getCnc())) {
-            wrapper.eq(DisNestNest00000100::getCNC, req.getCnc());
-        }
-        log.info(String.format("过滤作业：%s",req.getJobRef()));
-        if (StringUtils.isNotBlank(req.getJobRef())) {
-            wrapper.eq(DisNestNest00000100::getJobRef, req.getJobRef());
-        }
-        if (StringUtils.isNotBlank(req.getWrkRef())) {
-            wrapper.eq(DisNestNest00000100::getWrkRef, req.getWrkRef());
-        }
-        if (StringUtils.isNotBlank(req.getMatRef())) {
-            wrapper.eq(DisNestNest00000100::getMatRef, req.getMatRef());
-        }
-        log.info(String.format("过滤厚度：%s",req.getSThickness()));
-        if (req.getSThickness() != null) {
-            wrapper.eq(DisNestNest00000100::getSThickness, req.getSThickness());
-        }
-
 
         // ===== 动态排序 =====
         OrderByAssembler.applySorts(
