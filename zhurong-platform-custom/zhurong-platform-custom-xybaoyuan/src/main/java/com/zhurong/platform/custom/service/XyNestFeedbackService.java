@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.base.constant.NestConstant;
 import com.zhurong.platform.core.lantek.dto.DisNestNest00000100PageQuery;
 import com.zhurong.platform.core.lantek.dto.RelationLoadPlan;
 import com.zhurong.platform.core.lantek.vo.DisNestNest00000100VO;
@@ -45,7 +46,7 @@ public class XyNestFeedbackService {
     private final IDisNestNest00000100Service localNestService;
 
     public PageResponse<Map<String, Object>> page(DisNestNest00000100PageQuery query) {
-        query.setLoadPlan(fullLoadPlan());
+//        query.setLoadPlan(fullLoadPlan());
         PageResponse<DisNestNest00000100VO> page = nestClient.pageNestOverview(query).unwrap();
         Map<Integer, XyNestFeedbackState> states = dataService.feedbackStates(page.items().stream()
                         .map(DisNestNest00000100VO::getRecID).toList()).stream()
@@ -69,6 +70,10 @@ public class XyNestFeedbackService {
             Map<String, Object> payload = buildPayload(nest, request.getProductionWorkshopCode(), request.isMaterialReceived());
             post(properties.getFeedback().getUrl(), payload, "套料反馈失败");
             dataService.saveFeedbackState(nest.getRecID(), nest.getNstRef(), true, "反馈成功");
+            boolean update = localNestService.update(Wrappers.lambdaUpdate(DisNestNest00000100.class)
+                    .set(DisNestNest00000100::getMState, NestConstant.MState.COMPLETED)
+                    .eq(DisNestNest00000100::getRecID, nest.getRecID()));
+            log.debug(String.format("套料程序：%s，回传状态更新：%s",nest.getRecID() , update));
         }
     }
 
@@ -78,8 +83,12 @@ public class XyNestFeedbackService {
         for (DisNestNest00000100VO nest : details(ids)) {
             post(properties.getFeedback().getWithdrawUrl(), Map.of(
                     "secret_key", properties.getFeedback().getSecretKey(),
-                    "NstRef", nest.getNstRef() + "-25"), "撤销套料反馈失败");
+                    "NstRef", nest.getNstRef()), "撤销套料反馈失败");
             dataService.saveFeedbackState(nest.getRecID(), nest.getNstRef(), false, "已撤销");
+            boolean update = localNestService.update(Wrappers.lambdaUpdate(DisNestNest00000100.class)
+                    .set(DisNestNest00000100::getMState, NestConstant.MState.IN_WORKSHOP)
+                    .eq(DisNestNest00000100::getRecID, nest.getRecID()));
+            log.debug(String.format("套料程序：%s，撤销状态更新：%s",nest.getRecID() , update));
         }
     }
 
@@ -139,7 +148,7 @@ public class XyNestFeedbackService {
         String pdfPath = resolvePdfPath(nest);
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("secret_key", properties.getFeedback().getSecretKey());
-        payload.put("NstRef", nest.getNstRef() + "-25"); payload.put("NstSeq", nest.getRecID() + "-25");
+        payload.put("NstRef", nest.getNstRef()); payload.put("NstSeq", nest.getRecID());
         payload.put("NstMachine", nest.getWrkRef()); payload.put("MatQuality", nest.getMatRef());
         payload.put("Sheight", value(nest.getSThickness())); payload.put("FMATERIALID", materialId);
         payload.put("UMatType", remnantSheet ? "A" : "B"); payload.put("Slength", Math.round(length));
