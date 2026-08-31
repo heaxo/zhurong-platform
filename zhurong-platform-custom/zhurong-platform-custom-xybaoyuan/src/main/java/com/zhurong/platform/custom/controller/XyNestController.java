@@ -24,11 +24,21 @@ public class XyNestController {
 
     @PostMapping("/feedback")
     public ApiResponse<Void> feedback(@Valid @RequestBody XyRequests.Feedback request) {
-        feedbackService.send(request); return ApiResponse.success();
+        try{
+            feedbackService.send(request);
+            return ApiResponse.success();
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
     }
 
     @PostMapping("/feedback/withdraw")
     public ApiResponse<Void> withdraw(@Valid @RequestBody XyRequests.Ids request) {
-        feedbackService.withdraw(request.getIds()); return ApiResponse.success();
+        try{
+            feedbackService.withdraw(request.getIds());
+            return ApiResponse.success();
+        }catch (Exception e){
+            return ApiResponse.fail(e.getMessage());
+        }
     }
 }

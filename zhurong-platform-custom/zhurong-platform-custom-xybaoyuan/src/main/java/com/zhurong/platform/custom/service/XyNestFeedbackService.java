@@ -6,30 +6,36 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.core.lantek.dto.DisNestNest00000100PageQuery;
+import com.zhurong.platform.core.lantek.dto.RelationLoadPlan;
+import com.zhurong.platform.core.lantek.vo.DisNestNest00000100VO;
+import com.zhurong.platform.core.lantek.vo.MmnnMmoo00000300VO;
+import com.zhurong.platform.core.lantek.vo.PprrPprr00000100VO;
 import com.zhurong.platform.custom.dto.XyRequests;
 import com.zhurong.platform.custom.entity.DisNestNest00000100;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.XyNestFeedbackState;
 import com.zhurong.platform.custom.feign.DisNestNest00000100FeignClient;
 import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
-import com.zhurong.platform.core.lantek.dto.DisNestNest00000100PageQuery;
-import com.zhurong.platform.core.lantek.dto.RelationLoadPlan;
-import com.zhurong.platform.core.lantek.vo.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class XyNestFeedbackService {
     private final DisNestNest00000100FeignClient nestClient;
     private final XyDataService dataService;
@@ -129,7 +135,7 @@ public class XyNestFeedbackService {
             return row;
         }).toList();
 
-        String cncPath = nest.getCNCPath();
+        String cncPath = nest.getNestingDocument().getCNC();
         String pdfPath = resolvePdfPath(nest);
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("secret_key", properties.getFeedback().getSecretKey());
@@ -151,7 +157,7 @@ public class XyNestFeedbackService {
 
     private void validateNest(DisNestNest00000100VO nest) {
         if (!Objects.equals(nest.getMState(), 40)) throw new IllegalStateException(nest.getNstRef() + "未送到车间，不允许反馈");
-        checkFtpFile(nest.getCNCPath(), properties.getFeedback().getFtp().getCncVirtualRoot());
+        checkFtpFile(nest.getNestingDocument().getCNC(), properties.getFeedback().getFtp().getCncVirtualRoot());
         String pdf = resolvePdfPath(nest);
         checkFtpFile(pdf, properties.getFeedback().getFtp().getPdfVirtualRoot());
     }
@@ -201,7 +207,7 @@ public class XyNestFeedbackService {
     }
 
     private String resolvePdfPath(DisNestNest00000100VO nest) {
-        String source = nest.getFullWMFPath();
+        String source = nest.getNestingDocument().getFullPathBMP();
         if (!StringUtils.hasText(source) && nest.getNestingDocument() != null) {
             source = nest.getNestingDocument().getFullPathJOBRPT();
             if (!StringUtils.hasText(source)) source = nest.getNestingDocument().getJOBRPT();
@@ -213,12 +219,37 @@ public class XyNestFeedbackService {
     }
 
     private void post(String url, Object payload, String errorPrefix) {
-        String body = RestClient.create().post().uri(url).contentType(MediaType.APPLICATION_JSON)
-                .body(payload).retrieve().body(String.class);
+        log.debug(String.format("请求接口=%s，请求报文=%s", url, payload));
+
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+
+        // 建立连接超时
+        requestFactory.setConnectTimeout(Duration.ofSeconds(30));
+
+        // 响应读取超时，设置为 5 分钟
+        requestFactory.setReadTimeout(Duration.ofMinutes(5));
+
+        RestClient restClient = RestClient.builder()
+                .requestFactory(requestFactory)
+                .build();
+
+        String body = restClient.post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(payload)
+                .retrieve()
+                .body(String.class);
+
         try {
+            log.debug(String.format("======响应======，请求接口=%s，%s", url, body));
+
             JsonNode response = objectMapper.readTree(body);
-            if (response.path("code").asInt(-1) != 0) {
-                String message = response.hasNonNull("message") ? response.get("message").asText() : response.path("msg").asText(errorPrefix);
+
+            if (response.path("Code").asInt(-1) != 0) {
+                String message = response.hasNonNull("Message")
+                        ? response.get("Message").asText()
+                        : response.path("Msg").asText(errorPrefix);
+
                 throw new IllegalArgumentException(message);
             }
         } catch (JsonProcessingException exception) {
