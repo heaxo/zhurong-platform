@@ -149,6 +149,42 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
                         },
                         LinkedHashMap::new
                 ));
-        return new ArrayList<>(mergedMap.values());
+        //按材质厚度、Iorder排序
+        //就是说相同材质厚度的标签在一起，然后按IOrder在排一下
+        return mergedMap.values().stream()
+                .sorted(
+                        Comparator.comparing(
+                                        LabelDataVO::getMatRef,
+                                        Comparator.nullsLast(String::compareTo)
+                                )
+                                .thenComparing(
+                                        LabelDataVO::getThickness,
+                                        Comparator.nullsLast(Double::compareTo)
+                                )
+                                .thenComparingInt(NestServiceImpl::minIOrder)
+                )
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static int minIOrder(LabelDataVO labelData) {
+        String iOrder = labelData.getIOrder();
+        if (iOrder == null || iOrder.isBlank()) {
+            return Integer.MAX_VALUE;
+        }
+
+        return Arrays.stream(iOrder.split(","))
+                .map(String::trim)
+                .filter(item -> !item.isEmpty())
+                .map(NestServiceImpl::parseIOrder)
+                .min(Integer::compareTo)
+                .orElse(Integer.MAX_VALUE);
+    }
+
+    private static int parseIOrder(String iOrder) {
+        try {
+            return Integer.parseInt(iOrder);
+        } catch (NumberFormatException ex) {
+            return Integer.MAX_VALUE;
+        }
     }
 }
