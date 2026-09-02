@@ -64,31 +64,31 @@ public class XyInboundService {
         BASE_PART_LOCK.lock();
         try {
             List<XyInboundRequests.BasePart> items = request.getParts();
-            assertUnique(items, XyInboundRequests.BasePart::getDrawingCode, "零件图号不能重复");
+            assertUnique(items, XyInboundRequests.BasePart::getPrdName, "零件图号不能重复");
             assertUnique(items, XyInboundRequests.BasePart::getPrdRef, "零件编码不能重复");
 
             Path outputDirectory = requireOutputDirectory();
             String drawingRoot = requireText(properties.getInbound().getDrawingRoot(), "未配置零件图纸目录");
             String drawingExtension = normalizedExtension(properties.getInbound().getDrawingExtension());
 
-            List<String> drawingCodes = items.stream().map(XyInboundRequests.BasePart::getDrawingCode)
+            List<String> drawingCodes = items.stream().map(XyInboundRequests.BasePart::getPrdName)
                     .map(String::trim).toList();
             Set<String> lantekRefs = findLantekPartRefs(drawingCodes);
             Set<String> storedDrawingCodes = findStoredDrawingCodes(drawingCodes);
 
             List<XyInboundRequests.BasePart> newItems = items.stream()
-                    .filter(item -> !lantekRefs.contains(normalize(item.getDrawingCode())))
-                    .filter(item -> !storedDrawingCodes.contains(normalize(item.getDrawingCode())))
+                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
+                    .filter(item -> !storedDrawingCodes.contains(normalize(item.getPrdName())))
                     .toList();
             for (XyInboundRequests.BasePart item : newItems) {
                 if (basePartMapper.insert(toEntity(item)) != 1) {
-                    throw new IllegalStateException("零件基础信息保存失败: " + item.getDrawingCode());
+                    throw new IllegalStateException("零件基础信息保存失败: " + item.getPrdName());
                 }
             }
 
             // 已落库但尚未进入 Lantek 的零件也重新写入文件，使金蝶重试可以恢复中断的后续导入。
             List<XyInboundRequests.BasePart> excelItems = items.stream()
-                    .filter(item -> !lantekRefs.contains(normalize(item.getDrawingCode())))
+                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
                     .toList();
             appendBasePartWorkbook(outputDirectory, drawingRoot, drawingExtension, excelItems);
             log.info("象屿宝元接收基础零件完成, received={}, inserted={}, excelCandidates={}",
@@ -138,8 +138,8 @@ public class XyInboundService {
     private Set<String> findStoredDrawingCodes(List<String> drawingCodes) {
         Set<String> result = new HashSet<>();
         forEachBatch(drawingCodes, batch -> basePartMapper.selectList(Wrappers.lambdaQuery(XyBasePart.class)
-                .in(XyBasePart::getDrawingCode, batch)).stream()
-                .map(XyBasePart::getDrawingCode).filter(Objects::nonNull)
+                .in(XyBasePart::getPrdName, batch)).stream()
+                .map(XyBasePart::getPrdName).filter(Objects::nonNull)
                 .map(XyInboundService::normalize).forEach(result::add));
         return result;
     }
@@ -222,8 +222,8 @@ public class XyInboundService {
             for (XyInboundRequests.BasePart item : items) {
                 if (!existingErpMaterialIds.add(item.getUdata3().trim())) continue;
                 Row row = sheet.createRow(rowIndex);
-                set(row, 0, item.getDrawingCode());
-                set(row, 1, item.getPrdName());
+                set(row, 0, item.getPrdName());
+                set(row, 1, item.getDrawingCode());
                 set(row, 2, item.getPrdRef());
                 set(row, 3, item.getMatRef());
                 row.createCell(4).setCellValue(item.getThickness());

@@ -1,6 +1,8 @@
 package com.zhurong.platform.custom.controller;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.custom.dto.XyInboundRequests;
@@ -12,6 +14,7 @@ import com.zhurong.platform.custom.service.*;
 import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +23,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/xybaoyuan/manufacturing-orders")
 public class XyManufacturingOrderController extends BaseController {
+    private final ObjectMapper objectMapper;
     private final XyDataService dataService;
     private final XyImportTaskService importTaskService;
     private final XyJobService jobService;
@@ -36,6 +41,7 @@ public class XyManufacturingOrderController extends BaseController {
 
     @PostMapping("/creates")
     public com.zhurong.platform.custom.api.ApiResponse<Boolean> creates(@Valid @RequestBody XyInboundRequests.ManufacturingOrders request) {
+        logDebugJson("生产订单请求: {}", request);
         return com.zhurong.platform.custom.api.ApiResponse.success(inboundService.receiveManufacturingOrders(request));
     }
 
@@ -123,5 +129,13 @@ public class XyManufacturingOrderController extends BaseController {
                 item.getPrdRef(), item.getPrdName(), item.getDrawingCode(), item.getMatRef(), item.getThickness(), item.getQuantity(),
                 item.getCusRef(), item.getWrkRef(), item.getJobName())));
         return XyBasePartController.csv("xybaoyuan-manufacturing-orders.csv", csv);
+    }
+    private void logDebugJson(String message, Object request) {
+        if (!log.isDebugEnabled()) return;
+        try {
+            log.debug(message, objectMapper.writeValueAsString(request));
+        } catch (JsonProcessingException exception) {
+            log.debug(message, request);
+        }
     }
 }

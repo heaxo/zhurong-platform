@@ -46,21 +46,21 @@ public class XyDataService {
                 .le(query.getEndDate() != null, XyBasePart::getCreatedAt, query.getEndDate())
                 .orderByDesc(XyBasePart::getCreatedAt);
         Page<XyBasePart> page = basePartMapper.selectPage(PageFactory.build(query), wrapper);
-        Set<String> maintained = findMaintainedPartRefs(page.getRecords().stream().map(XyBasePart::getDrawingCode).toList());
-        page.getRecords().forEach(item -> item.setPartMaintenance(maintained.contains(normalize(item.getDrawingCode()))));
+        Set<String> maintained = findMaintainedPartRefs(page.getRecords().stream().map(XyBasePart::getPrdName).toList());
+        page.getRecords().forEach(item -> item.setPartMaintenance(maintained.contains(normalize(item.getPrdName()))));
         return response(page);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public XyBasePart createBasePart(XyBasePart item) {
         requireText(item.getPrdRef(), "零件编号不能为空");
-        requireText(item.getDrawingCode(), "零件图号不能为空");
+        requireText(item.getPrdName(), "零件图号不能为空");
         if (item.getThickness() == null || item.getThickness() <= 0) {
             throw new IllegalArgumentException("厚度必须大于0");
         }
         Long count = basePartMapper.selectCount(Wrappers.lambdaQuery(XyBasePart.class)
                 .eq(XyBasePart::getPrdRef, item.getPrdRef()).or()
-                .eq(XyBasePart::getDrawingCode, item.getDrawingCode()));
+                .eq(XyBasePart::getPrdName, item.getPrdName()));
         if (count > 0) throw new IllegalArgumentException("零件编号或图号已存在");
         item.setInvalidState(false);
         basePartMapper.insert(item);
@@ -86,9 +86,9 @@ public class XyDataService {
 
     public PageResponse<XyManufacturingOrder> pageManufacturingOrders(XyRequests.ManufacturingOrderPage query) {
         String prdRef = null;
-        if (StringUtils.hasText(query.getDrawingCode())) {
+        if (StringUtils.hasText(query.getPrdName())) {
             XyBasePart part = basePartMapper.selectOne(Wrappers.lambdaQuery(XyBasePart.class)
-                    .eq(XyBasePart::getDrawingCode, query.getDrawingCode()));
+                    .eq(XyBasePart::getPrdName, query.getPrdName()));
             prdRef = part == null ? "__NOT_FOUND__" : part.getPrdRef();
         }
         LambdaQueryWrapper<XyManufacturingOrder> wrapper = Wrappers.lambdaQuery(XyManufacturingOrder.class)
@@ -119,7 +119,7 @@ public class XyDataService {
                 Wrappers.lambdaQuery(XyBasePart.class).in(XyBasePart::getPrdRef, refs));
         Map<String, XyBasePart> parts = selectedParts.stream().collect(Collectors.toMap(
                 item -> normalize(item.getPrdRef()), Function.identity(), (left, right) -> left));
-        Set<String> maintained = findMaintainedPartRefs(selectedParts.stream().map(XyBasePart::getDrawingCode).toList());
+        Set<String> maintained = findMaintainedPartRefs(selectedParts.stream().map(XyBasePart::getPrdName).toList());
         orders.forEach(order -> {
             XyBasePart part = parts.get(normalize(order.getPrdRef()));
             if (part == null) {
@@ -127,7 +127,7 @@ public class XyDataService {
                 return;
             }
             order.setDrawingCode(part.getDrawingCode());
-            order.setPartMaintenance(maintained.contains(normalize(part.getDrawingCode())));
+            order.setPartMaintenance(maintained.contains(normalize(part.getPrdName())));
         });
         attachTasks(orders, XyManufacturingOrder::getLastTaskId, XyManufacturingOrder::setTask);
     }

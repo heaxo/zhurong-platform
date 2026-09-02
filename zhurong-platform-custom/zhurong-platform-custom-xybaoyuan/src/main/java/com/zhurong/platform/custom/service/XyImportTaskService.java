@@ -164,8 +164,8 @@ public class XyImportTaskService {
 
     private ProductionOrderRequest toProductionOrder(XyManufacturingOrder order, XyBasePart part) {
         ProductionOrderRequest request = new ProductionOrderRequest();
-        request.setPrdRef(part.getDrawingCode());
-        request.setPrdName(order.getPrdName());
+        request.setPrdRef(part.getPrdName());
+        request.setPrdName(order.getDrawingCode());
         request.setMatRef(order.getMatRef());
         request.setThickness(floatValue(order.getThickness()));
         request.setWrkRef(order.getWrkRef());
@@ -280,7 +280,7 @@ public class XyImportTaskService {
         requireText(order.getCusRef(), "计划跟踪号不能为空");
         requireText(order.getJobRef(), "生产订单未选择作业");
         requireText(order.getWrkRef(), "生产订单未选择设备");
-        requireText(part.getDrawingCode(), "基础零件图号不能为空");
+        requireText(part.getPrdName(), "基础零件图号不能为空");
         requireText(part.getUdata3(), "基础零件ERP物料内码不能为空: " + part.getPrdRef());
         integerQuantity(order.getQuantity(), "生产订单数量必须为正整数");
     }
