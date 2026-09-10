@@ -8,7 +8,6 @@ CREATE TABLE dbo.Zhurong_Xybaoyuan_BasePart (
     invalid_state BIT NOT NULL DEFAULT 0
 );
 CREATE UNIQUE INDEX UX_XyBasePart_PrdRef ON dbo.Zhurong_Xybaoyuan_BasePart(prd_ref) WHERE is_deleted = 0;
-CREATE UNIQUE INDEX UX_XyBasePart_DrawingCode ON dbo.Zhurong_Xybaoyuan_BasePart(drawing_code) WHERE is_deleted = 0;
 
 CREATE TABLE dbo.Zhurong_Xybaoyuan_ImportTask (
     id BIGINT NOT NULL PRIMARY KEY, is_deleted BIT NOT NULL DEFAULT 0, version INT NOT NULL DEFAULT 0,
