@@ -122,7 +122,7 @@ public class XyImportTaskService {
             XyManufacturingOrder order = orders.get(index);
             XyBasePart part = parts.get(order.getPrdRef());
             if (part == null) {
-                throw new IllegalArgumentException("未维护基础零件: " + order.getPrdRef());
+                throw new IllegalArgumentException("ERP未推送基础零件信息: " + order.getPrdName());
             }
             validateOrder(order, part);
             ClientImportTaskPayloadItem<ProductionOrderRequest> item = new ClientImportTaskPayloadItem<>();
