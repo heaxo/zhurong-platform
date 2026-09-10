@@ -116,9 +116,11 @@ public class XyNestFeedbackService {
         List<Map<String, Object>> parts = Optional.ofNullable(nest.getNestParts()).orElse(List.of()).stream().map(part -> {
             MmnnMmoo00000300VO order = part.getWorkOrder();
             PprrPprr00000100VO item = part.getItem();
-            if (order == null || item == null) throw new IllegalArgumentException("套料零件缺少生产订单或零件主数据");
+            if (order == null && item == null) throw new IllegalArgumentException("套料零件缺少生产订单和零件主数据");
+            if (order == null) throw new IllegalArgumentException("套料零件缺少生产订单主数据");
+            if (item == null) throw new IllegalArgumentException("套料零件缺少档案主数据");
             if (!StringUtils.hasText(item.getDIS_UData3_Prt())) throw new IllegalArgumentException("零件ERP物料内码为空: " + item.getPrdRef());
-            XyImportTaskService.ErpIdentity identity = XyImportTaskService.splitErpIdentity(order.getCurName());
+            XyImportTaskService.ErpIdentity identity = XyImportTaskService.splitErpIdentity(order.getCusName());
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("MoNumber", order.getOrdRef());
             row.put("MoRowSeq", identity.erpInternalCode());
