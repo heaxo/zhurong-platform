@@ -22,13 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /** 在目标 Windows 客户端执行象屿宝元生产订单 LSTX 导入。 */
@@ -127,7 +121,7 @@ public class XyProductionOrderHandler implements ClientImportHandler<ProductionO
         data.forEach(item -> {
             requireText(item.getPrdRef(), "LSTX零件图号不能为空");
             requireText(item.getOrdRef(), "生产订单号不能为空");
-            requireText(item.getCusRef(), "ERP内码和计划跟踪号组合值不能为空");
+            requireText(item.getCusName(), "ERP内码和计划跟踪号组合值不能为空");
             requireText(item.getWrkRef(), "生产订单设备不能为空");
             jobRef(item);
         });
@@ -143,6 +137,7 @@ public class XyProductionOrderHandler implements ClientImportHandler<ProductionO
                 .quantity(request.getQuantity())
                 .ordRef(request.getOrdRef())
                 .cusRef(request.getCusRef())
+                .cusName(request.getCusName())
                 .userData1(request.getUdata1())
                 .userData2(request.getUdata2())
                 .userData3(request.getUdata3());
@@ -160,12 +155,12 @@ public class XyProductionOrderHandler implements ClientImportHandler<ProductionO
         return manufacturingOrderService.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
                         .in(MmnnMmoo00000300::getOrdRef, orderNumbers))
                 .stream()
-                .map(item -> XyImportTaskService.importedOrderKey(item.getCusRef(), item.getDIS_JobRef()))
+                .map(item -> XyImportTaskService.importedOrderKey(item.getCusName(), item.getDIS_JobRef()))
                 .collect(Collectors.toSet());
     }
 
     private static String key(ProductionOrderRequest request) {
-        return XyImportTaskService.importedOrderKey(request.getCusRef(), jobRef(request));
+        return XyImportTaskService.importedOrderKey(request.getCusName(), jobRef(request));
     }
 
     private static String jobRef(ProductionOrderRequest request) {

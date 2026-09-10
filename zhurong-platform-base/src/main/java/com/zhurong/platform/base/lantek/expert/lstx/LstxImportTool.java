@@ -147,6 +147,7 @@ public final class LstxImportTool {
                 .file(request.getImage())
                 .ordRef(request.getMnORef())
                 .cusRef(request.getCusRef())
+                .cusName(request.getCusName())
                 .userData1(request.getUdata1())
                 .userData2(request.getUdata2())
                 .userData3(request.getUdata3())

@@ -118,7 +118,7 @@ public class XyNestFeedbackService {
             PprrPprr00000100VO item = part.getItem();
             if (order == null || item == null) throw new IllegalArgumentException("套料零件缺少生产订单或零件主数据");
             if (!StringUtils.hasText(item.getDIS_UData3_Prt())) throw new IllegalArgumentException("零件ERP物料内码为空: " + item.getPrdRef());
-            XyImportTaskService.ErpIdentity identity = XyImportTaskService.splitErpIdentity(order.getCusRef());
+            XyImportTaskService.ErpIdentity identity = XyImportTaskService.splitErpIdentity(order.getCurName());
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("MoNumber", order.getOrdRef());
             row.put("MoRowSeq", identity.erpInternalCode());

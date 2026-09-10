@@ -42,6 +42,7 @@ public class ProductionOrderRequest implements Serializable {
 
     @Schema(description = "Customer reference", example = "CUS-001")
     private String cusRef;
+    private String cusName;
 
     @NotNull(message = "quantity cannot be null")
     @Min(value = 1, message = "quantity must be greater than 0")
