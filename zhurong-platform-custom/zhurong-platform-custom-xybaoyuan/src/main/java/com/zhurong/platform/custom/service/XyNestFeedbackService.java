@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -112,7 +113,7 @@ public class XyNestFeedbackService {
         boolean remnantSheet = sheet != null && Objects.equals(sheet.getDIS_IsRemnant(), (byte) 1);
         double length = sheet != null && sheet.getDIS_Length() != null ? sheet.getDIS_Length() : value(nest.getSLength());
         double width = sheet != null && sheet.getDIS_Width() != null ? sheet.getDIS_Width() : value(nest.getSWidth());
-
+        AtomicReference<Double> partsWeight = new AtomicReference<>((double) 0);
         List<Map<String, Object>> parts = Optional.ofNullable(nest.getNestParts()).orElse(List.of()).stream().map(part -> {
             MmnnMmoo00000300VO order = part.getWorkOrder();
             PprrPprr00000100VO item = part.getItem();
@@ -130,17 +131,22 @@ public class XyNestFeedbackService {
             row.put("Quantity", Optional.ofNullable(part.getQuantity()).orElse(0));
             row.put("DValue", value(item.getDIS_CutPerim()));
             row.put("PlanNumber", identity.planNumber());
+            partsWeight.updateAndGet(v -> v + (value(item.getWeight()) * part.getQuantity().doubleValue() * nest.getQuantity().doubleValue()));
             return row;
         }).toList();
+        AtomicReference<Double> excessWeight = new AtomicReference<>((double) 0);
+        double wasteWeight = (nest.getSWeight() * nest.getQuantity()) - partsWeight.get() - excessWeight.get();
         List<Map<String, Object>> remnants = Optional.ofNullable(nest.getNestRemnant()).orElse(List.of()).stream().map(remnant -> {
             PprrPprr00000100VO item = remnant.getItem();
             String originalRef = original == null ? nest.getShtRef() : original.getPrdRef();
             String remnantRef = remnant.getShtRef();
+            double sweight = item == null ? 0D : value(item.getWeight());
+            excessWeight.updateAndGet(v -> v + (sweight * remnant.getQuantity().doubleValue()));
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("ShtRef", remnantRef);
             row.put("LotNumber", lotNumber(remnantRef, originalRef));
-            row.put("Quantity", 1);
-            row.put("SWeight", item == null ? 0D : value(item.getWeight()));
+            row.put("Quantity", remnant.getQuantity());
+            row.put("SWeight", sweight);
             row.put("SWidth", item == null ? 0D : Math.round(value(item.getDIS_Width())));
             row.put("SLength", item == null ? 0D : Math.round(value(item.getDIS_Length())));
             return row;
@@ -153,6 +159,8 @@ public class XyNestFeedbackService {
         payload.put("NstRef", nest.getNstRef()); payload.put("NstSeq", nest.getRecID());
         payload.put("NstMachine", nest.getWrkRef()); payload.put("MatQuality", nest.getMatRef());
         payload.put("Sheight", value(nest.getSThickness())); payload.put("FMATERIALID", materialId);
+        payload.put("ExcessWeight", excessWeight);
+        payload.put("WasteWeight", wasteWeight);
         payload.put("UMatType", remnantSheet ? "A" : "B"); payload.put("Slength", Math.round(length));
         payload.put("Swidth", Math.round(width)); payload.put("Quantity", Optional.ofNullable(nest.getQuantity()).orElse(0));
         payload.put("Sweight", value(nest.getSWeight())); payload.put("SUWeight", value(nest.getSUWeight()));

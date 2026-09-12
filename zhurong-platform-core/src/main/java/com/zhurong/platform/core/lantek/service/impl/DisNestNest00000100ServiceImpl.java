@@ -51,6 +51,7 @@ public class DisNestNest00000100ServiceImpl
     private final IDisNestNest00000200Service disNestNest00000200Service;
     private final IDisNestNest00000300Service disNestNest00000300Service;
     private final IDisMmnnMmoo00000200Service disMmnnMmoo00000200Service;
+    private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
     private final ISystOwnd00000100Service systOwnd00000100Service;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
@@ -231,12 +232,15 @@ public class DisNestNest00000100ServiceImpl
                 wrapper
         );
         List<DisNestNest00000100> entities = page.getRecords();
+        Map<String, DisNestNest00000100> nestMap = entities.stream().collect(Collectors.toMap(DisNestNest00000100::getNstRef, Function.identity()));
         long total = page.getTotal();
 
         List<DisNestNest00000100VO> views = convert.toVOList(entities);
         if (CollectionUtils.isEmpty(views)) {
             return buildPageResult(views, total, req.getCurrent(), req.getPageSize());
         }
+        List<DisMmttMmtt00000100> mats = disMmttMmtt00000100Service.list();
+        Map<String, DisMmttMmtt00000100> matMap = mats.stream().collect(Collectors.toMap(DisMmttMmtt00000100::getMatRef, Function.identity()));
 
         RelationLoadPlan loadPlan = Optional.ofNullable(req.getLoadPlan()).orElseGet(RelationLoadPlan::new);
 
@@ -278,13 +282,37 @@ public class DisNestNest00000100ServiceImpl
                     .collect(Collectors.groupingBy(DisNestNest00000500VO::getNstRef));
 
             views.forEach(vo -> {
+                List<DisNestNest00000500VO> nestParts = partMap.getOrDefault(vo.getNstRef(), Collections.emptyList());
+                if (!nestParts.isEmpty() && loadPlan.isIncludePartMaster()){
+                    nestParts.forEach(it -> {
+                        PprrPprr00000100VO item = it.getItem();
+                        if (item == null){
+                            return;
+                        }
+                        String nst = it.getNstRef();
+                        DisNestNest00000100 nest = nestMap.get(nst);
+                        DisMmttMmtt00000100 mmtt = matMap.get(nest.getMatRef());
+
+                        log.info(
+                                "零件重量计算，原始重量：{}，材质是否为空：{}",
+                                item.getWeight(),
+                                mmtt == null
+                        );
+
+                        if (mmtt == null) {
+                            mmtt = new DisMmttMmtt00000100().setDensity(7.85);
+                        }
+
+                        item.setWeight(item.getDIS_Area() * nest.getSThickness() * mmtt.getDensity());
+                        log.info("计算后得重量：{}", item.getWeight());
+                    });
+                }
                 //按零件ID过滤
                 if (CollectionUtils.isNotEmpty(req.getNestPartRecIds())){
-                    List<DisNestNest00000500VO> nestParts = partMap.getOrDefault(vo.getNstRef(), Collections.emptyList());
                     vo.setNestParts(nestParts.stream().filter(it -> req.getNestPartRecIds().contains(it.getRecID())).toList());
                     return;
                 }
-                vo.setNestParts(partMap.getOrDefault(vo.getNstRef(), Collections.emptyList()));
+                vo.setNestParts(nestParts);
             });
         }
 
