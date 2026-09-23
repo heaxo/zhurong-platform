@@ -1,0 +1,1 @@
+alter table Zhurong_Xybaoyuan_ManufacturingOrder add nesting_person  NVARCHAR(50);

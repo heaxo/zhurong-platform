@@ -96,5 +96,6 @@ public final class XyInboundRequests {
         private String productionWorkshopCode;
         @NotBlank(message = "生产车间名称不能为空")
         private String productionWorkshopName;
+        private String nestingPerson;
     }
 }

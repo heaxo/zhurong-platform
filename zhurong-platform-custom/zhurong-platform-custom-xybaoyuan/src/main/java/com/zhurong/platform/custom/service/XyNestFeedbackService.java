@@ -156,6 +156,7 @@ public class XyNestFeedbackService {
         String pdfPath = resolvePdfPath(nest);
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("secret_key", properties.getFeedback().getSecretKey());
+        payload.put("nestingPerson", nest.getCrtUser());
         payload.put("NstRef", nest.getNstRef()); payload.put("NstSeq", nest.getRecID());
         payload.put("NstMachine", nest.getWrkRef()); payload.put("MatQuality", nest.getMatRef());
         payload.put("Sheight", value(nest.getSThickness())); payload.put("FMATERIALID", materialId);

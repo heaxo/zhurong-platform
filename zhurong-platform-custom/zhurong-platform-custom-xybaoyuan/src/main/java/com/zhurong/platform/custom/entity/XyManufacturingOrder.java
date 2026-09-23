@@ -52,6 +52,8 @@ public class XyManufacturingOrder extends BaseEntity {
     private String productionWorkshopCode;
     @TableField("production_workshop_name")
     private String productionWorkshopName;
+    @TableField("nesting_person")
+    private String nestingPerson;
     @TableField("read_state")
     private Boolean readState;
     @TableField("read_time")

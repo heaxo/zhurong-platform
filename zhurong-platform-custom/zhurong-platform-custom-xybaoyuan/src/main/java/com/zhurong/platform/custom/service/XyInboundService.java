@@ -177,6 +177,7 @@ public class XyInboundService {
         entity.setPrdRef(item.getPrdRef().trim());
         entity.setPrdName(item.getPrdName().trim());
         entity.setQuantity(item.getQuantity());
+        entity.setNestingPerson(item.getNestingPerson());
         entity.setMatRef(item.getMatRef().trim());
         entity.setThickness(item.getThickness());
         entity.setDeliveryDate(item.getDeliveryDate());
