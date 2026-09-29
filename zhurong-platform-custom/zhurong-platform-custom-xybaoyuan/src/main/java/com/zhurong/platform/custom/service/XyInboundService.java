@@ -77,7 +77,7 @@ public class XyInboundService {
             Set<String> storedDrawingCodes = findStoredDrawingCodes(drawingCodes);
 
             List<XyInboundRequests.BasePart> newItems = items.stream()
-                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
+//                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
                     .filter(item -> !storedDrawingCodes.contains(normalize(item.getPrdName())))
                     .toList();
             for (XyInboundRequests.BasePart item : newItems) {
