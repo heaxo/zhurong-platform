@@ -143,6 +143,10 @@ public class AvaInventoryQtyServiceImpl extends ServiceImpl<AvaInventoryQtyMappe
                         .collect(Collectors.toMap(AvaInventoryQty::getItemCode, Function.identity()));
                 existsing.forEach(it -> {
                     AvaInventoryQty avaInventoryQty = qtyMap.get(it.getPrdRef());
+                    if (avaInventoryQty == null) {
+                        log.error("未找到对应库存数据，PrdRef：{}", it.getPrdRef());
+                        return;
+                    }
                     Double qty = avaInventoryQty.getQuantity();
                     String udata1 = avaInventoryQty.getBatchNum();
                     String udata2 = String.format("%s,%s",avaInventoryQty.getCompany(),avaInventoryQty.getWhsName());
