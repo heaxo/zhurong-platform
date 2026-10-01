@@ -44,11 +44,11 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: 192.168.20.212:8848
+        server-addr: 192.168.20.27:8848
         # 客户端需要发现 core/auth，但不能注册成可被 Gateway 负载均衡的 HTTP 服务。
         register-enabled: false
       config:
-        server-addr: 192.168.20.212:8848
+        server-addr: 192.168.20.27:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
@@ -84,7 +84,7 @@ xybaoyuan:
     withdraw-url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
     secret-key: grmm12345678
     ftp:
-      host: 192.168.20.212
+      host: 192.168.20.27
       port: 21
       username: XYBAOYUAN
       password: 123
