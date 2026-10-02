@@ -74,16 +74,23 @@ public class XyInboundService {
             List<String> drawingCodes = items.stream().map(XyInboundRequests.BasePart::getPrdName)
                     .map(String::trim).toList();
             Set<String> lantekRefs = findLantekPartRefs(drawingCodes);
-            Set<String> storedDrawingCodes = findStoredDrawingCodes(drawingCodes);
-
-            List<XyInboundRequests.BasePart> newItems = items.stream()
-//                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
-                    .filter(item -> !storedDrawingCodes.contains(normalize(item.getPrdName())))
-                    .toList();
-            for (XyInboundRequests.BasePart item : newItems) {
+//            Set<String> storedDrawingCodes = findStoredDrawingCodes(drawingCodes);
+//
+//            List<XyInboundRequests.BasePart> newItems = items.stream()
+////                    .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
+//                    .filter(item -> !storedDrawingCodes.contains(normalize(item.getPrdName())))
+//                    .toList();
+            int i = 0;
+            for (XyInboundRequests.BasePart item : items) {
+                if (basePartMapper.exists(Wrappers.lambdaQuery(XyBasePart.class)
+                        .eq(XyBasePart::getPrdRef, item.getPrdRef())
+                        .eq(XyBasePart::getPrdName, item.getPrdName()))){
+                    continue;
+                }
                 if (basePartMapper.insert(toEntity(item)) != 1) {
                     throw new IllegalStateException("零件基础信息保存失败: " + item.getPrdName());
                 }
+                i++;
             }
 
             // 已落库但尚未进入 Lantek 的零件也重新写入文件，使金蝶重试可以恢复中断的后续导入。
@@ -92,7 +99,7 @@ public class XyInboundService {
                     .toList();
             appendBasePartWorkbook(outputDirectory, drawingRoot, drawingExtension, excelItems);
             log.info("象屿宝元接收基础零件完成, received={}, inserted={}, excelCandidates={}",
-                    items.size(), newItems.size(), excelItems.size());
+                    items.size(), i, excelItems.size());
             return true;
         } finally {
             BASE_PART_LOCK.unlock();
