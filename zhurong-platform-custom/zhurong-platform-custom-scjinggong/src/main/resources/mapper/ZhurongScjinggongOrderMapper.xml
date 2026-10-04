@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.mapper.ZhurongScjinggongOrderMapper">
+
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.zhurong.platform.custom.entity.ZhurongScjinggongOrder">
+                    <id column="id" property="id"/>
+                    <result column="is_deleted" property="is_deleted"/>
+                    <result column="version" property="version"/>
+                    <result column="created_by" property="created_by"/>
+                    <result column="created_at" property="created_at"/>
+                    <result column="updated_by" property="updated_by"/>
+                    <result column="updated_at" property="updated_at"/>
+                    <result column="is_read" property="is_read"/>
+                    <result column="is_reviewed" property="is_reviewed"/>
+                    <result column="invalid_state" property="invalid_state"/>
+                    <result column="order_code" property="order_code"/>
+                    <result column="order_name" property="order_name"/>
+                    <result column="udata1" property="udata1"/>
+                    <result column="udata2" property="udata2"/>
+                    <result column="udata3" property="udata3"/>
+                    <result column="udata4" property="udata4"/>
+                    <result column="udata5" property="udata5"/>
+        </resultMap>
+
+
+
+    <!-- 通用查询结果列：使用 include property 传入 alias -->
+    <sql id="BaseColumns">
+            ${alias}.[id],
+            ${alias}.[is_deleted],
+            ${alias}.[version],
+            ${alias}.[created_by],
+            ${alias}.[created_at],
+            ${alias}.[updated_by],
+            ${alias}.[updated_at],
+            ${alias}.[is_read],
+            ${alias}.[is_reviewed],
+            ${alias}.[invalid_state],
+            ${alias}.[order_code],
+            ${alias}.[order_name],
+            ${alias}.[udata1],
+            ${alias}.[udata2],
+            ${alias}.[udata3],
+            ${alias}.[udata4],
+            ${alias}.[udata5]    </sql>
+
+    <!-- 通用动态查询条件：SQL Server 版 -->
+    <sql id="BaseWhere">
+
+            <if test="${paramAlias}.id != null">
+                    ${alias}.[id] = #{${paramAlias}.id,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.is_deleted != null">
+                    AND ${alias}.[is_deleted] = #{${paramAlias}.is_deleted,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.version != null">
+                    AND ${alias}.[version] = #{${paramAlias}.version,jdbcType=INTEGER}
+            </if>
+
+            <if test="${paramAlias}.created_by != null">
+                    AND ${alias}.[created_by] = #{${paramAlias}.created_by,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.created_at != null">
+                    AND ${alias}.[created_at] = #{${paramAlias}.created_at,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="${paramAlias}.updated_by != null">
+                    AND ${alias}.[updated_by] = #{${paramAlias}.updated_by,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.updated_at != null">
+                    AND ${alias}.[updated_at] = #{${paramAlias}.updated_at,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="${paramAlias}.is_read != null">
+                    AND ${alias}.[is_read] = #{${paramAlias}.is_read,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.is_reviewed != null">
+                    AND ${alias}.[is_reviewed] = #{${paramAlias}.is_reviewed,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.invalid_state != null">
+                    AND ${alias}.[invalid_state] = #{${paramAlias}.invalid_state,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.order_code != null">
+                    AND ${alias}.[order_code] = #{${paramAlias}.order_code,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.order_name != null">
+                    AND ${alias}.[order_name] = #{${paramAlias}.order_name,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata1 != null">
+                    AND ${alias}.[udata1] = #{${paramAlias}.udata1,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata2 != null">
+                    AND ${alias}.[udata2] = #{${paramAlias}.udata2,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata3 != null">
+                    AND ${alias}.[udata3] = #{${paramAlias}.udata3,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata4 != null">
+                    AND ${alias}.[udata4] = #{${paramAlias}.udata4,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata5 != null">
+                    AND ${alias}.[udata5] = #{${paramAlias}.udata5,jdbcType=NVARCHAR}
+            </if>
+    </sql>
+
+    <sql id="BasePage">
+        OFFSET ((#{current,jdbcType=INTEGER} - 1) * #{pageSize,jdbcType=INTEGER}) ROWS
+        FETCH NEXT #{pageSize,jdbcType=INTEGER} ROWS ONLY
+    </sql>
+</mapper>

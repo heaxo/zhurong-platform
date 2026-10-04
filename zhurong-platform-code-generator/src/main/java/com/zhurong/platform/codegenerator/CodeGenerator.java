@@ -14,11 +14,14 @@ public class CodeGenerator {
         );
 
         GeneratorConfig config = new GeneratorConfig(
-                "com.zhurong.platform.custom",
-                "lantek",
+                "com.zhurong.platform",
+                "custom",
 //                new String[]{"flyway_schema_history"},
                 null,
                 new String[]{
+                        "Zhurong_Scjinggong_BasePart",
+                        "Zhurong_Scjinggong_Order",
+                        "Zhurong_Scjinggong_OrderItem",
 //                        "Zhurong_But_SupplierInfo",
 //                        "Zhurong_But_Nesting_Parts_Split_Records",
 //                        "ZHURONG_PLATFORM_JOB_CURSOR",
@@ -44,7 +47,7 @@ public class CodeGenerator {
 //                        "DIS_PPTT_WWCC_00000800",
 //                        "DIS_SHPR_PPTT_00000200",
 //                        "MMNN_MMOO_00000100",
-                        "MMNN_MMOO_00000300",
+//                        "MMNN_MMOO_00000300",
 //                        "PPRR_PPRR_00000100",
 //                        "SYST_OWND_00000100",
 //                        "SYST_FFLL_00000200",

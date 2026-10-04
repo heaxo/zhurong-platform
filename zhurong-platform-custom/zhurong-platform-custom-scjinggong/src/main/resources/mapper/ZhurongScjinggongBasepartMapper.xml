@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.mapper.ZhurongScjinggongBasepartMapper">
+
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.zhurong.platform.custom.entity.ZhurongScjinggongBasepart">
+                    <id column="id" property="id"/>
+                    <result column="is_deleted" property="is_deleted"/>
+                    <result column="version" property="version"/>
+                    <result column="created_by" property="created_by"/>
+                    <result column="created_at" property="created_at"/>
+                    <result column="updated_by" property="updated_by"/>
+                    <result column="updated_at" property="updated_at"/>
+                    <result column="is_read" property="is_read"/>
+                    <result column="is_reviewed" property="is_reviewed"/>
+                    <result column="invalid_state" property="invalid_state"/>
+                    <result column="prd_ref" property="prd_ref"/>
+                    <result column="prd_name" property="prd_name"/>
+                    <result column="wrk_ref" property="wrk_ref"/>
+                    <result column="mat_ref" property="mat_ref"/>
+                    <result column="thickness" property="thickness"/>
+                    <result column="quantity" property="quantity"/>
+                    <result column="udata1" property="udata1"/>
+                    <result column="udata2" property="udata2"/>
+                    <result column="udata3" property="udata3"/>
+                    <result column="udata4" property="udata4"/>
+                    <result column="udata5" property="udata5"/>
+                    <result column="udata6" property="udata6"/>
+                    <result column="udata7" property="udata7"/>
+                    <result column="udata8" property="udata8"/>
+                    <result column="drawing_path" property="drawing_path"/>
+                    <result column="raw_drawing_path" property="raw_drawing_path"/>
+        </resultMap>
+
+
+
+    <!-- 通用查询结果列：使用 include property 传入 alias -->
+    <sql id="BaseColumns">
+            ${alias}.[id],
+            ${alias}.[is_deleted],
+            ${alias}.[version],
+            ${alias}.[created_by],
+            ${alias}.[created_at],
+            ${alias}.[updated_by],
+            ${alias}.[updated_at],
+            ${alias}.[is_read],
+            ${alias}.[is_reviewed],
+            ${alias}.[invalid_state],
+            ${alias}.[prd_ref],
+            ${alias}.[prd_name],
+            ${alias}.[wrk_ref],
+            ${alias}.[mat_ref],
+            ${alias}.[thickness],
+            ${alias}.[quantity],
+            ${alias}.[udata1],
+            ${alias}.[udata2],
+            ${alias}.[udata3],
+            ${alias}.[udata4],
+            ${alias}.[udata5],
+            ${alias}.[udata6],
+            ${alias}.[udata7],
+            ${alias}.[udata8],
+            ${alias}.[drawing_path],
+            ${alias}.[raw_drawing_path]    </sql>
+
+    <!-- 通用动态查询条件：SQL Server 版 -->
+    <sql id="BaseWhere">
+
+            <if test="${paramAlias}.id != null">
+                    ${alias}.[id] = #{${paramAlias}.id,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.is_deleted != null">
+                    AND ${alias}.[is_deleted] = #{${paramAlias}.is_deleted,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.version != null">
+                    AND ${alias}.[version] = #{${paramAlias}.version,jdbcType=INTEGER}
+            </if>
+
+            <if test="${paramAlias}.created_by != null">
+                    AND ${alias}.[created_by] = #{${paramAlias}.created_by,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.created_at != null">
+                    AND ${alias}.[created_at] = #{${paramAlias}.created_at,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="${paramAlias}.updated_by != null">
+                    AND ${alias}.[updated_by] = #{${paramAlias}.updated_by,jdbcType=BIGINT}
+            </if>
+
+            <if test="${paramAlias}.updated_at != null">
+                    AND ${alias}.[updated_at] = #{${paramAlias}.updated_at,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="${paramAlias}.is_read != null">
+                    AND ${alias}.[is_read] = #{${paramAlias}.is_read,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.is_reviewed != null">
+                    AND ${alias}.[is_reviewed] = #{${paramAlias}.is_reviewed,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.invalid_state != null">
+                    AND ${alias}.[invalid_state] = #{${paramAlias}.invalid_state,jdbcType=BIT}
+            </if>
+
+            <if test="${paramAlias}.prd_ref != null">
+                    AND ${alias}.[prd_ref] = #{${paramAlias}.prd_ref,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.prd_name != null">
+                    AND ${alias}.[prd_name] = #{${paramAlias}.prd_name,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.wrk_ref != null">
+                    AND ${alias}.[wrk_ref] = #{${paramAlias}.wrk_ref,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.mat_ref != null">
+                    AND ${alias}.[mat_ref] = #{${paramAlias}.mat_ref,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.thickness != null">
+                    AND ${alias}.[thickness] = #{${paramAlias}.thickness,jdbcType=DOUBLE}
+            </if>
+
+            <if test="${paramAlias}.quantity != null">
+                    AND ${alias}.[quantity] = #{${paramAlias}.quantity,jdbcType=INTEGER}
+            </if>
+
+            <if test="${paramAlias}.udata1 != null">
+                    AND ${alias}.[udata1] = #{${paramAlias}.udata1,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata2 != null">
+                    AND ${alias}.[udata2] = #{${paramAlias}.udata2,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata3 != null">
+                    AND ${alias}.[udata3] = #{${paramAlias}.udata3,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata4 != null">
+                    AND ${alias}.[udata4] = #{${paramAlias}.udata4,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata5 != null">
+                    AND ${alias}.[udata5] = #{${paramAlias}.udata5,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata6 != null">
+                    AND ${alias}.[udata6] = #{${paramAlias}.udata6,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata7 != null">
+                    AND ${alias}.[udata7] = #{${paramAlias}.udata7,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.udata8 != null">
+                    AND ${alias}.[udata8] = #{${paramAlias}.udata8,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.drawing_path != null">
+                    AND ${alias}.[drawing_path] = #{${paramAlias}.drawing_path,jdbcType=NVARCHAR}
+            </if>
+
+            <if test="${paramAlias}.raw_drawing_path != null">
+                    AND ${alias}.[raw_drawing_path] = #{${paramAlias}.raw_drawing_path,jdbcType=NVARCHAR}
+            </if>
+    </sql>
+
+    <sql id="BasePage">
+        OFFSET ((#{current,jdbcType=INTEGER} - 1) * #{pageSize,jdbcType=INTEGER}) ROWS
+        FETCH NEXT #{pageSize,jdbcType=INTEGER} ROWS ONLY
+    </sql>
+</mapper>

@@ -12,7 +12,7 @@ import ${package.Entity}.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 <#else>
-import model.com.zhurong.platform.base.BaseEntity;
+import com.zhurong.platform.base.model.BaseEntity;
 </#if>
 
 /**

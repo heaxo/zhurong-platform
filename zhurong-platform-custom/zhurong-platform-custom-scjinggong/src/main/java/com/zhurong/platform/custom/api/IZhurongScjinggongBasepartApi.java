@@ -1,25 +1,22 @@
-package ${package.Parent}.api;
-
-import ${package.Parent}.dto.${entity}DTO;
-import ${package.Parent}.dto.${entity}PageQuery;
-import ${package.Parent}.vo.${entity}VO;
+package com.zhurong.platform.custom.api;
 
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
-
+import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartDTO;
+import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartPageQuery;
+import com.zhurong.platform.custom.vo.ZhurongScjinggongBasepartVO;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.web.bind.annotation.*;
 
-import java.lang.Long;
 import java.util.List;
 
 /**
-* ${table.comment!} 对外契约接口
+*  对外契约接口
 *
 * 说明：仅定义接口契约
 */
-public interface I${entity}Api {
+public interface IZhurongScjinggongBasepartApi {
 
 /**
 * 分页查询
@@ -27,21 +24,21 @@ public interface I${entity}Api {
 @GetMapping("/page")
 ApiResponse
 <PageResponse
-<${entity}VO>> page(@SpringQueryMap ${entity}PageQuery pageQuery);
+        <ZhurongScjinggongBasepartVO>> page(@SpringQueryMap ZhurongScjinggongBasepartPageQuery pageQuery);
 
     /**
     * 根据ID查询
     */
     @GetMapping("/{id}")
     ApiResponse
-    <${entity}VO> getById(@PathVariable("id") Long id);
+            <ZhurongScjinggongBasepartVO> getById(@PathVariable("id") Long id);
 
         /**
         * 新增
         */
         @PostMapping
         ApiResponse
-        <Long> save(@Valid @RequestBody ${entity}DTO dto);
+        <Long> save(@Valid @RequestBody ZhurongScjinggongBasepartDTO dto);
 
             /**
             * 更新
@@ -50,7 +47,7 @@ ApiResponse
             ApiResponse
             <Boolean> update(
                 @PathVariable("id") Long id,
-                @Valid @RequestBody ${entity}DTO dto
+                @Valid @RequestBody ZhurongScjinggongBasepartDTO dto
                 );
 
                 /**

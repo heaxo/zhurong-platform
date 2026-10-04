@@ -1,0 +1,76 @@
+server:
+  port: 9300
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: zhurong-platform-custom
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /
+
+    listener:
+      simple:
+        acknowledge-mode: auto
+        # scjinggong 客户端会调用本机套料软件 exe，PartDrawingArchiveHandler 和
+        # ProductionOrderHandler 使用同一个 exe。该 exe 不支持并行运行，因此这里必须
+        # 保持单消费者、单预取，确保同一客户端内导入任务按队列串行处理。
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    table: flyway_schema_custom_history-scjinggong
+    schemas: flyway_schema_custom
+    default-schema: flyway_schema_custom
+  datasource:
+    dynamic:
+      primary: lantek
+      strict: false
+      datasource:
+        lantek: # SQL Server（主库）
+          url: jdbc:sqlserver://lantekha:1433;databaseName=LSystemDB;encrypt=false
+          username: sa
+          password:
+          driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: 192.168.1.125:8848
+        ip: 192.168.1.76
+        port: ${server.port}
+      config:
+        server-addr: 192.168.1.125:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+  config:
+    import:
+      - nacos:zhurong-platform-custom
+      - nacos:zhurong-platform-custom-scjinggong-${spring.profiles.active}
+      - nacos:zhurong-platform-security-${spring.profiles.active}
+
+
+mybatis-plus:
+  # 本模块XML只用classpath加载，公共custom-api XML放在mapper-common并用classpath*加载。
+  mapper-locations:
+    - classpath:/mapper/**/*.xml
+    - classpath*:/mapper-common/**/*.xml
+  type-aliases-package: com.zhurong.platform.custom.entity
+  configuration:
+    map-underscore-to-camel-case: false
+
+zhurong:
+  client-communication:
+    enabled: false
+    client-id: CLIENT-01
+    user-name:
+    version: 1.0.0
+    heartbeat-seconds: 30

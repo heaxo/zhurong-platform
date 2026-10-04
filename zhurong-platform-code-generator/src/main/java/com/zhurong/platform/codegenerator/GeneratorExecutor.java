@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.query.SQLQuery;
 
 import java.sql.Types;
 import java.util.Arrays;
@@ -37,12 +38,14 @@ public class GeneratorExecutor {
                                 .disableOpenDir()
                 )
                 .dataSourceConfig(builder ->
-                        builder.typeConvertHandler((global, registry, metaInfo) -> {
-                            if (metaInfo.getJdbcType().TYPE_CODE == Types.SMALLINT) {
-                                return DbColumnType.INTEGER;
-                            }
-                            return registry.getColumnType(metaInfo);
-                        })
+                        builder
+                                .databaseQueryClass(SQLQuery.class)
+                                .typeConvertHandler((global, registry, metaInfo) -> {
+                                    if (metaInfo.getJdbcType().TYPE_CODE == Types.SMALLINT) {
+                                        return DbColumnType.INTEGER;
+                                    }
+                                    return registry.getColumnType(metaInfo);
+                                })
                 )
                 .packageConfig(builder ->
                         builder

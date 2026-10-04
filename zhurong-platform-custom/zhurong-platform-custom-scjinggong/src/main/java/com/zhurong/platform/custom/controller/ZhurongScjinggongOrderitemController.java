@@ -1,63 +1,60 @@
-package ${package.Controller};
+package com.zhurong.platform.custom.controller;
 
-import ${package.Service}.${table.serviceName};
-import ${package.Parent}.dto.${entity}DTO;
-import ${package.Parent}.dto.${entity}PageQuery;
-import ${package.Parent}.vo.${entity}VO;
-import ${package.Parent}.entity.${entity};
-import ${package.Parent}.api.I${entity}Api;
-import ${package.Parent}.convert.${entity}Convert;
-
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.base.model.PageFactory;
-import ${package.Parent}.web.BaseController;
-
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
+import com.zhurong.platform.custom.api.IZhurongScjinggongOrderitemApi;
+import com.zhurong.platform.custom.convert.ZhurongScjinggongOrderitemConvert;
+import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemDTO;
+import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemPageQuery;
+import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
+import com.zhurong.platform.custom.service.IZhurongScjinggongOrderitemService;
+import com.zhurong.platform.custom.vo.ZhurongScjinggongOrderitemVO;
+import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
-* ${table.comment!} 控制器实现
+*  控制器实现
 */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/${table.entityPath}")
-public class ${table.controllerName} extends BaseController implements I${entity}Api {
+@RequestMapping("/zhurongScjinggongOrderitem")
+public class ZhurongScjinggongOrderitemController extends BaseController implements IZhurongScjinggongOrderitemApi {
 
-private final ${entity}Convert convert;
-private final ${table.serviceName} service;
+private final ZhurongScjinggongOrderitemConvert convert;
+private final IZhurongScjinggongOrderitemService service;
 
 @Override
 public ApiResponse
 <PageResponse
-<${entity}VO>> page(${entity}PageQuery pageQuery ) {
+        <ZhurongScjinggongOrderitemVO>> page(ZhurongScjinggongOrderitemPageQuery pageQuery ) {
 
-    LambdaQueryWrapper<${entity}> wrapper =
+    LambdaQueryWrapper<ZhurongScjinggongOrderitem> wrapper =
     Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
-    wrapper.orderByAsc(${entity}::<#if importLantekBaseEntity>getRecID<#else>getCreateTime</#if>);
+    wrapper.orderByAsc(ZhurongScjinggongOrderitem::getCreatedAt);
 
-    Page<${entity}> page = service.page(
+    Page<ZhurongScjinggongOrderitem> page = service.page(
     PageFactory.build(pageQuery),
     wrapper
     );
 
     List
-    <${entity}VO> voList = page.getRecords()
+    <ZhurongScjinggongOrderitemVO> voList = page.getRecords()
         .stream()
         .map(convert::toVO)
         .toList();
 
         PageResponse
-        <${entity}VO> response = new PageResponse<>(
+        <ZhurongScjinggongOrderitemVO> response = new PageResponse<>(
             voList,
             page.getTotal(),
             page.getCurrent(),
@@ -69,20 +66,20 @@ public ApiResponse
 
             @Override
             public ApiResponse
-            <${entity}VO> getById(Long id) {
+                    <ZhurongScjinggongOrderitemVO> getById(Long id) {
                 return ApiResponse.success(service.getVOById(id));
                 }
 
                 @Override
                 public ApiResponse
-                <Long> save(@Valid ${entity}DTO dto) {
+                <Long> save(@Valid ZhurongScjinggongOrderitemDTO dto) {
                     Long id = service.saveFromDTO(dto);
                     return ApiResponse.success(id);
                     }
 
                     @Override
                     public ApiResponse
-                    <Boolean> update(Long id, @Valid ${entity}DTO dto) {
+                    <Boolean> update(Long id, @Valid ZhurongScjinggongOrderitemDTO dto) {
                         boolean update = service.updateFromDTO(id, dto);
                         return ApiResponse.success(update);
                         }
