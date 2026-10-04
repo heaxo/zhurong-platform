@@ -44,9 +44,9 @@ spring:
       password: nacos
       discovery:
         server-addr: 192.168.20.27:8848
-        register-enabled: true
+        register-enabled: false
       config:
-        enabled: false
+        enabled: true
         import-check:
           enabled: false
 
@@ -70,12 +70,12 @@ xybaoyuan:
   lantek:
     install: D:\Lantek
   erp:
-    steel-plate-url: http://223.105.87.10:8089/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
-    secret-key: grmm12345678
+    steel-plate-url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
+    secret-key: by12345678
   feedback:
-    url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
-    withdraw-url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
-    secret-key: grmm12345678
+    url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
+    withdraw-url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
+    secret-key: by12345678
     ftp:
       host: 192.168.20.27
       port: 21

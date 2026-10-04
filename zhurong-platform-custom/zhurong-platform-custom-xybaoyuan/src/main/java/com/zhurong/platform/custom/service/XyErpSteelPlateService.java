@@ -24,9 +24,9 @@ public class XyErpSteelPlateService {
         String secret = properties.getErp().getSecretKey();
         requireText(url, "ERP钢板查询接口未配置");
         requireText(secret, "ERP钢板查询接口密钥未配置");
-        if (!StringUtils.hasText(materialNumber) && !StringUtils.hasText(lotNumber)) {
-            throw new IllegalArgumentException("物料编号或物料批号不能为空");
-        }
+//        if (!StringUtils.hasText(materialNumber) && !StringUtils.hasText(lotNumber)) {
+//            throw new IllegalArgumentException("物料编号或物料批号不能为空");
+//        }
         Map<String, Object> request = new LinkedHashMap<>();
         request.put("secret_key", secret);
         if (StringUtils.hasText(materialNumber)) request.put("material_number", materialNumber);
