@@ -6,12 +6,12 @@ import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
 import com.zhurong.platform.custom.vo.ZhurongScjinggongOrderitemVO;
 
 /**
-*  服务接口
-*/
+ * 服务接口
+ */
 public interface IZhurongScjinggongOrderitemService extends IService<ZhurongScjinggongOrderitem> {
-ZhurongScjinggongOrderitemVO getVOById(Long id);
+    ZhurongScjinggongOrderitemVO getVOById(Long id);
 
-Long saveFromDTO(ZhurongScjinggongOrderitemDTO dto);
+    Long saveFromDTO(ZhurongScjinggongOrderitemDTO dto);
 
-Boolean updateFromDTO(Long id, ZhurongScjinggongOrderitemDTO dto);
+    Boolean updateFromDTO(Long id, ZhurongScjinggongOrderitemDTO dto);
 }

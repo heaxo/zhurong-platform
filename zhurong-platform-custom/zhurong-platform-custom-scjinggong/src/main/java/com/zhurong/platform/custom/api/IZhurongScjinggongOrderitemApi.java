@@ -12,56 +12,56 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
-*  对外契约接口
-*
-* 说明：仅定义接口契约
-*/
+ * 对外契约接口
+ * <p>
+ * 说明：仅定义接口契约
+ */
 public interface IZhurongScjinggongOrderitemApi {
 
-/**
-* 分页查询
-*/
-@GetMapping("/page")
-ApiResponse
-<PageResponse
-        <ZhurongScjinggongOrderitemVO>> page(@SpringQueryMap ZhurongScjinggongOrderitemPageQuery pageQuery);
+    /**
+     * 分页查询
+     */
+    @GetMapping("/page")
+    ApiResponse
+            <PageResponse
+                    <ZhurongScjinggongOrderitemVO>> page(@SpringQueryMap ZhurongScjinggongOrderitemPageQuery pageQuery);
 
     /**
-    * 根据ID查询
-    */
+     * 根据ID查询
+     */
     @GetMapping("/{id}")
     ApiResponse
             <ZhurongScjinggongOrderitemVO> getById(@PathVariable("id") Long id);
 
-        /**
-        * 新增
-        */
-        @PostMapping
-        ApiResponse
-        <Long> save(@Valid @RequestBody ZhurongScjinggongOrderitemDTO dto);
+    /**
+     * 新增
+     */
+    @PostMapping
+    ApiResponse
+            <Long> save(@Valid @RequestBody ZhurongScjinggongOrderitemDTO dto);
 
-            /**
-            * 更新
-            */
-            @PutMapping("/{id}")
-            ApiResponse
+    /**
+     * 更新
+     */
+    @PutMapping("/{id}")
+    ApiResponse
             <Boolean> update(
-                @PathVariable("id") Long id,
-                @Valid @RequestBody ZhurongScjinggongOrderitemDTO dto
-                );
+            @PathVariable("id") Long id,
+            @Valid @RequestBody ZhurongScjinggongOrderitemDTO dto
+    );
 
-                /**
-                * 删除
-                */
-                @DeleteMapping("/{id}")
-                ApiResponse
-                <Boolean> remove(@PathVariable("id") Long id);
+    /**
+     * 删除
+     */
+    @DeleteMapping("/{id}")
+    ApiResponse
+            <Boolean> remove(@PathVariable("id") Long id);
 
-                    /**
-                    * 批量删除
-                    */
-                    @DeleteMapping
-                    ApiResponse
-                    <Boolean> batchRemove(@RequestBody List
-                        <Long> ids);
-                            }
+    /**
+     * 批量删除
+     */
+    @DeleteMapping
+    ApiResponse
+            <Boolean> batchRemove(@RequestBody List
+            <Long> ids);
+}

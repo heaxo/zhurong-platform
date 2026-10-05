@@ -8,6 +8,7 @@ import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.base.model.PageFactory;
 import com.zhurong.platform.custom.api.IZhurongScjinggongBasepartApi;
 import com.zhurong.platform.custom.convert.ZhurongScjinggongBasepartConvert;
+import com.zhurong.platform.custom.dto.BasepartRequest;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongBasepart;
@@ -16,6 +17,8 @@ import com.zhurong.platform.custom.vo.ZhurongScjinggongBasepartVO;
 import com.zhurong.platform.custom.web.BaseController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +34,16 @@ public class ZhurongScjinggongBasepartController extends BaseController implemen
 
     private final ZhurongScjinggongBasepartConvert convert;
     private final IZhurongScjinggongBasepartService service;
+
+    @PostMapping("creates")
+    public ApiResponse<Boolean> creates(@Valid @RequestBody BasepartRequest request) {
+        try {
+            boolean creates = service.creates(request);
+            return ApiResponse.success(creates);
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
+    }
 
     @Override
     public ApiResponse

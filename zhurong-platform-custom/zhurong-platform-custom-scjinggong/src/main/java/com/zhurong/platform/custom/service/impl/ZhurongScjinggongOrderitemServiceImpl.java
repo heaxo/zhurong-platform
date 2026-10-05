@@ -11,34 +11,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
-*  服务实现类
-*/
+ * 服务实现类
+ */
 @Service
 @RequiredArgsConstructor
 public class ZhurongScjinggongOrderitemServiceImpl
-extends ServiceImpl<ZhurongScjinggongOrderitemMapper, ZhurongScjinggongOrderitem>
-implements IZhurongScjinggongOrderitemService {
+        extends ServiceImpl<ZhurongScjinggongOrderitemMapper, ZhurongScjinggongOrderitem>
+        implements IZhurongScjinggongOrderitemService {
 
-private final ZhurongScjinggongOrderitemConvert convert;
+    private final ZhurongScjinggongOrderitemConvert convert;
 
 
-@Override
-public ZhurongScjinggongOrderitemVO getVOById(Long id) {
-ZhurongScjinggongOrderitem entity = this.getById(id);
-return convert.toVO(entity);
-}
+    @Override
+    public ZhurongScjinggongOrderitemVO getVOById(Long id) {
+        ZhurongScjinggongOrderitem entity = this.getById(id);
+        return convert.toVO(entity);
+    }
 
-@Override
-public Long saveFromDTO(ZhurongScjinggongOrderitemDTO dto) {
-ZhurongScjinggongOrderitem entity = convert.toEntity(dto);
-this.save(entity);
-return entity.getId();
-}
+    @Override
+    public Long saveFromDTO(ZhurongScjinggongOrderitemDTO dto) {
+        ZhurongScjinggongOrderitem entity = convert.toEntity(dto);
+        this.save(entity);
+        return entity.getId();
+    }
 
-@Override
-public Boolean updateFromDTO(Long id, ZhurongScjinggongOrderitemDTO dto) {
-ZhurongScjinggongOrderitem entity = this.getById(id);
-convert.updateFromDTO(dto, entity);
-return this.updateById(entity);
-}
+    @Override
+    public Boolean updateFromDTO(Long id, ZhurongScjinggongOrderitemDTO dto) {
+        ZhurongScjinggongOrderitem entity = this.getById(id);
+        convert.updateFromDTO(dto, entity);
+        return this.updateById(entity);
+    }
 }

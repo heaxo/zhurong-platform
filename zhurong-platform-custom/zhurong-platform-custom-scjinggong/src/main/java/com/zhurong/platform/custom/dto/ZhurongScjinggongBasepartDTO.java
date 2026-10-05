@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
-*  DTO
-*/
+ * DTO
+ */
 @Data
 public class ZhurongScjinggongBasepartDTO implements Serializable {
 

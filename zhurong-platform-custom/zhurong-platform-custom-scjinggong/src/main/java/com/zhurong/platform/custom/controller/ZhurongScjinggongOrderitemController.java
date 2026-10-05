@@ -22,80 +22,80 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
-*  控制器实现
-*/
+ * 控制器实现
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/zhurongScjinggongOrderitem")
 public class ZhurongScjinggongOrderitemController extends BaseController implements IZhurongScjinggongOrderitemApi {
 
-private final ZhurongScjinggongOrderitemConvert convert;
-private final IZhurongScjinggongOrderitemService service;
+    private final ZhurongScjinggongOrderitemConvert convert;
+    private final IZhurongScjinggongOrderitemService service;
 
-@Override
-public ApiResponse
-<PageResponse
-        <ZhurongScjinggongOrderitemVO>> page(ZhurongScjinggongOrderitemPageQuery pageQuery ) {
+    @Override
+    public ApiResponse
+            <PageResponse
+                    <ZhurongScjinggongOrderitemVO>> page(ZhurongScjinggongOrderitemPageQuery pageQuery) {
 
-    LambdaQueryWrapper<ZhurongScjinggongOrderitem> wrapper =
-    Wrappers.lambdaQuery(convert.toEntity(pageQuery));
+        LambdaQueryWrapper<ZhurongScjinggongOrderitem> wrapper =
+                Wrappers.lambdaQuery(convert.toEntity(pageQuery));
 
-    wrapper.orderByAsc(ZhurongScjinggongOrderitem::getCreatedAt);
+        wrapper.orderByAsc(ZhurongScjinggongOrderitem::getCreatedAt);
 
-    Page<ZhurongScjinggongOrderitem> page = service.page(
-    PageFactory.build(pageQuery),
-    wrapper
-    );
+        Page<ZhurongScjinggongOrderitem> page = service.page(
+                PageFactory.build(pageQuery),
+                wrapper
+        );
 
-    List
-    <ZhurongScjinggongOrderitemVO> voList = page.getRecords()
-        .stream()
-        .map(convert::toVO)
-        .toList();
+        List
+                <ZhurongScjinggongOrderitemVO> voList = page.getRecords()
+                .stream()
+                .map(convert::toVO)
+                .toList();
 
         PageResponse
-        <ZhurongScjinggongOrderitemVO> response = new PageResponse<>(
-            voList,
-            page.getTotal(),
-            page.getCurrent(),
-            page.getSize()
-            );
+                <ZhurongScjinggongOrderitemVO> response = new PageResponse<>(
+                voList,
+                page.getTotal(),
+                page.getCurrent(),
+                page.getSize()
+        );
 
-            return ApiResponse.success(response);
-            }
+        return ApiResponse.success(response);
+    }
 
-            @Override
-            public ApiResponse
-                    <ZhurongScjinggongOrderitemVO> getById(Long id) {
-                return ApiResponse.success(service.getVOById(id));
-                }
+    @Override
+    public ApiResponse
+            <ZhurongScjinggongOrderitemVO> getById(Long id) {
+        return ApiResponse.success(service.getVOById(id));
+    }
 
-                @Override
-                public ApiResponse
-                <Long> save(@Valid ZhurongScjinggongOrderitemDTO dto) {
-                    Long id = service.saveFromDTO(dto);
-                    return ApiResponse.success(id);
-                    }
+    @Override
+    public ApiResponse
+            <Long> save(@Valid ZhurongScjinggongOrderitemDTO dto) {
+        Long id = service.saveFromDTO(dto);
+        return ApiResponse.success(id);
+    }
 
-                    @Override
-                    public ApiResponse
-                    <Boolean> update(Long id, @Valid ZhurongScjinggongOrderitemDTO dto) {
-                        boolean update = service.updateFromDTO(id, dto);
-                        return ApiResponse.success(update);
-                        }
+    @Override
+    public ApiResponse
+            <Boolean> update(Long id, @Valid ZhurongScjinggongOrderitemDTO dto) {
+        boolean update = service.updateFromDTO(id, dto);
+        return ApiResponse.success(update);
+    }
 
-                        @Override
-                        public ApiResponse
-                        <Boolean> remove(Long id) {
-                            boolean remove = service.removeById(id);
-                            return ApiResponse.success(remove);
-                            }
+    @Override
+    public ApiResponse
+            <Boolean> remove(Long id) {
+        boolean remove = service.removeById(id);
+        return ApiResponse.success(remove);
+    }
 
-                            @Override
-                            public ApiResponse
-                            <Boolean> batchRemove(List
-                                <Long> ids) {
-                                    boolean remove = service.removeByIds(ids);
-                                    return ApiResponse.success(remove);
-                                    }
-                                    }
+    @Override
+    public ApiResponse
+            <Boolean> batchRemove(List
+                                          <Long> ids) {
+        boolean remove = service.removeByIds(ids);
+        return ApiResponse.success(remove);
+    }
+}

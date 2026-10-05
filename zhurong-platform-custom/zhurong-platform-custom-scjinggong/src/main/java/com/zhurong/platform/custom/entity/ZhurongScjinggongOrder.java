@@ -10,65 +10,65 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
-* 
-*
-* @author me
-* @since 2026-10-04
-*/
+ *
+ *
+ * @author me
+ * @since 2026-10-04
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("Zhurong_Scjinggong_Order")
 public class ZhurongScjinggongOrder extends BaseEntity implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-        /**
-        * 
-        */
-            @TableField("invalid_state")
-            private Boolean invalidState;
+    /**
+     *
+     */
+    @TableField("invalid_state")
+    private Boolean invalidState;
 
-        /**
-        * 批次号
-        */
-            @TableField("order_code")
-            private String orderCode;
+    /**
+     * 批次号
+     */
+    @TableField("order_code")
+    private String orderCode;
 
-        /**
-        * 批次名
-        */
-            @TableField("order_name")
-            private String orderName;
+    /**
+     * 批次名
+     */
+    @TableField("order_name")
+    private String orderName;
 
-        /**
-        * 
-        */
-            @TableField("udata1")
-            private String udata1;
+    /**
+     *
+     */
+    @TableField("udata1")
+    private String udata1;
 
-        /**
-        * 
-        */
-            @TableField("udata2")
-            private String udata2;
+    /**
+     *
+     */
+    @TableField("udata2")
+    private String udata2;
 
-        /**
-        * 
-        */
-            @TableField("udata3")
-            private String udata3;
+    /**
+     *
+     */
+    @TableField("udata3")
+    private String udata3;
 
-        /**
-        * 
-        */
-            @TableField("udata4")
-            private String udata4;
+    /**
+     *
+     */
+    @TableField("udata4")
+    private String udata4;
 
-        /**
-        * 
-        */
-            @TableField("udata5")
-            private String udata5;
+    /**
+     *
+     */
+    @TableField("udata5")
+    private String udata5;
 }

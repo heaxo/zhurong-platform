@@ -20,47 +20,6 @@ public class StaticResourcesController extends BaseStaticResourcesController {
 
     private final Environment environment;
 
-    /**
-     * 子类覆盖父类默认路径。
-     *
-     * 组合规则：
-     * lantek-config.install + 主数据库 databaseName
-     *
-     * 例如：
-     * C:\Lantek + LSystemDB = C:\Lantek\LSystemDB
-     */
-    @Override
-    protected Path getStaticResourceRootFolder() {
-        String install = lantekConfigProperties.getInstall();
-
-        if (!StringUtils.hasText(install)) {
-            install = RegistryHelper.getInstallDir();
-        }
-
-        String primary = environment.getProperty(
-                "spring.datasource.dynamic.primary",
-                "lantek"
-        );
-
-        String jdbcUrl = environment.getProperty(
-                "spring.datasource.dynamic.datasource." + primary + ".url"
-        );
-
-        String databaseName = getDatabaseNameFromJdbcUrl(jdbcUrl);
-
-        if (!StringUtils.hasText(databaseName)) {
-            throw new IllegalStateException(
-                    "主数据源 " + primary + " 的 JDBC URL 中未找到 databaseName：" + jdbcUrl
-            );
-        }
-
-        return Paths.get(install)
-                .resolve("Database")
-                .resolve(databaseName)
-                .toAbsolutePath()
-                .normalize();
-    }
-
     private static String getDatabaseNameFromJdbcUrl(String jdbcUrl) {
         if (!StringUtils.hasText(jdbcUrl)) {
             return "";
@@ -105,5 +64,46 @@ public class StaticResourcesController extends BaseStaticResourcesController {
         }
 
         return value;
+    }
+
+    /**
+     * 子类覆盖父类默认路径。
+     * <p>
+     * 组合规则：
+     * lantek-config.install + 主数据库 databaseName
+     * <p>
+     * 例如：
+     * C:\Lantek + LSystemDB = C:\Lantek\LSystemDB
+     */
+    @Override
+    protected Path getStaticResourceRootFolder() {
+        String install = lantekConfigProperties.getInstall();
+
+        if (!StringUtils.hasText(install)) {
+            install = RegistryHelper.getInstallDir();
+        }
+
+        String primary = environment.getProperty(
+                "spring.datasource.dynamic.primary",
+                "lantek"
+        );
+
+        String jdbcUrl = environment.getProperty(
+                "spring.datasource.dynamic.datasource." + primary + ".url"
+        );
+
+        String databaseName = getDatabaseNameFromJdbcUrl(jdbcUrl);
+
+        if (!StringUtils.hasText(databaseName)) {
+            throw new IllegalStateException(
+                    "主数据源 " + primary + " 的 JDBC URL 中未找到 databaseName：" + jdbcUrl
+            );
+        }
+
+        return Paths.get(install)
+                .resolve("Database")
+                .resolve(databaseName)
+                .toAbsolutePath()
+                .normalize();
     }
 }
