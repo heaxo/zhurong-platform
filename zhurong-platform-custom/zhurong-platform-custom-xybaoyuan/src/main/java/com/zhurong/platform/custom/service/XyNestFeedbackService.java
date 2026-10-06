@@ -20,13 +20,17 @@ import com.zhurong.platform.custom.feign.DisNestNest00000100FeignClient;
 import com.zhurong.platform.custom.properties.XyBaoyuanProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -39,6 +43,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class XyNestFeedbackService {
+    private static final int FTP_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
+
     private final DisNestNest00000100FeignClient nestClient;
     private final XyDataService dataService;
     private final ObjectMapper objectMapper;
@@ -194,28 +200,34 @@ public class XyNestFeedbackService {
     }
 
     private void checkFtpFile(String fullPath, String virtualRoot) {
-        String remote = remotePath(fullPath, virtualRoot);
+        String remote = remoteFtpPath(fullPath, virtualRoot);
         XyBaoyuanProperties.Ftp config = properties.getFeedback().getFtp();
-        FTPClient client = new FTPClient();
+        FTPClient client = ftpClient();
         try {
             client.connect(config.getHost(), config.getPort());
+            if (!FTPReply.isPositiveCompletion(client.getReplyCode())) throw new IllegalStateException("FTP连接失败");
             if (!client.login(config.getUsername(), config.getPassword())) throw new IllegalStateException("FTP登录失败");
             client.enterLocalPassiveMode();
-            if (client.listFiles(remote).length == 0) throw new IllegalArgumentException("FTP文件不存在: " + remote);
+            client.setFileType(FTP.BINARY_FILE_TYPE);
+            if (!ftpFileExists(client, remote)) throw new IllegalArgumentException("FTP文件不存在: " + remote);
         } catch (Exception exception) {
             if (exception instanceof RuntimeException runtimeException) throw runtimeException;
             throw new IllegalStateException("FTP文件检查失败: " + remote, exception);
         } finally {
-            if (client.isConnected()) try { client.disconnect(); } catch (Exception ignored) { }
+            closeFtpClient(client);
         }
     }
 
     private String ftpUrl(String fullPath, String virtualRoot) {
-        String remote = remotePath(fullPath, virtualRoot).replace('\\', '/');
+        String remote = remoteFtpPath(fullPath, virtualRoot);
         XyBaoyuanProperties.Ftp ftp = properties.getFeedback().getFtp();
         String user = encode(ftp.getUsername()); String password = encode(ftp.getPassword());
         String path = Arrays.stream(remote.split("/", -1)).map(XyNestFeedbackService::encode).collect(Collectors.joining("/"));
         return "ftp://" + user + ":" + password + "@" + ftp.getHost() + ":" + ftp.getPort() + "/" + path.replaceFirst("^/+", "");
+    }
+
+    private String remoteFtpPath(String fullPath, String virtualRoot) {
+        return remotePath(fullPath, virtualRoot).replace('\\', '/');
     }
 
     private String remotePath(String fullPath, String virtualRoot) {
@@ -224,6 +236,62 @@ public class XyNestFeedbackService {
         if (index < 0) throw new IllegalArgumentException("文件路径不在FTP虚拟目录中: " + fullPath);
         String remote = fullPath.substring(index);
         return remote;
+    }
+
+    private FTPClient ftpClient() {
+        FTPClient client = new FTPClient();
+        client.setAutodetectUTF8(false);
+        client.setDefaultTimeout(FTP_TIMEOUT_MILLIS);
+        client.setConnectTimeout(FTP_TIMEOUT_MILLIS);
+        client.setDataTimeout(Duration.ofMillis(FTP_TIMEOUT_MILLIS));
+        return client;
+    }
+
+    private boolean ftpFileExists(FTPClient client, String remote) throws IOException {
+        if (ftpFileExistsByPath(client, remote)) return true;
+
+        String utf8CommandPath = utf8Iso88591CommandPath(remote);
+        if (Objects.equals(utf8CommandPath, remote)) return false;
+
+        client.setControlEncoding(StandardCharsets.ISO_8859_1.name());
+        return ftpFileExistsByPath(client, utf8CommandPath);
+    }
+
+    private boolean ftpFileExistsByPath(FTPClient client, String remote) throws IOException {
+        FTPFile direct = client.mlistFile(remote);
+        if (direct != null) return true;
+        if (client.listFiles(remote).length > 0) return true;
+
+        int separator = remote.lastIndexOf('/');
+        if (separator < 0 || separator == remote.length() - 1) return false;
+
+        String parent = separator == 0 ? "/" : remote.substring(0, separator);
+        String fileName = remote.substring(separator + 1);
+        String originalWorkingDirectory = client.printWorkingDirectory();
+        try {
+            if (!client.changeWorkingDirectory(parent)) return false;
+            return Arrays.stream(client.listFiles()).anyMatch(file -> Objects.equals(file.getName(), fileName));
+        } finally {
+            if (StringUtils.hasText(originalWorkingDirectory)) {
+                client.changeWorkingDirectory(originalWorkingDirectory);
+            }
+        }
+    }
+
+    private String utf8Iso88591CommandPath(String remote) {
+        return new String(remote.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
+    }
+
+    private void closeFtpClient(FTPClient client) {
+        if (!client.isConnected()) return;
+        try {
+            client.logout();
+        } catch (Exception ignored) {
+        }
+        try {
+            client.disconnect();
+        } catch (Exception ignored) {
+        }
     }
 
     private String resolvePdfPath(DisNestNest00000100VO nest) {
