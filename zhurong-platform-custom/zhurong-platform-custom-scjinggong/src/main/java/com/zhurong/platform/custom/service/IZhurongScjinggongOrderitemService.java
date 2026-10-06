@@ -14,4 +14,6 @@ public interface IZhurongScjinggongOrderitemService extends IService<ZhurongScji
     Long saveFromDTO(ZhurongScjinggongOrderitemDTO dto);
 
     Boolean updateFromDTO(Long id, ZhurongScjinggongOrderitemDTO dto);
+
+    boolean importToExpert(ZhurongScjinggongOrderitemDTO dto);
 }

@@ -74,3 +74,7 @@ zhurong:
     user-name:
     version: 1.0.0
     heartbeat-seconds: 30
+
+scjinggong:
+  lantek:
+    install: C:\Lantek

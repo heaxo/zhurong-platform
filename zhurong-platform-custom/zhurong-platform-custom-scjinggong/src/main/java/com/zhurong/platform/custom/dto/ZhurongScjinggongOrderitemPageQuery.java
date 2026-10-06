@@ -174,6 +174,7 @@ public class ZhurongScjinggongOrderitemPageQuery extends BasePageQuery {
      *
      */
     private String udata12;
+    private Long orderId;
 
     /**
      * 创建时间开始

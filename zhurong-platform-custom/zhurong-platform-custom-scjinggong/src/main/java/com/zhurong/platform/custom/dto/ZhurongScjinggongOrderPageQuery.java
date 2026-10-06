@@ -108,6 +108,7 @@ public class ZhurongScjinggongOrderPageQuery extends BasePageQuery {
      *
      */
     private String udata5;
+    private Long orderId;
 
     /**
      * 创建时间开始

@@ -39,4 +39,5 @@ public class ZhurongScjinggongOrderitemVO implements Serializable {
     private String udata10;
     private String udata11;
     private String udata12;
+    private Long orderId;
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO
@@ -39,5 +40,13 @@ public class ZhurongScjinggongOrderitemDTO implements Serializable {
     private String udata10;
     private String udata11;
     private String udata12;
+    private Long orderId;
+
+    private String cusName;
+    private String matRef;
+    private Float thickness;
+    private String drawingPath;
+    private List<String> ids;
+    private String jobRef;
 
 }

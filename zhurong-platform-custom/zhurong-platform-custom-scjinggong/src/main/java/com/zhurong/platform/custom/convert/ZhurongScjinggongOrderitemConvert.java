@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.convert;
 
+import com.zhurong.platform.custom.dto.OrderItemRequestDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
@@ -39,6 +40,10 @@ public interface ZhurongScjinggongOrderitemConvert {
     ZhurongScjinggongOrderitem toEntity(ZhurongScjinggongOrderitemDTO dto);
 
     ZhurongScjinggongOrderitem toEntity(ZhurongScjinggongOrderitemPageQuery dto);
+    List<ZhurongScjinggongOrderitem> toEntitys(List<OrderItemRequestDTO> dto);
+
+    ZhurongScjinggongOrderitemDTO toDTO(ZhurongScjinggongOrderitem entity);
+    List<ZhurongScjinggongOrderitemDTO> toDTO(List<ZhurongScjinggongOrderitem> entity);
 
     /**
      * 更新时 DTO → Entity（忽略 null）

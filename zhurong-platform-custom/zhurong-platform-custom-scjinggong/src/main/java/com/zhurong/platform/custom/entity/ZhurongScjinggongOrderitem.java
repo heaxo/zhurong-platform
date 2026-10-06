@@ -138,4 +138,9 @@ public class ZhurongScjinggongOrderitem extends BaseEntity implements Serializab
      */
     @TableField("udata12")
     private String udata12;
+    /**
+     * 外码
+     */
+    @TableField("order_id")
+    private Long orderId;
 }

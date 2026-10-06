@@ -86,6 +86,7 @@ CREATE TABLE dbo.Zhurong_Scjinggong_OrderItem
     cus_ref     NVARCHAR(40) NOT NULL,
     ord_ref     NVARCHAR(40) NOT NULL,
     quantity     INT NOT NULL,
+    order_id     BIGINT NOT NULL,
     rdate       datetime NOT NULL,--订单交货日期
     udata1           NVARCHAR(255) NULL,--加工中心编码
     udata2           NVARCHAR(255) NULL,--U8生产订单号
