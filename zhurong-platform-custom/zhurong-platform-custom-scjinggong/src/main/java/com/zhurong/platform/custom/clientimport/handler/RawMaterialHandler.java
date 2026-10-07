@@ -9,7 +9,7 @@ import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
-import com.zhurong.platform.custom.properties.LantekConfigProperties;
+import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @ConditionalOnClientCommunicationEnabled
 public class RawMaterialHandler implements ClientImportHandler<RawMaterialRequest> {
 
-    private final LantekConfigProperties lantekConfigProperties;
+    private final ScjinggongProperties scjinggongProperties;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
 
     @Override
@@ -51,7 +51,7 @@ public class RawMaterialHandler implements ClientImportHandler<RawMaterialReques
                 dataList.size(),
                 recordIds);
 
-        String lantekInstall = lantekConfigProperties.getInstall();
+        String lantekInstall = scjinggongProperties.getLantek().getInstall();
         if (!StringUtils.hasText(lantekInstall)) {
             return ClientImportResult.failed("Lantek安装目录未配置，无法执行钢板/余料导入。", List.of());
         }

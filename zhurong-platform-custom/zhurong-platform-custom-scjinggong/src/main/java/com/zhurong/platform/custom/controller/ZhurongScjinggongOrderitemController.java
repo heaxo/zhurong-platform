@@ -10,7 +10,9 @@ import com.zhurong.platform.custom.api.IZhurongScjinggongOrderitemApi;
 import com.zhurong.platform.custom.convert.ZhurongScjinggongOrderitemConvert;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemPageQuery;
+import com.zhurong.platform.custom.entity.ZhurongScjinggongBasepart;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
+import com.zhurong.platform.custom.service.IZhurongScjinggongBasepartService;
 import com.zhurong.platform.custom.service.IZhurongScjinggongOrderitemService;
 import com.zhurong.platform.custom.vo.ZhurongScjinggongOrderitemVO;
 import com.zhurong.platform.custom.web.BaseController;
@@ -31,6 +33,7 @@ public class ZhurongScjinggongOrderitemController extends BaseController impleme
 
     private final ZhurongScjinggongOrderitemConvert convert;
     private final IZhurongScjinggongOrderitemService service;
+    private final IZhurongScjinggongBasepartService basepartService;
 
     @Override
     public ApiResponse
@@ -52,6 +55,22 @@ public class ZhurongScjinggongOrderitemController extends BaseController impleme
                 .stream()
                 .map(convert::toVO)
                 .toList();
+
+        List<String> prdRefs = voList.stream().map(ZhurongScjinggongOrderitemVO::getPrdRef).distinct().toList();
+
+        if (!prdRefs.isEmpty()){
+            List<ZhurongScjinggongBasepart> baseparts = basepartService.list(Wrappers.lambdaQuery(ZhurongScjinggongBasepart.class)
+                    .in(ZhurongScjinggongBasepart::getPrdRef, prdRefs));
+
+            List<String> _prdRefs = baseparts.stream()
+                    .map(ZhurongScjinggongBasepart::getPrdRef)
+                    .map(String::toLowerCase)
+                    .distinct().toList();
+            voList.forEach(it -> {
+                it.setPartIssued(_prdRefs.contains(it.getPrdRef().toLowerCase()));
+            });
+
+        }
 
         PageResponse
                 <ZhurongScjinggongOrderitemVO> response = new PageResponse<>(
@@ -82,6 +101,17 @@ public class ZhurongScjinggongOrderitemController extends BaseController impleme
             <Boolean> update(Long id, @Valid ZhurongScjinggongOrderitemDTO dto) {
         boolean update = service.updateFromDTO(id, dto);
         return ApiResponse.success(update);
+    }
+
+    @Override
+    public ApiResponse
+            <Boolean> importToExpert(@Valid ZhurongScjinggongOrderitemDTO dto) {
+        try{
+            boolean result = service.importToExpert(dto);
+            return ApiResponse.success(result);
+        }catch (Exception e){
+            return ApiResponse.fail(e.getMessage());
+        }
     }
 
     @Override

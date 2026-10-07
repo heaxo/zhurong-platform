@@ -7,7 +7,7 @@ import com.zhurong.platform.base.lantek.expert.lstx.LstxImportTool;
 import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
-import com.zhurong.platform.custom.properties.LantekConfigProperties;
+import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @ConditionalOnClientCommunicationEnabled
 public class PartDrawingArchiveHandler implements ClientImportHandler<PartDrawingArchiveRequest> {
 
-    private final LantekConfigProperties lantekConfigProperties;
+    private final ScjinggongProperties scjinggongProperties;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
 
     @Override
@@ -49,7 +49,7 @@ public class PartDrawingArchiveHandler implements ClientImportHandler<PartDrawin
                 dataList.size(),
                 recordIds);
 
-        String lantekInstall = lantekConfigProperties.getInstall();
+        String lantekInstall = scjinggongProperties.getLantek().getInstall();
         if (!StringUtils.hasText(lantekInstall)) {
             return ClientImportResult.failed("Lantek install path is not configured.", List.of());
         }

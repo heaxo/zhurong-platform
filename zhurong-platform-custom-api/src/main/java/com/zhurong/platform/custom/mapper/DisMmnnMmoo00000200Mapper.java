@@ -12,5 +12,5 @@ import com.zhurong.platform.custom.entity.DisMmnnMmoo00000200;
  * @since 2026-03-04
  */
 public interface DisMmnnMmoo00000200Mapper extends BaseMapper<DisMmnnMmoo00000200> {
-
+    String generateJobRef();
 }

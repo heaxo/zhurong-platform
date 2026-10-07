@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper.lantek.com.zhurong.platform.core.DisMmnnMmoo00000200Mapper">
-
+<mapper namespace="com.zhurong.platform.custom.mapper.DisMmnnMmoo00000200Mapper">
+    <select id="generateJobRef" resultType="String">
+        select CONCAT('JOB',RIGHT(cast('000000'+rtrim(CAST(
+                (ISNULL((select top 1 convert(int,SUBSTRING(JobRef,4,6))+1 JobRef from DIS_MMNN_MMOO_00000200 WITH (TABLOCK)
+                         where JobRef like 'JOB%'
+                         order by RecID desc),1)) as varchar(20)
+                                                      )) as varchar(20)),6)) AS JobRef
+    </select>
 </mapper>

@@ -58,7 +58,7 @@ public class BasepartRequestDTO implements Serializable {
     /**
      * 客户件号
      */
-    @JsonProperty("UserData1")
+    @JsonProperty("UserData2")
     private String udata2;
 
     /**

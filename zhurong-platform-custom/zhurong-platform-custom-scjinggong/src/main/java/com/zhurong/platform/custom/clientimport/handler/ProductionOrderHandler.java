@@ -8,7 +8,7 @@ import com.zhurong.platform.core.clientimport.mq.ClientImportBusinessTypes;
 import com.zhurong.platform.core.clientimport.mq.ClientImportTaskPayloadItem;
 import com.zhurong.platform.custom.clientimport.configuration.ConditionalOnClientCommunicationEnabled;
 import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
-import com.zhurong.platform.custom.properties.LantekConfigProperties;
+import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.service.IMmnnMmoo00000300Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
 
     private static final ReentrantLock LSTX_IMPORT_LOCK = new ReentrantLock(true);
 
-    private final LantekConfigProperties lantekConfigProperties;
+    private final ScjinggongProperties scjinggongProperties;
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
 
     @Override
@@ -54,7 +54,7 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
                 dataList.size(),
                 recordIds);
 
-        String lantekInstall = lantekConfigProperties.getInstall();
+        String lantekInstall = scjinggongProperties.getLantek().getInstall();
         if (!StringUtils.hasText(lantekInstall)) {
             return ClientImportResult.failed("Lantek安装目录未配置，无法执行生产订单LSTX导入。", List.of());
         }

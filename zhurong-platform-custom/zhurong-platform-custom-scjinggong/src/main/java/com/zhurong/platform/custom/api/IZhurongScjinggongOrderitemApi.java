@@ -53,6 +53,10 @@ public interface IZhurongScjinggongOrderitemApi {
     /**
      * 删除
      */
+    @PostMapping("/importToExpert")
+    ApiResponse
+            <Boolean> importToExpert(@Valid @RequestBody ZhurongScjinggongOrderitemDTO dto);
+
     @DeleteMapping("/{id}")
     ApiResponse
             <Boolean> remove(@PathVariable("id") Long id);

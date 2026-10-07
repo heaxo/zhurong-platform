@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.convert;
 
+import com.zhurong.platform.custom.dto.BasepartRequestDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongBasepartPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongBasepart;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-04T20:06:41+0800",
+    date = "2026-10-07T12:51:52+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -112,6 +113,33 @@ public class ZhurongScjinggongBasepartConvertImpl implements ZhurongScjinggongBa
         zhurongScjinggongBasepart.setUdata7( dto.getUdata7() );
         zhurongScjinggongBasepart.setUdata8( dto.getUdata8() );
         zhurongScjinggongBasepart.setDrawingPath( dto.getDrawingPath() );
+        zhurongScjinggongBasepart.setRawDrawingPath( dto.getRawDrawingPath() );
+
+        return zhurongScjinggongBasepart;
+    }
+
+    @Override
+    public ZhurongScjinggongBasepart toEntity(BasepartRequestDTO dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        ZhurongScjinggongBasepart zhurongScjinggongBasepart = new ZhurongScjinggongBasepart();
+
+        zhurongScjinggongBasepart.setPrdRef( dto.getPrdRef() );
+        zhurongScjinggongBasepart.setPrdName( dto.getPrdName() );
+        zhurongScjinggongBasepart.setWrkRef( dto.getWrkRef() );
+        zhurongScjinggongBasepart.setMatRef( dto.getMatRef() );
+        zhurongScjinggongBasepart.setThickness( dto.getThickness() );
+        zhurongScjinggongBasepart.setQuantity( dto.getQuantity() );
+        zhurongScjinggongBasepart.setUdata1( dto.getUdata1() );
+        zhurongScjinggongBasepart.setUdata2( dto.getUdata2() );
+        zhurongScjinggongBasepart.setUdata3( dto.getUdata3() );
+        zhurongScjinggongBasepart.setUdata4( dto.getUdata4() );
+        zhurongScjinggongBasepart.setUdata5( dto.getUdata5() );
+        zhurongScjinggongBasepart.setUdata6( dto.getUdata6() );
+        zhurongScjinggongBasepart.setUdata7( dto.getUdata7() );
+        zhurongScjinggongBasepart.setUdata8( dto.getUdata8() );
         zhurongScjinggongBasepart.setRawDrawingPath( dto.getRawDrawingPath() );
 
         return zhurongScjinggongBasepart;

@@ -39,7 +39,7 @@ public class DrawingDownloadTool {
     }
 
     public String download(String drawingPath) {
-        return downloadWithResult(drawingPath).storedRelativePath();
+        return downloadWithResult(drawingPath).storedAbsolutePath().toAbsolutePath().toString();
     }
 
     public DrawingDownloadResult downloadWithResult(String drawingPath) {

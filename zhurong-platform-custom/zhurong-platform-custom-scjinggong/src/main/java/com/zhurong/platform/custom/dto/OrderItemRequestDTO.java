@@ -1,6 +1,7 @@
 package com.zhurong.platform.custom.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -58,6 +59,7 @@ public class OrderItemRequestDTO implements Serializable {
      */
     @NotNull(message = "订单交货日期不能为空")
     @JsonProperty("ordDlvDt")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime rdate;
 
     /**

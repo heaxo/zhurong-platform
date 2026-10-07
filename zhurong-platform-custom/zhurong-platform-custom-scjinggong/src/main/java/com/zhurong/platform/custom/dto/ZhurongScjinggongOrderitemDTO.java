@@ -48,5 +48,7 @@ public class ZhurongScjinggongOrderitemDTO implements Serializable {
     private String drawingPath;
     private List<String> ids;
     private String jobRef;
+    private String jobName;
+    private String jobPath;
 
 }

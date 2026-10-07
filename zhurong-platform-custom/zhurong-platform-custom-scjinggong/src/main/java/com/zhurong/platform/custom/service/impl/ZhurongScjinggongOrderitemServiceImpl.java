@@ -7,10 +7,7 @@ import com.zhurong.platform.base.exception.BusinessException;
 import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlExporter;
 import com.zhurong.platform.base.lantek.expert.lstx.ExpertProductXmlItem;
 import com.zhurong.platform.base.lantek.expert.lstx.LstxImportTool;
-import com.zhurong.platform.base.lantek.expert.procesos.AutomationInstructionBuilder;
-import com.zhurong.platform.base.lantek.expert.procesos.ImportDwg;
-import com.zhurong.platform.base.lantek.expert.procesos.OpenExpert;
-import com.zhurong.platform.base.lantek.expert.procesos.OpenJob;
+import com.zhurong.platform.base.lantek.expert.procesos.*;
 import com.zhurong.platform.custom.convert.ZhurongScjinggongOrderitemConvert;
 import com.zhurong.platform.custom.drawing.DrawingDownloadTool;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemDTO;
@@ -18,6 +15,7 @@ import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
 import com.zhurong.platform.custom.entity.PprrPprr00000100;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongBasepart;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
+import com.zhurong.platform.custom.mapper.DisMmnnMmoo00000200Mapper;
 import com.zhurong.platform.custom.mapper.ZhurongScjinggongOrderitemMapper;
 import com.zhurong.platform.custom.model.BaseEntity;
 import com.zhurong.platform.custom.properties.ScjinggongProperties;
@@ -50,6 +48,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
     private final IZhurongScjinggongBasepartService zhurongScjinggongBasepartService;
     private final IPprrPprr00000100Service pprrPprr00000100Service;
     private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
+    private final DisMmnnMmoo00000200Mapper disMmnnMmoo00000200Mapper;
     private final DrawingDownloadTool drawingDownloadTool;
 
     private static String automationError(
@@ -91,8 +90,11 @@ public class ZhurongScjinggongOrderitemServiceImpl
 
         List<String> ids = dto.getIds();
         String jobRef = dto.getJobRef();
+        String jobPath = dto.getJobPath();
+        String jobName = dto.getJobName();
 
-        if (jobRef.isBlank()) {
+        if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(jobRef) &&
+                com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(jobName)) {
             throw new BusinessException("作业不能不指定");
         }
 
@@ -158,6 +160,15 @@ public class ZhurongScjinggongOrderitemServiceImpl
                 recordPrdRefs.add(prdRef);
             }
 
+            item.setUdata1(basepart.getUdata1());
+            item.setUdata2(basepart.getUdata2());
+            item.setUdata3(basepart.getUdata3());
+            item.setUdata4(basepart.getUdata4());
+            item.setUdata5(basepart.getUdata5());
+            item.setUdata6(basepart.getUdata6());
+            item.setUdata7(basepart.getUdata7());
+            item.setUdata8(basepart.getUdata8());
+
             return item;
         }).toList();
 
@@ -178,8 +189,14 @@ public class ZhurongScjinggongOrderitemServiceImpl
                     AutomationInstructionBuilder.AutomationVersion.V45,
                     install
             ).withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
-                    .addInstruction(new OpenExpert(true))
-                    .addInstruction(new OpenJob(jobRef));
+                    .addInstruction(new OpenExpert(true));
+
+            if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(jobRef)){
+                jobRef = disMmnnMmoo00000200Mapper.generateJobRef();
+                builder.addInstruction(new CreateJob(jobName, false, jobRef).setJobPath(jobPath));
+            }
+
+            builder.addInstruction(new OpenJob(jobRef));
 
             Path directory = LstxImportTool.defaultOutputDirectory();
             Files.createDirectories(directory);
@@ -271,6 +288,11 @@ public class ZhurongScjinggongOrderitemServiceImpl
                 .file(request.getDrawingPath())
                 .userData1(request.getUdata1())
                 .userData2(request.getUdata2())
-                .userData3(request.getUdata3());
+                .userData3(request.getUdata3())
+                .userData4(request.getUdata4())
+                .userData5(request.getUdata5())
+                .userData6(request.getUdata6())
+                .userData7(request.getUdata7())
+                .userData8(request.getUdata8());
     }
 }

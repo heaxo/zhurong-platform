@@ -25,6 +25,7 @@ public class ScjinggongProperties {
         private String url;
         private String withdrawUrl;
         private String secretKey;
+        private String U8StockTransferOrder;
         private final Ftp ftp = new Ftp();
     }
 

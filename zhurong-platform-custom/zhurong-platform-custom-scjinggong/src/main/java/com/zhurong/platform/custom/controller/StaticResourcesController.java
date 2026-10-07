@@ -1,6 +1,6 @@
 package com.zhurong.platform.custom.controller;
 
-import com.zhurong.platform.custom.properties.LantekConfigProperties;
+import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.util.RegistryHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 @RequestMapping("/staticResources")
 public class StaticResourcesController extends BaseStaticResourcesController {
 
-    private final LantekConfigProperties lantekConfigProperties;
+    private final ScjinggongProperties scjinggongProperties;
 
     private final Environment environment;
 
@@ -77,7 +77,7 @@ public class StaticResourcesController extends BaseStaticResourcesController {
      */
     @Override
     protected Path getStaticResourceRootFolder() {
-        String install = lantekConfigProperties.getInstall();
+        String install = scjinggongProperties.getLantek().getInstall();
 
         if (!StringUtils.hasText(install)) {
             install = RegistryHelper.getInstallDir();

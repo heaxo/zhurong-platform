@@ -23,6 +23,7 @@ public class OrderRequest implements Serializable {
     @Valid
     @NotNull(message = "生产订单不能为空")
     @NotEmpty(message = "生产订单不能为空")
+    @JsonProperty("PartList")
     public List<OrderItemRequestDTO> data;
 
     @NotBlank(message = "作业编码不能为空")

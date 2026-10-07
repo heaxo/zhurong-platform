@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.convert;
 
+import com.zhurong.platform.custom.dto.OrderItemRequestDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemDTO;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongOrderitemPageQuery;
 import com.zhurong.platform.custom.entity.ZhurongScjinggongOrderitem;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-04T20:06:42+0800",
+    date = "2026-10-07T12:51:54+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -59,6 +60,7 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitemVO.setUdata10( entity.getUdata10() );
         zhurongScjinggongOrderitemVO.setUdata11( entity.getUdata11() );
         zhurongScjinggongOrderitemVO.setUdata12( entity.getUdata12() );
+        zhurongScjinggongOrderitemVO.setOrderId( entity.getOrderId() );
 
         return zhurongScjinggongOrderitemVO;
     }
@@ -113,6 +115,7 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setUdata10( dto.getUdata10() );
         zhurongScjinggongOrderitem.setUdata11( dto.getUdata11() );
         zhurongScjinggongOrderitem.setUdata12( dto.getUdata12() );
+        zhurongScjinggongOrderitem.setOrderId( dto.getOrderId() );
 
         return zhurongScjinggongOrderitem;
     }
@@ -152,8 +155,78 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setUdata10( dto.getUdata10() );
         zhurongScjinggongOrderitem.setUdata11( dto.getUdata11() );
         zhurongScjinggongOrderitem.setUdata12( dto.getUdata12() );
+        zhurongScjinggongOrderitem.setOrderId( dto.getOrderId() );
 
         return zhurongScjinggongOrderitem;
+    }
+
+    @Override
+    public List<ZhurongScjinggongOrderitem> toEntitys(List<OrderItemRequestDTO> dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        List<ZhurongScjinggongOrderitem> list = new ArrayList<ZhurongScjinggongOrderitem>( dto.size() );
+        for ( OrderItemRequestDTO orderItemRequestDTO : dto ) {
+            list.add( orderItemRequestDTOToZhurongScjinggongOrderitem( orderItemRequestDTO ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public ZhurongScjinggongOrderitemDTO toDTO(ZhurongScjinggongOrderitem entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        ZhurongScjinggongOrderitemDTO zhurongScjinggongOrderitemDTO = new ZhurongScjinggongOrderitemDTO();
+
+        zhurongScjinggongOrderitemDTO.setId( entity.getId() );
+        zhurongScjinggongOrderitemDTO.setIsDeleted( entity.getIsDeleted() );
+        zhurongScjinggongOrderitemDTO.setVersion( entity.getVersion() );
+        zhurongScjinggongOrderitemDTO.setCreatedBy( entity.getCreatedBy() );
+        zhurongScjinggongOrderitemDTO.setCreatedAt( entity.getCreatedAt() );
+        zhurongScjinggongOrderitemDTO.setUpdatedBy( entity.getUpdatedBy() );
+        zhurongScjinggongOrderitemDTO.setUpdatedAt( entity.getUpdatedAt() );
+        zhurongScjinggongOrderitemDTO.setIsRead( entity.getIsRead() );
+        zhurongScjinggongOrderitemDTO.setIsReviewed( entity.getIsReviewed() );
+        zhurongScjinggongOrderitemDTO.setInvalidState( entity.getInvalidState() );
+        zhurongScjinggongOrderitemDTO.setPrdRef( entity.getPrdRef() );
+        zhurongScjinggongOrderitemDTO.setWrkRef( entity.getWrkRef() );
+        zhurongScjinggongOrderitemDTO.setCusRef( entity.getCusRef() );
+        zhurongScjinggongOrderitemDTO.setOrdRef( entity.getOrdRef() );
+        zhurongScjinggongOrderitemDTO.setQuantity( entity.getQuantity() );
+        zhurongScjinggongOrderitemDTO.setRdate( entity.getRdate() );
+        zhurongScjinggongOrderitemDTO.setUdata1( entity.getUdata1() );
+        zhurongScjinggongOrderitemDTO.setUdata2( entity.getUdata2() );
+        zhurongScjinggongOrderitemDTO.setUdata3( entity.getUdata3() );
+        zhurongScjinggongOrderitemDTO.setUdata4( entity.getUdata4() );
+        zhurongScjinggongOrderitemDTO.setUdata5( entity.getUdata5() );
+        zhurongScjinggongOrderitemDTO.setUdata6( entity.getUdata6() );
+        zhurongScjinggongOrderitemDTO.setUdata7( entity.getUdata7() );
+        zhurongScjinggongOrderitemDTO.setUdata8( entity.getUdata8() );
+        zhurongScjinggongOrderitemDTO.setUdata9( entity.getUdata9() );
+        zhurongScjinggongOrderitemDTO.setUdata10( entity.getUdata10() );
+        zhurongScjinggongOrderitemDTO.setUdata11( entity.getUdata11() );
+        zhurongScjinggongOrderitemDTO.setUdata12( entity.getUdata12() );
+        zhurongScjinggongOrderitemDTO.setOrderId( entity.getOrderId() );
+
+        return zhurongScjinggongOrderitemDTO;
+    }
+
+    @Override
+    public List<ZhurongScjinggongOrderitemDTO> toDTO(List<ZhurongScjinggongOrderitem> entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        List<ZhurongScjinggongOrderitemDTO> list = new ArrayList<ZhurongScjinggongOrderitemDTO>( entity.size() );
+        for ( ZhurongScjinggongOrderitem zhurongScjinggongOrderitem : entity ) {
+            list.add( toDTO( zhurongScjinggongOrderitem ) );
+        }
+
+        return list;
     }
 
     @Override
@@ -246,5 +319,37 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         if ( dto.getUdata12() != null ) {
             entity.setUdata12( dto.getUdata12() );
         }
+        if ( dto.getOrderId() != null ) {
+            entity.setOrderId( dto.getOrderId() );
+        }
+    }
+
+    protected ZhurongScjinggongOrderitem orderItemRequestDTOToZhurongScjinggongOrderitem(OrderItemRequestDTO orderItemRequestDTO) {
+        if ( orderItemRequestDTO == null ) {
+            return null;
+        }
+
+        ZhurongScjinggongOrderitem zhurongScjinggongOrderitem = new ZhurongScjinggongOrderitem();
+
+        zhurongScjinggongOrderitem.setPrdRef( orderItemRequestDTO.getPrdRef() );
+        zhurongScjinggongOrderitem.setWrkRef( orderItemRequestDTO.getWrkRef() );
+        zhurongScjinggongOrderitem.setCusRef( orderItemRequestDTO.getCusRef() );
+        zhurongScjinggongOrderitem.setOrdRef( orderItemRequestDTO.getOrdRef() );
+        zhurongScjinggongOrderitem.setQuantity( orderItemRequestDTO.getQuantity() );
+        zhurongScjinggongOrderitem.setRdate( orderItemRequestDTO.getRdate() );
+        zhurongScjinggongOrderitem.setUdata1( orderItemRequestDTO.getUdata1() );
+        zhurongScjinggongOrderitem.setUdata2( orderItemRequestDTO.getUdata2() );
+        zhurongScjinggongOrderitem.setUdata3( orderItemRequestDTO.getUdata3() );
+        zhurongScjinggongOrderitem.setUdata4( orderItemRequestDTO.getUdata4() );
+        zhurongScjinggongOrderitem.setUdata5( orderItemRequestDTO.getUdata5() );
+        zhurongScjinggongOrderitem.setUdata6( orderItemRequestDTO.getUdata6() );
+        zhurongScjinggongOrderitem.setUdata7( orderItemRequestDTO.getUdata7() );
+        zhurongScjinggongOrderitem.setUdata8( orderItemRequestDTO.getUdata8() );
+        zhurongScjinggongOrderitem.setUdata9( orderItemRequestDTO.getUdata9() );
+        zhurongScjinggongOrderitem.setUdata10( orderItemRequestDTO.getUdata10() );
+        zhurongScjinggongOrderitem.setUdata11( orderItemRequestDTO.getUdata11() );
+        zhurongScjinggongOrderitem.setUdata12( orderItemRequestDTO.getUdata12() );
+
+        return zhurongScjinggongOrderitem;
     }
 }
