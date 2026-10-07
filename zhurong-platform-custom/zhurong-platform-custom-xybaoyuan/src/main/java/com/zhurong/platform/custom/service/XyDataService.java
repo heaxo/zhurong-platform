@@ -85,18 +85,18 @@ public class XyDataService {
     }
 
     public PageResponse<XyManufacturingOrder> pageManufacturingOrders(XyRequests.ManufacturingOrderPage query) {
-        String prdRef = null;
+        List<String> prdRefs = null;
         if (StringUtils.hasText(query.getPrdName())) {
-            XyBasePart part = basePartMapper.selectOne(Wrappers.lambdaQuery(XyBasePart.class)
+            List<XyBasePart> xyBaseParts = basePartMapper.selectList(Wrappers.lambdaQuery(XyBasePart.class)
                     .eq(XyBasePart::getPrdName, query.getPrdName()));
-            prdRef = part == null ? "__NOT_FOUND__" : part.getPrdRef();
+            prdRefs = xyBaseParts.isEmpty() ? null : xyBaseParts.stream().map(XyBasePart::getPrdRef).toList();
         }
         LambdaQueryWrapper<XyManufacturingOrder> wrapper = Wrappers.lambdaQuery(XyManufacturingOrder.class)
                 .eq(XyManufacturingOrder::getInvalidState, false)
                 .like(StringUtils.hasText(query.getProductionOrderNumber()), XyManufacturingOrder::getProductionOrderNumber, query.getProductionOrderNumber())
                 .like(StringUtils.hasText(query.getProductionOrderErpInternalCode()), XyManufacturingOrder::getProductionOrderErpInternalCode, query.getProductionOrderErpInternalCode())
                 .like(StringUtils.hasText(query.getProductionWorkshopName()), XyManufacturingOrder::getProductionWorkshopName, query.getProductionWorkshopName())
-                .eq(prdRef != null, XyManufacturingOrder::getPrdRef, prdRef)
+                .in(prdRefs != null, XyManufacturingOrder::getPrdRef, prdRefs)
                 .like(StringUtils.hasText(query.getMatRef()), XyManufacturingOrder::getMatRef, query.getMatRef())
                 .eq(query.getThickness() != null, XyManufacturingOrder::getThickness, query.getThickness())
                 .like(StringUtils.hasText(query.getPrdName()), XyManufacturingOrder::getPrdName, query.getPrdName())
@@ -123,7 +123,7 @@ public class XyDataService {
         orders.forEach(order -> {
             XyBasePart part = parts.get(normalize(order.getPrdRef()));
             if (part == null) {
-                order.setPartMaintenance(false);
+                order.setPartMaintenance(null);
                 return;
             }
             order.setDrawingCode(part.getDrawingCode());
