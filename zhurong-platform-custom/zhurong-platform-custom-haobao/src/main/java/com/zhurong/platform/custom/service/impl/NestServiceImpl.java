@@ -40,6 +40,7 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
         query.setPageSize(-1L);
         query.setLoadPlan(new RelationLoadPlan()
                 .setIncludeNestParts(true)
+                .setIncludePartMaster(true)
                 .setIncludePlanMaster(true));
 
         ApiResponse<PageResponse<DisNestNest00000100VO>> apiResponse =
@@ -82,7 +83,7 @@ public class NestServiceImpl extends ServiceImpl<DisNestNest00000100Mapper, DisN
 
                             // 零件编码
                             vo.setPrdRef(nestPart.getPrdRefDst());
-                            vo.setQrCodeContent(nestPart.getWorkOrder().getOrdRef());
+                            vo.setQrCodeContent(nestPart.getItem().getDIS_UData2_Prt());
 
                             // 零件名称
                             vo.setPrdName(nestPart.getWorkOrder().getPrdNameDst());
