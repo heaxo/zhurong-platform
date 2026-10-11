@@ -1,6 +1,6 @@
 package ${package.Parent}.dto;
 
-import model.com.zhurong.platform.base.BasePageQuery;
+import com.zhurong.platform.base.model.BasePageQuery;
 import lombok.Getter;
 import lombok.Setter;
 

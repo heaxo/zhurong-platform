@@ -69,12 +69,12 @@ mybatis-plus:
 
 zhurong:
   client-communication:
-    enabled: false
+    enabled: true
     client-id: CLIENT-01
     user-name:
     version: 1.0.0
     heartbeat-seconds: 30
 
-scjinggong:
-  lantek:
-    install: C:\Lantek
+  scjinggong:
+    lantek:
+      install: C:\Lantek

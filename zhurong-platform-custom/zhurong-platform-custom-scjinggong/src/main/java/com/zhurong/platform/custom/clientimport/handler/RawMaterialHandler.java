@@ -13,7 +13,6 @@ import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.service.IPprrPprr00000100Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.nio.file.Path;
@@ -23,7 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 @ConditionalOnClientCommunicationEnabled
 public class RawMaterialHandler implements ClientImportHandler<RawMaterialRequest> {

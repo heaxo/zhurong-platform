@@ -36,7 +36,9 @@ public class ScjinggongProperties {
         private String username;
         private String password;
         private String cncVirtualRoot;
-        private String pdfVirtualRoot;
+        private String dxfVirtualRoot;
+//        private String pdfVirtualRoot;
+        private String partDxfVirtualRoot;
     }
 
     @Data

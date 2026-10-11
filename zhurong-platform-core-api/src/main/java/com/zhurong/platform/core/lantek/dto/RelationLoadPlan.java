@@ -19,6 +19,9 @@ public class RelationLoadPlan {
     /** 是否补套料工艺统计 */
     private boolean includeNestMetrics;
 
+    /** 是否补套料零件工艺统计 */
+    private boolean includeNestPartMetrics;
+
     /** 是否补套料输出文档 */
     private boolean includeNestFiles;
 

@@ -196,6 +196,7 @@ public class PprrPprr00000100ServiceImpl
             doc.setBMP(findFileName(fileRows, SysOwndDocDsc.BMP.name()));
             doc.setIMGB(findFileName(fileRows, SysOwndDocDsc.IMGB.name()));
             doc.setMEC(findFileName(fileRows, SysOwndDocDsc.MEC.name()));
+            doc.setDXF(findFileName(fileRows, SysOwndDocDsc.DXF.name()));
 
             doc.setFullPathBMP(LantekFilePathBuilder.combine(lantekConfigProperties.getInstall(), doc.getBMP()));
             doc.setFullPathIMGB(LantekFilePathBuilder.combine(lantekConfigProperties.getInstall(), doc.getIMGB()));

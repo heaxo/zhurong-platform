@@ -20,6 +20,7 @@ public class NestingDocument {
     private String BMP;
     private String CHP;
     private String CNC;
+    private String DXF;
     private String IMGB;
     private String JOBRPT;
     private String MEC;

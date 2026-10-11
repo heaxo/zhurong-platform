@@ -20,6 +20,7 @@ public class ItemsDocument {
     private String BMP;
     private String IMGB;
     private String MEC;
+    private String DXF;
 
     /**
      * 绝对路径

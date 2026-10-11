@@ -60,6 +60,16 @@ public class MCode {
         /// 下料时长（s）
         /// NH004	Auxiliar time: Sheet download 
         public static String SheetDownloadAuxiliarTimeCode = "NH004";
+
+        public static String NeedleMarkingLengthCode = "NB004";
+        public static String PowderMarkingLengthCode = "NB005";
+        public static String PenMarkingLengthCode = "NB006";
+        public static String CutMarkingLengthCode = "NB007";
+        public static String NumberOfMarkingTimesCode = "NC004";
+        public static String NeedleMarkingDurationCode = "ND004";
+        public static String PowderMarkingDurationCode = "ND005";
+        public static String PenMarkingDurationCode = "ND006";
+        public static String CutMarkingDurationCode = "ND007";
     }
 
     /// 钣金件辅助数据代码
@@ -127,5 +137,8 @@ public class MCode {
         /// 零件面积加的最大比例（mm）
         /// NG009	Maximum part area to be increased percentage
         public static String MaximumPartAreaToBeIncreasedPercentageCode = "NG009";
+        public static String MarkingLengthCode = "NB006";
+        public static String NumberOfMarkingTimesCode = "NC004";
+        public static String MarkingDurationCode = "ND006";
     }
 }

@@ -22,6 +22,7 @@ public class DisNestNest00000100VO implements Serializable {
     private NestingDocument nestingDocument;
     private Double partWeight;
     private Double partArea;
+    private Double scrapWeight;
 
     private String CNCPath;
     private String WMFPath;
@@ -47,6 +48,18 @@ public class DisNestNest00000100VO implements Serializable {
             }
             return 0D;
         }).sum();
+    }
+    public Double getScrapWeight(){
+        double remnantWeight = 0D;
+        if (nestRemnant != null && !nestRemnant.isEmpty()){
+            remnantWeight = nestRemnant.stream().mapToDouble(it -> {
+                if (it.getItem() != null && it.getQuantity() != null && it.getItem().getWeight() != null){
+                    return it.getQuantity() * it.getItem().getWeight();
+                }
+                return 0D;
+            }).sum();
+        }
+        return (SWeight == null ? 0D : SWeight) - remnantWeight - getPartWeight();
     }
 
 

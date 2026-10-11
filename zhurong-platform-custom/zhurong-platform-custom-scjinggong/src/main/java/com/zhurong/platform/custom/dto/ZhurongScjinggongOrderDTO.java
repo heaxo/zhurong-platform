@@ -4,12 +4,16 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * DTO
  */
 @Data
 public class ZhurongScjinggongOrderDTO implements Serializable {
+
+    private List<String> nestRecIds;
+    private String jobRef;
 
     private Long id;
     private Boolean isDeleted;

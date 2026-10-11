@@ -378,6 +378,17 @@ public class DisNestNest00000100ServiceImpl
             vo.setTotalCost(pickMetric(rows, MCode.DisNestNest00000200.TotalCostCode));
             vo.setSheetUploadAuxiliarTime(pickMetric(rows, MCode.DisNestNest00000200.SheetUploadAuxiliarTimeCode));
             vo.setSheetDownloadAuxiliarTime(pickMetric(rows, MCode.DisNestNest00000200.SheetDownloadAuxiliarTimeCode));
+            vo.setMarkingLength(sumMetric(rows,
+                    MCode.DisNestNest00000200.NeedleMarkingLengthCode,
+                    MCode.DisNestNest00000200.PowderMarkingLengthCode,
+                    MCode.DisNestNest00000200.PenMarkingLengthCode,
+                    MCode.DisNestNest00000200.CutMarkingLengthCode));
+            vo.setNumberOfMarkingTimes(pickMetric(rows, MCode.DisNestNest00000200.NumberOfMarkingTimesCode));
+            vo.setMarkingDuration(sumMetric(rows,
+                    MCode.DisNestNest00000200.NeedleMarkingDurationCode,
+                    MCode.DisNestNest00000200.PowderMarkingDurationCode,
+                    MCode.DisNestNest00000200.PenMarkingDurationCode,
+                    MCode.DisNestNest00000200.CutMarkingDurationCode));
             return vo;
         }).toList();
     }
@@ -412,6 +423,7 @@ public class DisNestNest00000100ServiceImpl
             vo.setCHP(pickFile(fileRows, SysOwndDocDsc.CHP.name()));
             vo.setCNC(pickFile(fileRows, SysOwndDocDsc.CNC.name()));
             vo.setIMGB(pickFile(fileRows, SysOwndDocDsc.IMGB.name()));
+            vo.setDXF(pickFile(fileRows, SysOwndDocDsc.DXF.name()));
             vo.setJOBRPT(pickFile(fileRows, SysOwndDocDsc.JOBRPT.name()));
             vo.setMEC(pickFile(fileRows, SysOwndDocDsc.MEC.name()));
             vo.setXML(pickFile(fileRows, SysOwndDocDsc.XML.name()));
@@ -434,6 +446,16 @@ public class DisNestNest00000100ServiceImpl
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(0D);
+    }
+
+    private double sumMetric(List<DisNestNest00000200> rows, String... codes) {
+        Set<String> codeSet = Set.of(codes);
+        return rows.stream()
+                .filter(it -> codeSet.contains(it.getMCode()))
+                .map(DisNestNest00000200::getDValue)
+                .filter(Objects::nonNull)
+                .mapToDouble(Double::doubleValue)
+                .sum();
     }
 
     private String pickFile(List<SystOwnd00000100> rows, String docType) {

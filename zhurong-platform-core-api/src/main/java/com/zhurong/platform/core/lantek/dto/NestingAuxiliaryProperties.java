@@ -56,4 +56,10 @@ public class NestingAuxiliaryProperties
     /// 下料时长（s）
     /// NH004	Auxiliar time: Sheet download 
     public Double sheetDownloadAuxiliarTime;
+    /// NB004 + NB005 + NB006 + NB007
+    public Double markingLength;
+    /// NC004
+    public Double numberOfMarkingTimes;
+    /// ND004 + ND005 + ND006 + ND007
+    public Double markingDuration;
 }

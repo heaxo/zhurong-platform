@@ -10,6 +10,9 @@ import lombok.Data;
 @Data
 public class SheetPartsAuxiliaryData {
     public String prdRef;
+    public String wrkRef;
+    public String matRef;
+    public Double thickness;
     /// 位移长度
     /// NB001
     public Double displacementLength;
@@ -64,4 +67,10 @@ public class SheetPartsAuxiliaryData {
     /// 零件面积加的最大比例（mm）
     /// NG009	Maximum part area to be increased percentage
     public Double maximumPartAreaToBeIncreasedPercentage;
+    /// NB006
+    public Double markingLength;
+    /// NC004
+    public Double numberOfMarkingTimes;
+    /// ND006
+    public Double markingDuration;
 }
