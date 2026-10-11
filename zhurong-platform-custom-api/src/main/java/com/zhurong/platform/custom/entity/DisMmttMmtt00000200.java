@@ -1,8 +1,9 @@
 package com.zhurong.platform.custom.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.zhurong.platform.base.model.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("DIS_MMTT_MMTT_00000200")
-public class DisMmttMmtt00000200 extends BaseEntity implements Serializable {
+public class DisMmttMmtt00000200 implements Serializable {
 
 private static final long serialVersionUID = 1L;
 
@@ -124,6 +125,6 @@ private static final long serialVersionUID = 1L;
         /**
         * 
         */
-            @TableField("RecID")
+            @TableId(value = "RecID", type = IdType.ASSIGN_ID)
             private Integer recID;
 }
