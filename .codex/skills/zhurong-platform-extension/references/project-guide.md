@@ -18,12 +18,12 @@
 当前可见客户模块：
 
 - `zhurong-platform-custom-template`：新客户应用基线模板。
-- `zhurong-platform-custom-goodmate`：当前 `settings.gradle` 中启用的客户模块，包含较新的 client-import handler 样例。
+- `zhurong-platform-custom-scjinggong`：当前 `settings.gradle` 中启用的客户模块，包含较新的 client-import handler 样例。
 - `zhurong-platform-custom-but`：较复杂客户模块，包含 SAP HANA、Oracle ERP、额外实体、controller 和多数据源模式。
 - `zhurong-platform-custom-haobao`：包含 POI/ZXing 标签和 Excel 相关依赖的客户模块。
 - `zhurong-platform-custom-crun`：较早风格客户模块，包含 OpenFeign/MyBatis starter 模式。
 
-当前 `settings.gradle` 只 include 了 `zhurong-platform-custom-goodmate`，其他客户模块 include 被注释。根目录 `build.gradle` 的 `webServiceProjects` 列表在切换 active 客户模块时也可能需要同步调整。
+当前 `settings.gradle` 只 include 了 `zhurong-platform-custom-scjinggong`，其他客户模块 include 被注释。根目录 `build.gradle` 的 `webServiceProjects` 列表在切换 active 客户模块时也可能需要同步调整。
 
 ## 常用配置点
 
@@ -112,9 +112,9 @@ Custom 端职责：
 - `RAW_MATERIAL`
 - `PING`
 
-已有业务类型的客户侧实现可参考 `goodmate`：
+已有业务类型的客户侧实现可参考 `scjinggong`：
 
-- `zhurong-platform-custom/zhurong-platform-custom-goodmate/src/main/java/com/zhurong/platform/custom/clientimport/handler/PartDrawingArchiveHandler.java`
+- `zhurong-platform-custom/zhurong-platform-custom-scjinggong/src/main/java/com/zhurong/platform/custom/clientimport/handler/PartDrawingArchiveHandler.java`
 - `.../ProductionOrderHandler.java`
 - `.../RawMaterialHandler.java`
 
@@ -185,7 +185,7 @@ Custom 实现：
 .\gradlew.bat :zhurong-platform-core-api:compileJava
 .\gradlew.bat :zhurong-platform-core:compileJava
 .\gradlew.bat :zhurong-platform-custom-api:compileJava
-.\gradlew.bat :zhurong-platform-custom:zhurong-platform-custom-goodmate:compileJava
+.\gradlew.bat :zhurong-platform-custom:zhurong-platform-custom-scjinggong:compileJava
 ```
 
 改动 Gradle 或模块边界后再跑更广的构建：

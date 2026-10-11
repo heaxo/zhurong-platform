@@ -17,10 +17,9 @@ on:
       custom_module:
         description: Custom module to build when service is all or custom
         required: true
-        default: goodmate
+        default: scjinggong
         type: choice
         options:
-          - goodmate
           - haobao
           - crun
           - but

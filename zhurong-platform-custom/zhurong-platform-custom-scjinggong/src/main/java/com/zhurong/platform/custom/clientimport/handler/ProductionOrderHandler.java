@@ -47,7 +47,7 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
     public ClientImportResult execute(ClientImportContext<ProductionOrderRequest> context) {
         List<ProductionOrderRequest> dataList = context.getDataList();
         List<Long> recordIds = context.getRecordIds();
-        log.info("goodmate收到生产订单批量导入任务，taskId={}, requestId={}, count={}, recordIds={}",
+        log.info("scjinggong收到生产订单批量导入任务，taskId={}, requestId={}, count={}, recordIds={}",
                 context.getTask().getTaskId(),
                 context.getTask().getRequestId(),
                 dataList.size(),
@@ -92,14 +92,14 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
                 );
                 LstxImportTool.ExecResult execResult = result.execResult();
                 if (!execResult.success()) {
-                    log.warn("goodmate生产订单LSTX导入失败，xmlPath={}, exitCode={}, stdout={}, stderr={}",
+                    log.warn("scjinggong生产订单LSTX导入失败，xmlPath={}, exitCode={}, stdout={}, stderr={}",
                             result.xmlPath(), execResult.exitCode(), execResult.stdout(), execResult.stderr());
                     return ClientImportResult.failed(
                             "生产订单LSTX导入失败，exitCode=" + execResult.exitCode(),
                             recordIdsForMnORefs(context, existingMnORefs)
                     );
                 }
-                log.info("goodmate生产订单LSTX导入完成，xmlPath={}, durationMs={}",
+                log.info("scjinggong生产订单LSTX导入完成，xmlPath={}, durationMs={}",
                         result.xmlPath(), execResult.durationMs());
             }
 
@@ -113,7 +113,7 @@ public class ProductionOrderHandler implements ClientImportHandler<ProductionOrd
                     importedRecordIds
             );
         } catch (Exception e) {
-            log.error("goodmate生产订单LSTX导入异常", e);
+            log.error("scjinggong生产订单LSTX导入异常", e);
             return ClientImportResult.failed("生产订单LSTX导入异常：" + e.getMessage(), List.of());
         } finally {
             LSTX_IMPORT_LOCK.unlock();

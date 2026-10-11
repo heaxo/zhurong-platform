@@ -20,7 +20,7 @@ description: 面向 zhurong-platform 的项目专属扩展指南。适用于在�
    - 新标准导入业务：同时更新 core 端标准接入和 custom 端客户处理器。
    - Lantek CRUD 或 API 能力：先查看生成器和已有生成代码模式，再决定是否手写。
 2. 编码前先找最近的已有样例：
-   - `goodmate`：当前 client-import 客户端处理器样例。
+   - `scjinggong`：当前 client-import 客户端处理器样例。
    - `but`：多数据源、ERP、SAP HANA、客户复杂业务样例。
    - `template`：新客户模块基线。
 3. 检查 `settings.gradle`，确认当前启用的客户模块。新增或切换 include 要显式处理，不要假设所有客户模块会一起编译。
@@ -77,7 +77,7 @@ description: 面向 zhurong-platform 的项目专属扩展指南。适用于在�
 先跑聚焦的 Gradle 命令：
 
 ```powershell
-.\gradlew.bat :zhurong-platform-custom:zhurong-platform-custom-goodmate:compileJava
+.\gradlew.bat :zhurong-platform-custom:zhurong-platform-custom-scjinggong:compileJava
 .\gradlew.bat :zhurong-platform-core:compileJava
 .\gradlew.bat :zhurong-platform-custom-api:compileJava
 ```

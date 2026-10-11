@@ -44,7 +44,7 @@ public class RawMaterialHandler implements ClientImportHandler<RawMaterialReques
     public ClientImportResult execute(ClientImportContext<RawMaterialRequest> context) {
         List<RawMaterialRequest> dataList = context.getDataList();
         List<Long> recordIds = context.getRecordIds();
-        log.info("goodmate收到钢板/余料批量导入任务，taskId={}, requestId={}, count={}, recordIds={}",
+        log.info("scjinggong收到钢板/余料批量导入任务，taskId={}, requestId={}, count={}, recordIds={}",
                 context.getTask().getTaskId(),
                 context.getTask().getRequestId(),
                 dataList.size(),
@@ -73,14 +73,14 @@ public class RawMaterialHandler implements ClientImportHandler<RawMaterialReques
             Path prcPath = builder.buildPrcPath();
             AutomationInstructionBuilder.ExecResult execResult = builder.execute(prcPath);
             if (!execResult.success()) {
-                log.warn("goodmate钢板/余料PRC导入失败，lstPath={}, prcPath={}, exitCode={}, stdout={}, stderr={}",
+                log.warn("scjinggong钢板/余料PRC导入失败，lstPath={}, prcPath={}, exitCode={}, stdout={}, stderr={}",
                         lstPath, prcPath, execResult.exitCode(), execResult.stdout(), execResult.stderr());
                 return ClientImportResult.failed("钢板/余料PRC导入失败，exitCode=" + execResult.exitCode(), List.of());
             }
 
             Set<String> importedPrdRefs = findImportedPrdRefs(prdRefs);
             List<Long> importedRecordIds = recordIdsForPrdRefs(context, importedPrdRefs);
-            log.info("goodmate钢板/余料PRC导入完成，lstPath={}, prcPath={}, durationMs={}",
+            log.info("scjinggong钢板/余料PRC导入完成，lstPath={}, prcPath={}, durationMs={}",
                     lstPath, prcPath, execResult.durationMs());
 
             if (importedRecordIds.size() == recordIds.size()) {
@@ -91,7 +91,7 @@ public class RawMaterialHandler implements ClientImportHandler<RawMaterialReques
                     importedRecordIds
             );
         } catch (Exception e) {
-            log.error("goodmate钢板/余料导入异常", e);
+            log.error("scjinggong钢板/余料导入异常", e);
             return ClientImportResult.failed("钢板/余料导入异常：" + e.getMessage(), List.of());
         }
     }
