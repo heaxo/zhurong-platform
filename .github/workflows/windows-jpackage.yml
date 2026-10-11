@@ -25,6 +25,7 @@ on:
           - crun
           - but
           - xybaoyuan
+          - scjinggong
 
 permissions:
   contents: read
