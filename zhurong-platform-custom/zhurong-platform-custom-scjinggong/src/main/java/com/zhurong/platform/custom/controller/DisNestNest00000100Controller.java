@@ -29,4 +29,14 @@ public class DisNestNest00000100Controller extends com.zhurong.platform.custom.w
             return ApiResponse.fail(e.getMessage());
         }
     }
+
+    @PostMapping("/withdraw")
+    public ApiResponse<Boolean> withdraw(@Valid @RequestBody ZhurongScjinggongOrderDTO request) {
+        try{
+            orderService.withdraw(request);
+            return ApiResponse.success(true);
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
+    }
 }
