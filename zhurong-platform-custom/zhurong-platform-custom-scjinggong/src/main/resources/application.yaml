@@ -75,6 +75,19 @@ zhurong:
     version: 1.0.0
     heartbeat-seconds: 30
 
-  scjinggong:
-    lantek:
-      install: C:\Lantek
+scjinggong:
+  lantek:
+    install: D:\Lantek
+  u8:
+    steel-plate-url: http://127.0.0.1/a/b/e
+  feedback:
+    url: http://127.0.0.1/a/b/c
+    withdraw-url: http://127.0.0.1/a/b/d
+    ftp:
+      host: 10.40.8.42
+      port: 21
+      username: LantekFTP
+      password: Lantek@ftp111
+      cnc-virtual-root: CNC
+      dxf-virtual-root: Nestings
+      part-dxf-virtual-root: Products

@@ -17,7 +17,6 @@ public class ScjinggongProperties {
     @Data
     public static class U8 {
         private String steelPlateUrl;
-        private String secretKey;
     }
 
     @Data
