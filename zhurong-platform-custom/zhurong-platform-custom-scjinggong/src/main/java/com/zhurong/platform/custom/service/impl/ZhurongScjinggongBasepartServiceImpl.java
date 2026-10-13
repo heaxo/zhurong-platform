@@ -60,7 +60,7 @@ public class ZhurongScjinggongBasepartServiceImpl
                 .in(ZhurongScjinggongBasepart::getPrdRef, prdRefs)
         );
 
-        if (!existingData.isEmpty()){
+        if (!existingData.isEmpty()) {
             List<String> _prdRefs = existingData.stream().map(ZhurongScjinggongBasepart::getPrdRef).distinct().toList();
             throw new BusinessException(String.format("零件档案已存在：%s", String.join(",", _prdRefs)));
         }
@@ -69,7 +69,7 @@ public class ZhurongScjinggongBasepartServiceImpl
         List<String> _matRefs = materials.stream().map(DisMmttMmtt00000100::getMatRef).toList();
         matRefs.removeAll(_matRefs);
 
-        if (!matRefs.isEmpty()){
+        if (!matRefs.isEmpty()) {
             throw new BusinessException(String.format("材质不存在，请打开套料软件【管理-材料-新增】维护：%s", String.join(",", matRefs)));
         }
 

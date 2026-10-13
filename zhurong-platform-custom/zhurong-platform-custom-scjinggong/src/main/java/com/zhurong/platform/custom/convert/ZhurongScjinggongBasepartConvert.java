@@ -38,6 +38,7 @@ public interface ZhurongScjinggongBasepartConvert {
      * DTO → Entity
      */
     ZhurongScjinggongBasepart toEntity(ZhurongScjinggongBasepartDTO dto);
+
     ZhurongScjinggongBasepart toEntity(BasepartRequestDTO dto);
 
     ZhurongScjinggongBasepart toEntity(ZhurongScjinggongBasepartPageQuery dto);

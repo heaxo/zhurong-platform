@@ -82,6 +82,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
 
     /**
      * 导入MES工单到Expert
+     *
      * @param dto
      * @return
      */
@@ -109,11 +110,11 @@ public class ZhurongScjinggongOrderitemServiceImpl
         List<String> cusRefs = list.stream().map(ZhurongScjinggongOrderitem::getCusRef).distinct().toList();
 
         int updateCount = 0;
-        if ((updateCount = importedState(cusRefs)) == cusRefs.size()){
+        if ((updateCount = importedState(cusRefs)) == cusRefs.size()) {
             return true;
         }
 
-        if (updateCount > 0){
+        if (updateCount > 0) {
             list = list(Wrappers.lambdaQuery(ZhurongScjinggongOrderitem.class)
                     .eq(BaseEntity::getIsRead, false)
                     .in(BaseEntity::getId, ids));
@@ -191,7 +192,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
             ).withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
                     .addInstruction(new OpenExpert(true));
 
-            if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(jobRef)){
+            if (com.baomidou.mybatisplus.core.toolkit.StringUtils.isBlank(jobRef)) {
                 jobRef = disMmnnMmoo00000200Mapper.generateJobRef();
                 builder.addInstruction(new CreateJob(jobName, false, jobRef).setJobPath(jobPath));
             }

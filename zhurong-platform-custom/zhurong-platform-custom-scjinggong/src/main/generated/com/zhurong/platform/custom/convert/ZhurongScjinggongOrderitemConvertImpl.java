@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-11T16:43:30+0800",
+    date = "2026-10-13T21:10:06+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -60,6 +60,14 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitemVO.setUdata10( entity.getUdata10() );
         zhurongScjinggongOrderitemVO.setUdata11( entity.getUdata11() );
         zhurongScjinggongOrderitemVO.setUdata12( entity.getUdata12() );
+        zhurongScjinggongOrderitemVO.setUdata13( entity.getUdata13() );
+        zhurongScjinggongOrderitemVO.setUdata14( entity.getUdata14() );
+        zhurongScjinggongOrderitemVO.setUdata15( entity.getUdata15() );
+        zhurongScjinggongOrderitemVO.setUdata16( entity.getUdata16() );
+        zhurongScjinggongOrderitemVO.setUdata17( entity.getUdata17() );
+        zhurongScjinggongOrderitemVO.setUdata18( entity.getUdata18() );
+        zhurongScjinggongOrderitemVO.setUdata19( entity.getUdata19() );
+        zhurongScjinggongOrderitemVO.setUdata20( entity.getUdata20() );
         zhurongScjinggongOrderitemVO.setOrderId( entity.getOrderId() );
 
         return zhurongScjinggongOrderitemVO;
@@ -115,6 +123,14 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setUdata10( dto.getUdata10() );
         zhurongScjinggongOrderitem.setUdata11( dto.getUdata11() );
         zhurongScjinggongOrderitem.setUdata12( dto.getUdata12() );
+        zhurongScjinggongOrderitem.setUdata13( dto.getUdata13() );
+        zhurongScjinggongOrderitem.setUdata14( dto.getUdata14() );
+        zhurongScjinggongOrderitem.setUdata15( dto.getUdata15() );
+        zhurongScjinggongOrderitem.setUdata16( dto.getUdata16() );
+        zhurongScjinggongOrderitem.setUdata17( dto.getUdata17() );
+        zhurongScjinggongOrderitem.setUdata18( dto.getUdata18() );
+        zhurongScjinggongOrderitem.setUdata19( dto.getUdata19() );
+        zhurongScjinggongOrderitem.setUdata20( dto.getUdata20() );
         zhurongScjinggongOrderitem.setOrderId( dto.getOrderId() );
 
         return zhurongScjinggongOrderitem;
@@ -155,6 +171,14 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setUdata10( dto.getUdata10() );
         zhurongScjinggongOrderitem.setUdata11( dto.getUdata11() );
         zhurongScjinggongOrderitem.setUdata12( dto.getUdata12() );
+        zhurongScjinggongOrderitem.setUdata13( dto.getUdata13() );
+        zhurongScjinggongOrderitem.setUdata14( dto.getUdata14() );
+        zhurongScjinggongOrderitem.setUdata15( dto.getUdata15() );
+        zhurongScjinggongOrderitem.setUdata16( dto.getUdata16() );
+        zhurongScjinggongOrderitem.setUdata17( dto.getUdata17() );
+        zhurongScjinggongOrderitem.setUdata18( dto.getUdata18() );
+        zhurongScjinggongOrderitem.setUdata19( dto.getUdata19() );
+        zhurongScjinggongOrderitem.setUdata20( dto.getUdata20() );
         zhurongScjinggongOrderitem.setOrderId( dto.getOrderId() );
 
         return zhurongScjinggongOrderitem;
@@ -210,6 +234,14 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitemDTO.setUdata10( entity.getUdata10() );
         zhurongScjinggongOrderitemDTO.setUdata11( entity.getUdata11() );
         zhurongScjinggongOrderitemDTO.setUdata12( entity.getUdata12() );
+        zhurongScjinggongOrderitemDTO.setUdata13( entity.getUdata13() );
+        zhurongScjinggongOrderitemDTO.setUdata14( entity.getUdata14() );
+        zhurongScjinggongOrderitemDTO.setUdata15( entity.getUdata15() );
+        zhurongScjinggongOrderitemDTO.setUdata16( entity.getUdata16() );
+        zhurongScjinggongOrderitemDTO.setUdata17( entity.getUdata17() );
+        zhurongScjinggongOrderitemDTO.setUdata18( entity.getUdata18() );
+        zhurongScjinggongOrderitemDTO.setUdata19( entity.getUdata19() );
+        zhurongScjinggongOrderitemDTO.setUdata20( entity.getUdata20() );
         zhurongScjinggongOrderitemDTO.setOrderId( entity.getOrderId() );
 
         return zhurongScjinggongOrderitemDTO;
@@ -318,6 +350,30 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         }
         if ( dto.getUdata12() != null ) {
             entity.setUdata12( dto.getUdata12() );
+        }
+        if ( dto.getUdata13() != null ) {
+            entity.setUdata13( dto.getUdata13() );
+        }
+        if ( dto.getUdata14() != null ) {
+            entity.setUdata14( dto.getUdata14() );
+        }
+        if ( dto.getUdata15() != null ) {
+            entity.setUdata15( dto.getUdata15() );
+        }
+        if ( dto.getUdata16() != null ) {
+            entity.setUdata16( dto.getUdata16() );
+        }
+        if ( dto.getUdata17() != null ) {
+            entity.setUdata17( dto.getUdata17() );
+        }
+        if ( dto.getUdata18() != null ) {
+            entity.setUdata18( dto.getUdata18() );
+        }
+        if ( dto.getUdata19() != null ) {
+            entity.setUdata19( dto.getUdata19() );
+        }
+        if ( dto.getUdata20() != null ) {
+            entity.setUdata20( dto.getUdata20() );
         }
         if ( dto.getOrderId() != null ) {
             entity.setOrderId( dto.getOrderId() );

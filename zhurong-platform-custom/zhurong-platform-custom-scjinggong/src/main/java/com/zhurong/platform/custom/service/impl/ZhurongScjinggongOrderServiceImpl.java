@@ -49,6 +49,7 @@ public class ZhurongScjinggongOrderServiceImpl
         extends ServiceImpl<ZhurongScjinggongOrderMapper, ZhurongScjinggongOrder>
         implements IZhurongScjinggongOrderService {
 
+    private static final int FTP_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
     private final DisNestNest00000100FeignClient nestClient;
     private final IZhurongScjinggongOrderitemService zhurongScjinggongOrderitemService;
     private final IDisMmttMmtt00000100Service disMmttMmtt00000100Service;
@@ -274,7 +275,7 @@ public class ZhurongScjinggongOrderServiceImpl
         List<String> cusRefs = data.stream().map(OrderItemRequestDTO::getCusRef).distinct().toList();
 
         if (cusRefs.size() < data.size()) {
-            throw new BusinessException(String.format("MES工单号重复，请检查"));
+            throw new BusinessException("MES工单号重复，请检查");
         }
 
         List<ZhurongScjinggongOrderitem> existings = zhurongScjinggongOrderitemService.list(Wrappers.lambdaQuery(ZhurongScjinggongOrderitem.class)
@@ -395,8 +396,6 @@ public class ZhurongScjinggongOrderServiceImpl
         String remote = fullPath.substring(index);
         return remote;
     }
-
-    private static final int FTP_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
 
     private FTPClient ftpClient() {
         FTPClient client = new FTPClient();

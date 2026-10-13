@@ -22,7 +22,7 @@ public class DisNestNest00000100Controller extends com.zhurong.platform.custom.w
 
     @PostMapping("/feedback")
     public ApiResponse<Boolean> feedback(@Valid @RequestBody ZhurongScjinggongOrderDTO request) {
-        try{
+        try {
             orderService.feedback(request);
             return ApiResponse.success(true);
         } catch (Exception e) {
@@ -32,7 +32,7 @@ public class DisNestNest00000100Controller extends com.zhurong.platform.custom.w
 
     @PostMapping("/withdraw")
     public ApiResponse<Boolean> withdraw(@Valid @RequestBody ZhurongScjinggongOrderDTO request) {
-        try{
+        try {
             orderService.withdraw(request);
             return ApiResponse.success(true);
         } catch (Exception e) {

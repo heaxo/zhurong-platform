@@ -26,8 +26,7 @@ public class U8StockTransferOrderService {
      */
     public boolean add(U8StockTransferOrderRequest request) {
         String url = scjinggongProperties
-                .getFeedback()
-                .getU8StockTransferOrder();
+                .getU8().getU8StockTransferOrderUrl();
 
         try {
             // 实体转 JSON

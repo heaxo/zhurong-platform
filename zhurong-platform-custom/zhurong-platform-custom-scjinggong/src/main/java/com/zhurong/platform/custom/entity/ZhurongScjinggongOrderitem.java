@@ -138,6 +138,22 @@ public class ZhurongScjinggongOrderitem extends BaseEntity implements Serializab
      */
     @TableField("udata12")
     private String udata12;
+    @TableField("udata13")
+    private String udata13;
+    @TableField("udata14")
+    private String udata14;
+    @TableField("udata15")
+    private String udata15;
+    @TableField("udata16")
+    private String udata16;
+    @TableField("udata17")
+    private String udata17;
+    @TableField("udata18")
+    private String udata18;
+    @TableField("udata19")
+    private String udata19;
+    @TableField("udata20")
+    private String udata20;
     /**
      * 外码
      */

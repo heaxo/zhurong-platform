@@ -12,20 +12,23 @@ public class ScjinggongProperties {
     private final Inbound inbound = new Inbound();
 
     @Data
-    public static class Lantek { private String install; }
+    public static class Lantek {
+        private String install;
+    }
 
     @Data
     public static class U8 {
         private String steelPlateUrl;
+        private String U8StockTransferOrderUrl;
+        private String U8InventoryUrl;
     }
 
     @Data
     public static class Feedback {
+        private final Ftp ftp = new Ftp();
         private String url;
         private String withdrawUrl;
         private String secretKey;
-        private String U8StockTransferOrder;
-        private final Ftp ftp = new Ftp();
     }
 
     @Data
@@ -36,7 +39,7 @@ public class ScjinggongProperties {
         private String password;
         private String cncVirtualRoot;
         private String dxfVirtualRoot;
-//        private String pdfVirtualRoot;
+        //        private String pdfVirtualRoot;
         private String partDxfVirtualRoot;
     }
 

@@ -125,7 +125,7 @@ public class NestFeedbackRequestDTO {
     private List<Mat> mats;
 
     @Data
-    public static class Surplus{
+    public static class Surplus {
         //余料物料编号（新编码）
         @JsonProperty("code")
         private String code;
@@ -144,7 +144,7 @@ public class NestFeedbackRequestDTO {
     }
 
     @Data
-    public static class Mat{
+    public static class Mat {
         //任务编号/工单编号 Y
         @JsonProperty("work_order_code")
         private String code;

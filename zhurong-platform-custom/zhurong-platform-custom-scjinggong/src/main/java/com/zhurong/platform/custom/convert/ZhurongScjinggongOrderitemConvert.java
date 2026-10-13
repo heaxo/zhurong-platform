@@ -40,9 +40,11 @@ public interface ZhurongScjinggongOrderitemConvert {
     ZhurongScjinggongOrderitem toEntity(ZhurongScjinggongOrderitemDTO dto);
 
     ZhurongScjinggongOrderitem toEntity(ZhurongScjinggongOrderitemPageQuery dto);
+
     List<ZhurongScjinggongOrderitem> toEntitys(List<OrderItemRequestDTO> dto);
 
     ZhurongScjinggongOrderitemDTO toDTO(ZhurongScjinggongOrderitem entity);
+
     List<ZhurongScjinggongOrderitemDTO> toDTO(List<ZhurongScjinggongOrderitem> entity);
 
     /**

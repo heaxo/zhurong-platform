@@ -5,11 +5,13 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Map;
 
 @Data
+@Accessors(chain = true)
 @Schema(description = "Raw material import payload")
 public class RawMaterialRequest implements Serializable {
 

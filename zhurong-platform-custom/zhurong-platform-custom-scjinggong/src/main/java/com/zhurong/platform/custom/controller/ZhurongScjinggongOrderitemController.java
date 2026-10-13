@@ -58,7 +58,7 @@ public class ZhurongScjinggongOrderitemController extends BaseController impleme
 
         List<String> prdRefs = voList.stream().map(ZhurongScjinggongOrderitemVO::getPrdRef).distinct().toList();
 
-        if (!prdRefs.isEmpty()){
+        if (!prdRefs.isEmpty()) {
             List<ZhurongScjinggongBasepart> baseparts = basepartService.list(Wrappers.lambdaQuery(ZhurongScjinggongBasepart.class)
                     .in(ZhurongScjinggongBasepart::getPrdRef, prdRefs));
 
@@ -106,10 +106,10 @@ public class ZhurongScjinggongOrderitemController extends BaseController impleme
     @Override
     public ApiResponse
             <Boolean> importToExpert(@Valid ZhurongScjinggongOrderitemDTO dto) {
-        try{
+        try {
             boolean result = service.importToExpert(dto);
             return ApiResponse.success(result);
-        }catch (Exception e){
+        } catch (Exception e) {
             return ApiResponse.fail(e.getMessage());
         }
     }

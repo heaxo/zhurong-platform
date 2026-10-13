@@ -40,6 +40,14 @@ public class ZhurongScjinggongOrderitemDTO implements Serializable {
     private String udata10;
     private String udata11;
     private String udata12;
+    private String udata13;
+    private String udata14;
+    private String udata15;
+    private String udata16;
+    private String udata17;
+    private String udata18;
+    private String udata19;
+    private String udata20;
     private Long orderId;
 
     private String cusName;

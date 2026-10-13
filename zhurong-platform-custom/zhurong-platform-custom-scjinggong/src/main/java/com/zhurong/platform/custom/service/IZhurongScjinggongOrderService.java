@@ -12,7 +12,9 @@ import com.zhurong.platform.custom.vo.ZhurongScjinggongOrderVO;
 public interface IZhurongScjinggongOrderService extends IService<ZhurongScjinggongOrder> {
 
     boolean feedback(ZhurongScjinggongOrderDTO request);
+
     boolean withdraw(ZhurongScjinggongOrderDTO request);
+
     boolean creates(OrderRequest request);
 
     ZhurongScjinggongOrderVO getVOById(Long id);
