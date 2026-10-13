@@ -85,6 +85,10 @@ public class XyDataService {
     }
 
     public PageResponse<XyManufacturingOrder> pageManufacturingOrders(XyRequests.ManufacturingOrderPage query) {
+        String matRef = trimToNull(query.getMatRef());
+        String cusRef = trimToNull(query.getCusRef());
+        Double minThickness = query.getMinThickness();
+        Double maxThickness = query.getMaxThickness();
         List<String> prdRefs = null;
         if (StringUtils.hasText(query.getPrdName())) {
             List<XyBasePart> xyBaseParts = basePartMapper.selectList(Wrappers.lambdaQuery(XyBasePart.class)
@@ -97,11 +101,13 @@ public class XyDataService {
                 .like(StringUtils.hasText(query.getProductionOrderErpInternalCode()), XyManufacturingOrder::getProductionOrderErpInternalCode, query.getProductionOrderErpInternalCode())
                 .like(StringUtils.hasText(query.getProductionWorkshopName()), XyManufacturingOrder::getProductionWorkshopName, query.getProductionWorkshopName())
                 .in(prdRefs != null, XyManufacturingOrder::getPrdRef, prdRefs)
-                .like(StringUtils.hasText(query.getMatRef()), XyManufacturingOrder::getMatRef, query.getMatRef())
+                .like(matRef != null, XyManufacturingOrder::getMatRef, matRef)
                 .eq(query.getThickness() != null, XyManufacturingOrder::getThickness, query.getThickness())
+                .ge(minThickness != null, XyManufacturingOrder::getThickness, minThickness)
+                .le(maxThickness != null, XyManufacturingOrder::getThickness, maxThickness)
                 .like(StringUtils.hasText(query.getPrdName()), XyManufacturingOrder::getPrdName, query.getPrdName())
                 .eq(query.getQuantity() != null, XyManufacturingOrder::getQuantity, query.getQuantity())
-                .like(StringUtils.hasText(query.getCusRef()), XyManufacturingOrder::getCusRef, query.getCusRef())
+                .like(cusRef != null, XyManufacturingOrder::getCusRef, cusRef)
                 .like(StringUtils.hasText(query.getWorkCenter()), XyManufacturingOrder::getWorkCenter, query.getWorkCenter())
                 .eq(query.getSendState() != null, XyManufacturingOrder::getSendState, query.getSendState())
                 .ge(query.getStartDate() != null, XyManufacturingOrder::getCreatedAt, query.getStartDate())
@@ -255,6 +261,10 @@ public class XyDataService {
 
     private static void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) throw new IllegalArgumentException(message);
+    }
+
+    private static String trimToNull(String value) {
+        return StringUtils.hasText(value) ? value.trim() : null;
     }
 
     private static String normalize(String value) {

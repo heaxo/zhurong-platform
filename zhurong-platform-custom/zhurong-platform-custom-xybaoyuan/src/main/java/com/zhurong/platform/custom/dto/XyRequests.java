@@ -87,6 +87,8 @@ public final class XyRequests {
         private String drawingCode;
         private String matRef;
         private Double thickness;
+        private Double minThickness;
+        private Double maxThickness;
         private String prdName;
         private Double quantity;
         private String cusRef;
