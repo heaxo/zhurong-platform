@@ -28,7 +28,12 @@ public class ScjinggongProperties {
         private final Ftp ftp = new Ftp();
         private String url;
         private String withdrawUrl;
+        private String authorization;
+        private String accessToken;
         private String secretKey;
+        private String user = "000";
+        private String appId;
+        private String moduleSub = "execApiAction";
     }
 
     @Data

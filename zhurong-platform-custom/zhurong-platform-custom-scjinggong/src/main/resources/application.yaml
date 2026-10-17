@@ -88,8 +88,14 @@ scjinggong:
   u8:
     steel-plate-url: http://127.0.0.1/a/b/e
   feedback:
-    url: http://127.0.0.1/a/b/c
+    url: ${SCJINGGONG_FEEDBACK_URL:http://10.40.8.43:808/app/apifuncs}
     withdraw-url: http://127.0.0.1/a/b/d
+    authorization: ${SCJINGGONG_FEEDBACK_AUTHORIZATION:}
+    access-token: ${SCJINGGONG_FEEDBACK_ACCESS_TOKEN:}
+    secret-key: ${SCJINGGONG_FEEDBACK_SECRET:}
+    user: ${SCJINGGONG_FEEDBACK_USER:000}
+    app-id: ${SCJINGGONG_FEEDBACK_APP_ID:}
+    module-sub: ${SCJINGGONG_FEEDBACK_MODULE_SUB:execApiAction}
     ftp:
       host: 10.40.8.42
       port: 21
