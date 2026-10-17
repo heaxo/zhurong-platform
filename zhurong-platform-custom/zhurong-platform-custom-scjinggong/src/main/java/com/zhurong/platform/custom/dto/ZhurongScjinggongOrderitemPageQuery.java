@@ -102,6 +102,9 @@ public class ZhurongScjinggongOrderitemPageQuery extends BasePageQuery {
      *
      */
     private LocalDateTime rdate;
+    private String prdName;
+    private String matRef;
+    private Float thickness;
 
 
     /**

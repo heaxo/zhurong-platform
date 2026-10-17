@@ -156,8 +156,8 @@ public class ZhurongScjinggongOrderitemServiceImpl
                 String drawingPath = drawingDownloadTool.download(basepart.getRawDrawingPath());
                 item.setDrawingPath(drawingPath);
                 //首次图纸导入需要指定材质厚度，后续不指定系统默认使用套料软件数据库中零件档案的材质厚度
-                item.setMatRef(basepart.getMatRef());
-                item.setThickness(basepart.getThickness());
+//                item.setMatRef(basepart.getMatRef());
+//                item.setThickness(basepart.getThickness());
                 recordPrdRefs.add(prdRef);
             }
 
@@ -279,6 +279,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
     private ExpertProductXmlItem toProduct(ZhurongScjinggongOrderitemDTO request) {
         return ExpertProductXmlItem.create()
                 .reference(request.getPrdRef())
+                .name(request.getPrdName())
                 .material(request.getMatRef())
                 .machine(request.getWrkRef())
                 .thickness(request.getThickness())

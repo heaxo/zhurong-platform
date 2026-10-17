@@ -27,6 +27,9 @@ public class ZhurongScjinggongOrderitemVO implements Serializable {
     private String ordRef;
     private Integer quantity;
     private LocalDateTime rdate;
+    private String prdName;
+    private String matRef;
+    private Float thickness;
     private String udata1;
     private String udata2;
     private String udata3;

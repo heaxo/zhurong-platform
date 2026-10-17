@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-10-13T21:10:06+0800",
+    date = "2026-10-17T16:25:16+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Eclipse Adoptium)"
 )
 @Component
@@ -48,6 +48,9 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitemVO.setOrdRef( entity.getOrdRef() );
         zhurongScjinggongOrderitemVO.setQuantity( entity.getQuantity() );
         zhurongScjinggongOrderitemVO.setRdate( entity.getRdate() );
+        zhurongScjinggongOrderitemVO.setPrdName( entity.getPrdName() );
+        zhurongScjinggongOrderitemVO.setMatRef( entity.getMatRef() );
+        zhurongScjinggongOrderitemVO.setThickness( entity.getThickness() );
         zhurongScjinggongOrderitemVO.setUdata1( entity.getUdata1() );
         zhurongScjinggongOrderitemVO.setUdata2( entity.getUdata2() );
         zhurongScjinggongOrderitemVO.setUdata3( entity.getUdata3() );
@@ -111,6 +114,9 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setOrdRef( dto.getOrdRef() );
         zhurongScjinggongOrderitem.setQuantity( dto.getQuantity() );
         zhurongScjinggongOrderitem.setRdate( dto.getRdate() );
+        zhurongScjinggongOrderitem.setPrdName( dto.getPrdName() );
+        zhurongScjinggongOrderitem.setMatRef( dto.getMatRef() );
+        zhurongScjinggongOrderitem.setThickness( dto.getThickness() );
         zhurongScjinggongOrderitem.setUdata1( dto.getUdata1() );
         zhurongScjinggongOrderitem.setUdata2( dto.getUdata2() );
         zhurongScjinggongOrderitem.setUdata3( dto.getUdata3() );
@@ -159,6 +165,9 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setOrdRef( dto.getOrdRef() );
         zhurongScjinggongOrderitem.setQuantity( dto.getQuantity() );
         zhurongScjinggongOrderitem.setRdate( dto.getRdate() );
+        zhurongScjinggongOrderitem.setPrdName( dto.getPrdName() );
+        zhurongScjinggongOrderitem.setMatRef( dto.getMatRef() );
+        zhurongScjinggongOrderitem.setThickness( dto.getThickness() );
         zhurongScjinggongOrderitem.setUdata1( dto.getUdata1() );
         zhurongScjinggongOrderitem.setUdata2( dto.getUdata2() );
         zhurongScjinggongOrderitem.setUdata3( dto.getUdata3() );
@@ -222,6 +231,9 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitemDTO.setOrdRef( entity.getOrdRef() );
         zhurongScjinggongOrderitemDTO.setQuantity( entity.getQuantity() );
         zhurongScjinggongOrderitemDTO.setRdate( entity.getRdate() );
+        zhurongScjinggongOrderitemDTO.setPrdName( entity.getPrdName() );
+        zhurongScjinggongOrderitemDTO.setMatRef( entity.getMatRef() );
+        zhurongScjinggongOrderitemDTO.setThickness( entity.getThickness() );
         zhurongScjinggongOrderitemDTO.setUdata1( entity.getUdata1() );
         zhurongScjinggongOrderitemDTO.setUdata2( entity.getUdata2() );
         zhurongScjinggongOrderitemDTO.setUdata3( entity.getUdata3() );
@@ -315,6 +327,15 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         if ( dto.getRdate() != null ) {
             entity.setRdate( dto.getRdate() );
         }
+        if ( dto.getPrdName() != null ) {
+            entity.setPrdName( dto.getPrdName() );
+        }
+        if ( dto.getMatRef() != null ) {
+            entity.setMatRef( dto.getMatRef() );
+        }
+        if ( dto.getThickness() != null ) {
+            entity.setThickness( dto.getThickness() );
+        }
         if ( dto.getUdata1() != null ) {
             entity.setUdata1( dto.getUdata1() );
         }
@@ -393,6 +414,9 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setOrdRef( orderItemRequestDTO.getOrdRef() );
         zhurongScjinggongOrderitem.setQuantity( orderItemRequestDTO.getQuantity() );
         zhurongScjinggongOrderitem.setRdate( orderItemRequestDTO.getRdate() );
+        zhurongScjinggongOrderitem.setPrdName( orderItemRequestDTO.getPrdName() );
+        zhurongScjinggongOrderitem.setMatRef( orderItemRequestDTO.getMatRef() );
+        zhurongScjinggongOrderitem.setThickness( orderItemRequestDTO.getThickness() );
         zhurongScjinggongOrderitem.setUdata1( orderItemRequestDTO.getUdata1() );
         zhurongScjinggongOrderitem.setUdata2( orderItemRequestDTO.getUdata2() );
         zhurongScjinggongOrderitem.setUdata3( orderItemRequestDTO.getUdata3() );
@@ -405,6 +429,14 @@ public class ZhurongScjinggongOrderitemConvertImpl implements ZhurongScjinggongO
         zhurongScjinggongOrderitem.setUdata10( orderItemRequestDTO.getUdata10() );
         zhurongScjinggongOrderitem.setUdata11( orderItemRequestDTO.getUdata11() );
         zhurongScjinggongOrderitem.setUdata12( orderItemRequestDTO.getUdata12() );
+        zhurongScjinggongOrderitem.setUdata13( orderItemRequestDTO.getUdata13() );
+        zhurongScjinggongOrderitem.setUdata14( orderItemRequestDTO.getUdata14() );
+        zhurongScjinggongOrderitem.setUdata15( orderItemRequestDTO.getUdata15() );
+        zhurongScjinggongOrderitem.setUdata16( orderItemRequestDTO.getUdata16() );
+        zhurongScjinggongOrderitem.setUdata17( orderItemRequestDTO.getUdata17() );
+        zhurongScjinggongOrderitem.setUdata18( orderItemRequestDTO.getUdata18() );
+        zhurongScjinggongOrderitem.setUdata19( orderItemRequestDTO.getUdata19() );
+        zhurongScjinggongOrderitem.setUdata20( orderItemRequestDTO.getUdata20() );
 
         return zhurongScjinggongOrderitem;
     }

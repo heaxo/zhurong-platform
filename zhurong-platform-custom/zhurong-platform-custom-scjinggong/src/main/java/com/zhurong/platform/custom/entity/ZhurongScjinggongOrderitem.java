@@ -68,6 +68,24 @@ public class ZhurongScjinggongOrderitem extends BaseEntity implements Serializab
     private LocalDateTime rdate;
 
     /**
+     * 零件名称
+     */
+    @TableField("prd_name")
+    private String prdName;
+
+    /**
+     * 加工材质
+     */
+    @TableField("mat_ref")
+    private String matRef;
+
+    /**
+     * 加工厚度
+     */
+    @TableField("thickness")
+    private Float thickness;
+
+    /**
      * 加工中心编码
      */
     @TableField("udata1")

@@ -145,4 +145,81 @@ public class OrderItemRequestDTO implements Serializable {
     @JsonProperty("woStatus")
     private String udata12;
 
+    /**
+     * 项次
+     */
+    @NotBlank(message = "项次不能为空")
+    @JsonProperty("ItemNum")
+    private String udata13;
+
+    /**
+     * 唯一序列号
+     */
+    @NotBlank(message = "唯一序列号不能为空")
+    @JsonProperty("GuID")
+    private String udata14;
+
+    /**
+     * BomList_id
+     */
+    @NotBlank(message = "BomList_id不能为空")
+    @JsonProperty("BomList_id")
+    private String udata15;
+
+    /**
+     * Prd_UData4
+     */
+    @NotBlank(message = "Prd_UData4不能为空")
+    @JsonProperty("Prd_UData4")
+    private String udata16;
+
+    /**
+     * Prd_UData5
+     */
+    @NotBlank(message = "Prd_UData5不能为空")
+    @JsonProperty("Prd_UData5")
+    private String udata17;
+
+    /**
+     * Prd_UData6
+     */
+    @NotBlank(message = "Prd_UData6不能为空")
+    @JsonProperty("Prd_UData6")
+    private String udata18;
+
+    /**
+     * Prd_UData7
+     */
+    @NotBlank(message = "Prd_UData7不能为空")
+    @JsonProperty("Prd_UData7")
+    private String udata19;
+
+    /**
+     * Prd_UData8
+     */
+    @NotBlank(message = "Prd_UData8不能为空")
+    @JsonProperty("Prd_UData8")
+    private String udata20;
+
+    /**
+     * 零件名称
+     */
+    @NotBlank(message = "零件名称不能为空")
+    @JsonProperty("PrdName")
+    private String prdName;
+
+    /**
+     * 加工材质
+     */
+    @NotBlank(message = "加工材质不能为空")
+    @JsonProperty("MatRef")
+    private String matRef;
+
+    /**
+     * 加工厚度
+     */
+    @NotBlank(message = "加工厚度不能为空")
+    @JsonProperty("SThickness")
+    private Float thickness;
+
 }

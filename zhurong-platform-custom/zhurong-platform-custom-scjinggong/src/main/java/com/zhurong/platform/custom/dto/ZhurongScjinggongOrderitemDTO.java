@@ -28,6 +28,9 @@ public class ZhurongScjinggongOrderitemDTO implements Serializable {
     private String ordRef;
     private Integer quantity;
     private LocalDateTime rdate;
+    private String prdName;
+    private String matRef;
+    private Float thickness;
     private String udata1;
     private String udata2;
     private String udata3;
@@ -51,8 +54,6 @@ public class ZhurongScjinggongOrderitemDTO implements Serializable {
     private Long orderId;
 
     private String cusName;
-    private String matRef;
-    private Float thickness;
     private String drawingPath;
     private List<String> ids;
     private String jobRef;

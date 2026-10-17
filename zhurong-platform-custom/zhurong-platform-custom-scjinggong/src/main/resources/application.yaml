@@ -39,16 +39,23 @@ spring:
           username: sa
           password:
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        mes: # 亚威MES物料主数据（只读）
+          url: jdbc:sqlserver://${SCJINGGONG_MES_HOST:10.40.8.16}:${SCJINGGONG_MES_PORT:1433};databaseName=${SCJINGGONG_MES_DATABASE:TJSC_MES_TEST_RUN};encrypt=false
+          username: ${SCJINGGONG_MES_USERNAME:ltk}
+          password: ${SCJINGGONG_MES_PASSWORD:}
+          driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   cloud:
     nacos:
       username: nacos
       password: nacos
       discovery:
-        server-addr: 192.168.1.125:8848
-        ip: 192.168.1.76
+#        server-addr: 192.168.1.125:8848
+        server-addr: 10.40.8.42:8848
+#        ip: 192.168.1.76
         port: ${server.port}
       config:
-        server-addr: 192.168.1.125:8848
+#        server-addr: 192.168.1.125:8848
+        server-addr: 10.40.8.42:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:

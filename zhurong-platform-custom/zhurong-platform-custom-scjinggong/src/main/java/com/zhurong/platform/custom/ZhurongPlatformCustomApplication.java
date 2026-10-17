@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 @EnableScheduling
 @MapperScan(basePackages = {
         "com.zhurong.platform.custom.mapper",
+        "com.zhurong.platform.custom.mes.mapper",
 })
 @ConfigurationPropertiesScan
 public class ZhurongPlatformCustomApplication {

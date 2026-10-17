@@ -77,8 +77,7 @@ public class ZhurongScjinggongSteelplateinventoryController extends BaseControll
             if (query.isEmpty()){
                 return ApiResponse.success(false);
             }
-            //TODO 将query结果保存到数据库中，存在则更新，不存在则新增
-            return ApiResponse.success(true);
+            return ApiResponse.success(service.syncFromU8(query));
         }catch (Exception e){
             return ApiResponse.fail(e.getMessage());
         }
