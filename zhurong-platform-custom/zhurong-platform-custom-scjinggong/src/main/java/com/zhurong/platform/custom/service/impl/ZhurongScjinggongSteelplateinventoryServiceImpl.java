@@ -70,6 +70,27 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
         return this.updateById(entity);
     }
 
+    /**
+     * const warehouseOptions = [
+     *   { label: '采购原材料库（101）', value: '101' },
+     *   { label: '老厂原材料库（102）', value: '102' },
+     *   { label: '薄板数控组合（301）', value: '301' },
+     *   { label: '厚板数控组合（310）', value: '310' },
+     *   { label: '利福特钣金组合（320）', value: '320' },
+     *   { label: '配重钣金原材料库（A1001）', value: 'A1001' },
+     * ];
+     * @param inventoryList
+     * @return
+     */
+    private final List<String> whsCodes = new ArrayList<>(){{
+        add("101");
+        add("102");
+        add("301");
+        add("310");
+        add("320");
+        add("A1001");
+    }};
+
     @Override
     public Boolean syncFromU8(List<U8InventoryResponse> inventoryList) {
         if (CollectionUtils.isEmpty(inventoryList)) {
@@ -77,7 +98,7 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
         }
 
         Map<String, U8InventoryResponse> u8InventoryMap = new LinkedHashMap<>();
-        for (U8InventoryResponse inventory : inventoryList) {
+        for (U8InventoryResponse inventory : inventoryList.stream().filter(it -> whsCodes.contains(it.getCWhCode())).toList()) {
             if (inventory == null || !StringUtils.hasText(inventory.getCInvCode())) {
                 throw new BusinessException("U8库存数据中的物料编码不能为空");
             }
