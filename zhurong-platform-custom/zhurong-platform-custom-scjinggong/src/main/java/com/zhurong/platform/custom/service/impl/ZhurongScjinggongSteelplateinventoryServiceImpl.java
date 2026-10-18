@@ -6,9 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhurong.platform.base.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.base.exception.BusinessException;
-import com.zhurong.platform.base.lantek.expert.lst.PlateAndRemnantLstTool;
-import com.zhurong.platform.base.lantek.expert.procesos.AutomationInstructionBuilder;
-import com.zhurong.platform.base.lantek.expert.procesos.CreateAndUpdateBoard;
 import com.zhurong.platform.custom.convert.ZhurongScjinggongSteelplateinventoryConvert;
 import com.zhurong.platform.custom.dto.U8InventoryResponse;
 import com.zhurong.platform.custom.dto.ZhurongScjinggongSteelplateinventoryDTO;
@@ -17,8 +14,9 @@ import com.zhurong.platform.custom.mapper.ZhurongScjinggongSteelplateinventoryMa
 import com.zhurong.platform.custom.mes.entity.ScjinggongMesInventory;
 import com.zhurong.platform.custom.mes.service.IScjinggongMesInventoryService;
 import com.zhurong.platform.custom.model.BaseEntity;
-import com.zhurong.platform.custom.properties.ScjinggongProperties;
 import com.zhurong.platform.custom.service.IZhurongScjinggongSteelplateinventoryService;
+import com.zhurong.platform.custom.service.ScjinggongExpertInventoryImportService;
+import com.zhurong.platform.custom.service.ScjinggongInventoryWarehousePolicy;
 import com.zhurong.platform.custom.vo.ZhurongScjinggongSteelplateinventoryVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,8 +44,8 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
         implements IZhurongScjinggongSteelplateinventoryService {
 
     private final ZhurongScjinggongSteelplateinventoryConvert convert;
-    private final ScjinggongProperties properties;
     private final IScjinggongMesInventoryService mesInventoryService;
+    private final ScjinggongExpertInventoryImportService expertInventoryImportService;
 
 
     @Override
@@ -70,27 +68,6 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
         return this.updateById(entity);
     }
 
-    /**
-     * const warehouseOptions = [
-     *   { label: '采购原材料库（101）', value: '101' },
-     *   { label: '老厂原材料库（102）', value: '102' },
-     *   { label: '薄板数控组合（301）', value: '301' },
-     *   { label: '厚板数控组合（310）', value: '310' },
-     *   { label: '利福特钣金组合（320）', value: '320' },
-     *   { label: '配重钣金原材料库（A1001）', value: 'A1001' },
-     * ];
-     * @param inventoryList
-     * @return
-     */
-    private final List<String> whsCodes = new ArrayList<>(){{
-        add("101");
-        add("102");
-        add("301");
-        add("310");
-        add("320");
-        add("A1001");
-    }};
-
     @Override
     public Boolean syncFromU8(List<U8InventoryResponse> inventoryList) {
         if (CollectionUtils.isEmpty(inventoryList)) {
@@ -98,7 +75,9 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
         }
 
         Map<String, U8InventoryResponse> u8InventoryMap = new LinkedHashMap<>();
-        for (U8InventoryResponse inventory : inventoryList.stream().filter(it -> whsCodes.contains(it.getCWhCode())).toList()) {
+        for (U8InventoryResponse inventory : inventoryList.stream()
+                .filter(it -> it != null && ScjinggongInventoryWarehousePolicy.isAllowed(it.getCWhCode()))
+                .toList()) {
             if (inventory == null || !StringUtils.hasText(inventory.getCInvCode())) {
                 throw new BusinessException("U8库存数据中的物料编码不能为空");
             }
@@ -277,17 +256,6 @@ public class ZhurongScjinggongSteelplateinventoryServiceImpl
                 .setUdata2(it.getUdata2())
                 .setUdata3(it.getUdata3())
         ).toList();
-        String install = properties.getLantek().getInstall();
-        String lstPath = PlateAndRemnantLstTool.exportRawMaterials(requests);
-        AutomationInstructionBuilder.ExecResult result = new AutomationInstructionBuilder(
-                AutomationInstructionBuilder.AutomationVersion.V45,
-                install.trim()
-        ).withPrcEncoding(AutomationInstructionBuilder.PrcEncoding.ANSI)
-                .addInstruction(new CreateAndUpdateBoard(lstPath))
-                .execute();
-        if (!result.success()) {
-            throw new BusinessException("钢板导入失败");
-        }
-        return true;
+        return expertInventoryImportService.importRawMaterials(requests);
     }
 }
