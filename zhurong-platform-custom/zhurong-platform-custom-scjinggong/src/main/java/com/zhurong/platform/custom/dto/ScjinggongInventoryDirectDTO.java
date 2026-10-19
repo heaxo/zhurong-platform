@@ -1,6 +1,9 @@
 package com.zhurong.platform.custom.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -26,9 +29,21 @@ public class ScjinggongInventoryDirectDTO {
     // 保留U8接口当前支持的全部字段，便于后续直接扩展前端展示。
     private Long itemid;
     private Long autoId;
+
+    @Getter(onMethod_ = @JsonProperty("cWhCode"))
+    @Setter(onMethod_ = @JsonProperty("cWhCode"))
     private String cWhCode;
+
+    @Getter(onMethod_ = @JsonProperty("cInvCode"))
+    @Setter(onMethod_ = @JsonProperty("cInvCode"))
     private String cInvCode;
+
+    @Getter(onMethod_ = @JsonProperty("iQuantity"))
+    @Setter(onMethod_ = @JsonProperty("iQuantity"))
     private BigDecimal iQuantity;
+
+    @Getter(onMethod_ = @JsonProperty("iSoType"))
+    @Setter(onMethod_ = @JsonProperty("iSoType"))
     private Integer iSoType;
     private String isodid;
     private String enumname;
