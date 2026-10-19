@@ -8,11 +8,7 @@ import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.base.clientimport.dto.RawMaterialRequest;
 import com.zhurong.platform.base.exception.BusinessException;
 import com.zhurong.platform.base.model.PageFactory;
-import com.zhurong.platform.custom.dto.ScjinggongInventoryDirectDTO;
-import com.zhurong.platform.custom.dto.ScjinggongInventoryDirectPageQuery;
-import com.zhurong.platform.custom.dto.U8InventoryBatchRequest;
-import com.zhurong.platform.custom.dto.U8InventoryRequest;
-import com.zhurong.platform.custom.dto.U8InventoryResponse;
+import com.zhurong.platform.custom.dto.*;
 import com.zhurong.platform.custom.mes.entity.ScjinggongMesInventory;
 import com.zhurong.platform.custom.mes.service.IScjinggongMesInventoryService;
 import com.zhurong.platform.custom.service.IScjinggongInventoryDirectService;
@@ -26,11 +22,8 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.math.RoundingMode;
+import java.util.*;
 
 /**
  * 新库存同步页面服务实现。
@@ -221,7 +214,9 @@ public class ScjinggongInventoryDirectServiceImpl implements IScjinggongInventor
 
     private int toQuantity(ScjinggongInventoryDirectDTO inventory) {
         try {
-            return inventory.getIQuantity().intValueExact();
+            return inventory.getIQuantity()
+                    .setScale(0, RoundingMode.FLOOR)
+                    .intValueExact();
         } catch (ArithmeticException exception) {
             throw new BusinessException(
                     "物料%s的库存数量无法转换为整数：%s"
