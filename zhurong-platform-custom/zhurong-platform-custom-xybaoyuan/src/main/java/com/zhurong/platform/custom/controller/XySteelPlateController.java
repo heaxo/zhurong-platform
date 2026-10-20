@@ -29,7 +29,11 @@ public class XySteelPlateController extends BaseController {
 
     @PostMapping("/sync-erp")
     public ApiResponse<Integer> syncErp(@Valid @RequestBody XyRequests.SteelPlateSync query) {
-        return ApiResponse.success(erpService.synchronize(query.getPrdRef(), query.getLotNumber()));
+        try{
+            return ApiResponse.success(erpService.synchronize(query.getPrdRef(), query.getLotNumber()));
+        } catch (Exception e) {
+            return ApiResponse.fail(e.getMessage());
+        }
     }
 
     @PostMapping("/import")

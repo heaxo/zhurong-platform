@@ -4,7 +4,7 @@ import com.zhurong.platform.base.clientimport.dto.RawMaterialRequest;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -45,7 +45,7 @@ public final class PlateAndRemnantLstTool {
         if (lstFile.getParent() != null) {
             Files.createDirectories(lstFile.getParent());
         }
-        try (BufferedWriter writer = Files.newBufferedWriter(lstFile, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(lstFile, Charset.forName("GBK"))) {
             Objects.requireNonNull(requests, "raw material requests cannot be null");
             for (RawMaterialRequest request : requests) {
                 writer.write(PlateAndRemnantLstItem.fromRawMaterialRequest(request).toLstLine());
@@ -59,7 +59,7 @@ public final class PlateAndRemnantLstTool {
         if (lstFile.getParent() != null) {
             Files.createDirectories(lstFile.getParent());
         }
-        try (BufferedWriter writer = Files.newBufferedWriter(lstFile, StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(lstFile, Charset.forName("GBK"))) {
             Objects.requireNonNull(items, "LST items cannot be null");
             for (PlateAndRemnantLstItem item : items) {
                 writer.write(item.toLstLine());
