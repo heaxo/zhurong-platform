@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class XyNestFeedbackService {
     private static final int FTP_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
+    private static final RestClient IMAGE_CLIENT = imageClient();
 
     private final DisNestNest00000100FeignClient nestClient;
     private final XyDataService dataService;
@@ -128,6 +129,13 @@ public class XyNestFeedbackService {
             if (item == null) throw new IllegalArgumentException("套料零件缺少档案主数据");
             if (!StringUtils.hasText(item.getDIS_UData3_Prt())) throw new IllegalArgumentException("零件ERP物料内码为空: " + item.getPrdRef());
             XyImportTaskService.ErpIdentity identity = XyImportTaskService.splitErpIdentity(order.getCusName());
+            String imageBase64 = "";
+            try {
+                imageBase64 = imageBase64(item.getImage());
+            } catch (Exception e) {
+                log.error("零件缩略图转换Base64异常，零件号：{}", item.getPrdRef(), e);
+            }
+
             Map<String, Object> row = new LinkedHashMap<>();
             row.put("MoNumber", order.getOrdRef());
             row.put("MoRowSeq", identity.erpInternalCode());
@@ -137,6 +145,8 @@ public class XyNestFeedbackService {
             row.put("Quantity", Optional.ofNullable(part.getQuantity()).orElse(0));
             row.put("DValue", value(item.getDIS_CutPerim()));
             row.put("PlanNumber", identity.planNumber());
+            row.put("NestingSeq", order.getIOrder());
+            row.put("NestingImg", imageBase64);
             partsWeight.updateAndGet(v -> v + (value(item.getWeight()) * part.getQuantity().doubleValue() * nest.getQuantity().doubleValue()));
             return row;
         }).toList();
@@ -304,6 +314,24 @@ public class XyNestFeedbackService {
         int extension = source.lastIndexOf('.');
         return (extension > source.lastIndexOf('\\') && extension > source.lastIndexOf('/'))
                 ? source.substring(0, extension) + ".pdf" : source + ".pdf";
+    }
+
+    private static RestClient imageClient() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(Duration.ofSeconds(30));
+        requestFactory.setReadTimeout(Duration.ofSeconds(30));
+        return RestClient.builder().requestFactory(requestFactory).build();
+    }
+
+    private static String imageBase64(String image) {
+        if (!StringUtils.hasText(image)) return "";
+        byte[] imageBytes = IMAGE_CLIENT.get()
+                .uri(image)
+                .retrieve()
+                .body(byte[].class);
+        return imageBytes == null || imageBytes.length == 0
+                ? ""
+                : Base64.getEncoder().encodeToString(imageBytes);
     }
 
     private void post(String url, Object payload, String errorPrefix) {

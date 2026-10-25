@@ -119,7 +119,7 @@ public class XyDataService {
         return response(page);
     }
 
-    private void enrichOrders(List<XyManufacturingOrder> orders) {
+    public void enrichOrders(List<XyManufacturingOrder> orders) {
         List<String> refs = orders.stream().map(XyManufacturingOrder::getPrdRef).filter(Objects::nonNull).distinct().toList();
         List<XyBasePart> selectedParts = refs.isEmpty() ? List.of() : basePartMapper.selectList(
                 Wrappers.lambdaQuery(XyBasePart.class).in(XyBasePart::getPrdRef, refs));

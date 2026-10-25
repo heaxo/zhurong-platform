@@ -49,8 +49,7 @@ public class XyManufacturingOrderController extends BaseController {
     public com.zhurong.platform.custom.api.ApiResponse<Boolean> delete(@Valid @RequestBody XyInboundRequests.ManufacturingOrderDeletes request) {
 
         List<String> reqProductionOrderErpInternalCodes = request.getProductionOrderERPInternalCodes();
-        if (reqProductionOrderErpInternalCodes.isEmpty())
-        {
+        if (reqProductionOrderErpInternalCodes.isEmpty()) {
             return com.zhurong.platform.custom.api.ApiResponse.fail("生产订单ERP内码不能为空");
         }
 
@@ -58,13 +57,10 @@ public class XyManufacturingOrderController extends BaseController {
 
         boolean single = reqProductionOrderErpInternalCodes.size() == 1;
 
-        if (single)
-        {
+        if (single) {
             mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
                     .eq(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes.get(0)));
-        }
-        else
-        {
+        } else {
             mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
                     .in(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes));
         }
@@ -72,24 +68,20 @@ public class XyManufacturingOrderController extends BaseController {
         boolean expertNotExists = mmnnMmoo00000300s.isEmpty();
 
 
-        if (!expertNotExists)
-        {
+        if (!expertNotExists) {
             return com.zhurong.platform.custom.api.ApiResponse.fail(String.format("该生产订单ERP内码%s，已导入至LantekExpert中，删除失败", reqProductionOrderErpInternalCodes
                     .stream()
                     .collect(Collectors.joining(","))));
         }
 
         boolean deleteAsync = false;
-        if (single)
-        {
+        if (single) {
             deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCode(reqProductionOrderErpInternalCodes.get(0)) > 0;
-        }
-        else
-        {
+        } else {
             deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCodes(reqProductionOrderErpInternalCodes) == reqProductionOrderErpInternalCodes.size();
         }
 
-        return deleteAsync ? com.zhurong.platform.custom.api.ApiResponse.success(true): com.zhurong.platform.custom.api.ApiResponse.fail("删除失败");
+        return deleteAsync ? com.zhurong.platform.custom.api.ApiResponse.success(true) : com.zhurong.platform.custom.api.ApiResponse.fail("删除失败");
     }
 
     @GetMapping("/job-exists")
@@ -109,7 +101,8 @@ public class XyManufacturingOrderController extends BaseController {
 
     @PutMapping("/batch")
     public ApiResponse<Void> batchUpdate(@RequestBody List<XyRequests.OrderUpdate> updates) {
-        dataService.batchUpdateOrders(updates); return ApiResponse.success();
+        dataService.batchUpdateOrders(updates);
+        return ApiResponse.success();
     }
 
     @PostMapping("/import")
@@ -123,13 +116,32 @@ public class XyManufacturingOrderController extends BaseController {
     @GetMapping("/export")
     public ResponseEntity<byte[]> export(@ModelAttribute XyRequests.ManufacturingOrderPage query) {
         query.setSize(100_000L);
-        StringBuilder csv = new StringBuilder("\uFEFF生产订单号,ERP内码,车间,零件编号,零件名称,图号,材质,厚度,数量,计划跟踪号,设备,作业\r\n");
-        dataService.pageManufacturingOrders(query).items().forEach(item -> csv.append(XyBasePartController.row(
-                item.getProductionOrderNumber(), item.getProductionOrderErpInternalCode(), item.getProductionWorkshopName(),
-                item.getPrdRef(), item.getPrdName(), item.getDrawingCode(), item.getMatRef(), item.getThickness(), item.getQuantity(),
-                item.getCusRef(), item.getWrkRef(), item.getJobName())));
+        StringBuilder csv = new StringBuilder("\uFEFF生产订单号,ERP内码,车间,零件编号,零件名称,图号,材质,厚度,数量,计划跟踪号,设备,作业,导入状态,最近导入结果,零件档案\r\n");
+        dataService.pageManufacturingOrders(query)
+                .items()
+                .forEach(item -> csv.append(
+                                XyBasePartController.row(
+                                        item.getProductionOrderNumber(),
+                                        item.getProductionOrderErpInternalCode(),
+                                        item.getProductionWorkshopName(),
+                                        item.getPrdRef(),
+                                        item.getPrdName(),
+                                        item.getDrawingCode(),
+                                        item.getMatRef(),
+                                        item.getThickness(),
+                                        item.getQuantity(),
+                                        item.getCusRef(),
+                                        item.getWrkRef(),
+                                        item.getJobName(),
+                                        item.getTask() != null ? "SUCCESS".equalsIgnoreCase(item.getTask().getStatus()) ? "成功" :"失败" : "未导入",
+                                        item.getTask() != null ? item.getTask().getMessage() : "",
+                                        item.getPartMaintenance() == null ? "ERP未下发" : item.getPartMaintenance() ? "已维护" : "未维护"
+                                )
+                        )
+                );
         return XyBasePartController.csv("xybaoyuan-manufacturing-orders.csv", csv);
     }
+
     private void logDebugJson(String message, Object request) {
         if (!log.isDebugEnabled()) return;
         try {
