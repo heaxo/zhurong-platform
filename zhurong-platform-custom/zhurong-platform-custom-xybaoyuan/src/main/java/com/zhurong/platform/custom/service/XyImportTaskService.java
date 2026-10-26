@@ -173,6 +173,8 @@ public class XyImportTaskService {
         request.setOrdRef(order.getProductionOrderNumber());
         request.setCusName(combineErpIdentity(order.getProductionOrderErpInternalCode(), order.getCusRef()));
         request.setQuantity(integerQuantity(order.getQuantity(), "生产订单数量必须为正整数"));
+        request.setSuppRef(order.getCusRef());
+        request.setSuppName(order.getRouRef());
         request.setUdata1(part.getUdata1());
         request.setUdata2(part.getUdata2());
         request.setUdata3(part.getUdata3());

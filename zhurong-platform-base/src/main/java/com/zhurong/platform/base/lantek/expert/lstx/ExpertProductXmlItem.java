@@ -45,6 +45,8 @@ public class ExpertProductXmlItem {
         auxiliarData.put("CusRef", "");
         auxiliarData.put("RDate", "");
         auxiliarData.put("CusName", "");
+        auxiliarData.put("SuppRef", "");
+        auxiliarData.put("SuppName", "");
     }
 
     public static ExpertProductXmlItem create() {
@@ -266,6 +268,14 @@ public class ExpertProductXmlItem {
 
     public ExpertProductXmlItem cusName(Object value) {
         return auxiliarData("CusName", value);
+    }
+
+    public ExpertProductXmlItem suppRef(Object value) {
+        return auxiliarData("SuppRef", value);
+    }
+
+    public ExpertProductXmlItem suppName(Object value) {
+        return auxiliarData("SuppName", value);
     }
 
     public String getReference() {

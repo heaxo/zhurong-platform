@@ -138,6 +138,8 @@ public class XyProductionOrderHandler implements ClientImportHandler<ProductionO
                 .ordRef(request.getOrdRef())
                 .cusRef(request.getCusRef())
                 .cusName(request.getCusName())
+                .suppRef(request.getSuppRef())
+                .suppName(request.getSuppName())
                 .userData1(request.getUdata1())
                 .userData2(request.getUdata2())
                 .userData3(request.getUdata3());

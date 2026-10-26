@@ -33,6 +33,8 @@ import org.springframework.web.client.RestClient;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,7 +46,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class XyNestFeedbackService {
     private static final int FTP_TIMEOUT_MILLIS = (int) Duration.ofSeconds(30).toMillis();
-    private static final RestClient IMAGE_CLIENT = imageClient();
 
     private final DisNestNest00000100FeignClient nestClient;
     private final XyDataService dataService;
@@ -316,20 +317,11 @@ public class XyNestFeedbackService {
                 ? source.substring(0, extension) + ".pdf" : source + ".pdf";
     }
 
-    private static RestClient imageClient() {
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(Duration.ofSeconds(30));
-        requestFactory.setReadTimeout(Duration.ofSeconds(30));
-        return RestClient.builder().requestFactory(requestFactory).build();
-    }
-
-    private static String imageBase64(String image) {
+    private static String imageBase64(String image) throws IOException {
         if (!StringUtils.hasText(image)) return "";
-        byte[] imageBytes = IMAGE_CLIENT.get()
-                .uri(image)
-                .retrieve()
-                .body(byte[].class);
-        return imageBytes == null || imageBytes.length == 0
+        Path imagePath = Path.of(image).toAbsolutePath().normalize();
+        byte[] imageBytes = Files.readAllBytes(imagePath);
+        return imageBytes.length == 0
                 ? ""
                 : Base64.getEncoder().encodeToString(imageBytes);
     }
