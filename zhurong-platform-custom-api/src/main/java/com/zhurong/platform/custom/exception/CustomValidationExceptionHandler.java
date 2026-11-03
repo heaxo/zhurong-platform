@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
-@RestControllerAdvice(basePackages = "com.zhurong.platform.custom.controller")
-public class ScjinggongValidationExceptionHandler {
+@RestControllerAdvice
+public class CustomValidationExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
