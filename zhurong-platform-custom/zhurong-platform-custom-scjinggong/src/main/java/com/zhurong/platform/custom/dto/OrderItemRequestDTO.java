@@ -71,14 +71,14 @@ public class OrderItemRequestDTO implements Serializable {
     /**
      * U8生产订单号
      */
-    @NotBlank(message = "不能为空")
+    @NotBlank(message = "U8生产订单号不能为空")
     @JsonProperty("mesProdOrdNo")
     private String udata2;
 
     /**
      * 收料仓库编码
      */
-    @NotBlank(message = "不能为空")
+    @NotBlank(message = "收料仓库编码不能为空")
     @JsonProperty("rcvWareCd")
     private String udata3;
 
@@ -169,35 +169,30 @@ public class OrderItemRequestDTO implements Serializable {
     /**
      * Prd_UData4
      */
-    @NotBlank(message = "Prd_UData4不能为空")
     @JsonProperty("Prd_UData4")
     private String udata16;
 
     /**
      * Prd_UData5
      */
-    @NotBlank(message = "Prd_UData5不能为空")
     @JsonProperty("Prd_UData5")
     private String udata17;
 
     /**
      * Prd_UData6
      */
-    @NotBlank(message = "Prd_UData6不能为空")
     @JsonProperty("Prd_UData6")
     private String udata18;
 
     /**
      * Prd_UData7
      */
-    @NotBlank(message = "Prd_UData7不能为空")
     @JsonProperty("Prd_UData7")
     private String udata19;
 
     /**
      * Prd_UData8
      */
-    @NotBlank(message = "Prd_UData8不能为空")
     @JsonProperty("Prd_UData8")
     private String udata20;
 
@@ -218,7 +213,7 @@ public class OrderItemRequestDTO implements Serializable {
     /**
      * 加工厚度
      */
-    @NotBlank(message = "加工厚度不能为空")
+    @NotNull(message = "加工厚度不能为空")
     @JsonProperty("SThickness")
     private Float thickness;
 
