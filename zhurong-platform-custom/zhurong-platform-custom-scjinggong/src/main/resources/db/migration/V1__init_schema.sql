@@ -114,4 +114,3 @@ EXEC sp_addextendedproperty 'MS_Description', N'班组名称', 'SCHEMA', 'dbo', 
 EXEC sp_addextendedproperty 'MS_Description', N'计划完工时间', 'SCHEMA', 'dbo', 'TABLE', 'Zhurong_Scjinggong_OrderItem', 'COLUMN', 'udata10';
 EXEC sp_addextendedproperty 'MS_Description', N'订单变更后交期', 'SCHEMA', 'dbo', 'TABLE', 'Zhurong_Scjinggong_OrderItem', 'COLUMN', 'udata11';
 EXEC sp_addextendedproperty 'MS_Description', N'工单状态', 'SCHEMA', 'dbo', 'TABLE', 'Zhurong_Scjinggong_OrderItem', 'COLUMN', 'udata12';
-CREATE UNIQUE INDEX UX_ScOrderItem_CusRef ON dbo.Zhurong_Scjinggong_OrderItem (cus_ref) WHERE is_deleted = 0;
