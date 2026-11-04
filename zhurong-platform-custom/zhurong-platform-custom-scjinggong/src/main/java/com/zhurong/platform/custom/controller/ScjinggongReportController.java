@@ -1,5 +1,6 @@
 package com.zhurong.platform.custom.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhurong.platform.base.api.ApiResponse;
 import com.zhurong.platform.base.api.PageResponse;
 import com.zhurong.platform.custom.dto.ReportQuery;
@@ -23,6 +24,7 @@ import java.io.IOException;
 @RequestMapping("/scjinggongReports")
 public class ScjinggongReportController {
     private final ScjinggongReportService service;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/cutting-programs/page")
     public ApiResponse<PageResponse<CuttingProgramReportRow>> cuttingPrograms(ReportQuery query) {
@@ -36,11 +38,31 @@ public class ScjinggongReportController {
 
     @GetMapping("/cutting-programs/export")
     public void exportCuttingPrograms(ReportQuery query, HttpServletResponse response) throws IOException {
-        service.exportCuttingPrograms(query, response);
+        try {
+            service.exportCuttingPrograms(query, response);
+        } catch (IllegalArgumentException exception) {
+            writeExportError(response, exception);
+        }
     }
 
     @GetMapping("/parts/export")
     public void exportParts(ReportQuery query, HttpServletResponse response) throws IOException {
-        service.exportParts(query, response);
+        try {
+            service.exportParts(query, response);
+        } catch (IllegalArgumentException exception) {
+            writeExportError(response, exception);
+        }
+    }
+
+    /**
+     * 导出超量等业务校验发生在写文件前。按项目的 ApiResponse 契约返回 JSON，
+     * 前端虽然以 Blob 接收，也能读取 message 并提示用户。
+     */
+    private void writeExportError(HttpServletResponse response, IllegalArgumentException exception) throws IOException {
+        if (response.isCommitted()) throw exception;
+        response.reset();
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        objectMapper.writeValue(response.getOutputStream(), ApiResponse.fail(exception.getMessage()));
     }
 }
