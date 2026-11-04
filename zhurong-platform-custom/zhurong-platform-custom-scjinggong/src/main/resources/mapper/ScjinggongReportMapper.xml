@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhurong.platform.custom.mapper.ScjinggongReportMapper">
+    <!-- 原始 XML 的 DIS_MMNN_MMOO_00000200 连接没有参与选择或过滤，且可能放大行数，故省略。 -->
+    <select id="cuttingPrograms" resultType="com.zhurong.platform.custom.vo.CuttingProgramReportRow">
+        SELECT N.CNC AS cnc,
+               LTRIM(STR(N.SLength, 10, 2)) + 'x' + LTRIM(STR(N.SWidth, 10, 2)) + 'x' + LTRIM(STR(N.SThickness, 10, 2)) AS plateSize,
+               N.MatRef AS material, N.Quantity AS quantity,
+               ROUND(N.Quantity * N.SWeight, 6) AS totalWeight,
+               CAST(ROUND(N.SProfit, 2) AS VARCHAR(32)) + '%' AS utilization,
+               CAST(ROUND(N.SProfitS, 2) AS VARCHAR(32)) + '%' AS utilizationWithoutRemnant
+        FROM dbo.DIS_NEST_NEST_00000100 N
+        <where>
+            <if test="q.jobRef != null and q.jobRef != ''">AND N.JobRef = #{q.jobRef}</if>
+            <if test="q.cnc != null and q.cnc != ''">AND N.CNC LIKE '%' + #{q.cnc} + '%'</if>
+            <if test="q.matRef != null and q.matRef != ''">AND N.MatRef LIKE '%' + #{q.matRef} + '%'</if>
+        </where>
+        ORDER BY N.CNC, N.JobRef
+    </select>
+
+    <!-- 按附件 SQL 保留同物料最小序号的窗口计算；Image 在 Lantek 中是本机图片路径。 -->
+    <select id="parts" resultType="com.zhurong.platform.custom.vo.PartReportRow">
+        SELECT MIN(M3.IOrder) OVER (PARTITION BY P1.PrdRef) AS partSequence,
+               P1.PrdRef AS productCode, P1.Image AS imagePath,
+               M3.Quantity AS quantity, P1.DIS_UData3_Prt AS customerPartNo,
+               M3.OrdRef AS batchNo, M3.DIS_MatRef AS material,
+               M3.DIS_Thickness AS thickness, P1.DIS_UData1_Prt AS process
+        FROM dbo.MMNN_MMOO_00000300 M3
+        LEFT JOIN dbo.PPRR_PPRR_00000100 P1 ON M3.PrdRef = P1.PrdRef
+        <where>
+            <if test="q.jobRef != null and q.jobRef != ''">AND M3.DIS_JobRef = #{q.jobRef}</if>
+            <if test="q.prdRef != null and q.prdRef != ''">AND P1.PrdRef LIKE '%' + #{q.prdRef} + '%'</if>
+            <if test="q.customerPartNo != null and q.customerPartNo != ''">AND P1.DIS_UData3_Prt LIKE '%' + #{q.customerPartNo} + '%'</if>
+            <if test="q.ordRef != null and q.ordRef != ''">AND M3.OrdRef LIKE '%' + #{q.ordRef} + '%'</if>
+            <if test="q.matRef != null and q.matRef != ''">AND M3.DIS_MatRef LIKE '%' + #{q.matRef} + '%'</if>
+            <if test="q.process != null and q.process != ''">AND P1.DIS_UData1_Prt LIKE '%' + #{q.process} + '%'</if>
+        </where>
+        ORDER BY partSequence, M3.IOrder, M3.MnORef
+    </select>
+</mapper>
