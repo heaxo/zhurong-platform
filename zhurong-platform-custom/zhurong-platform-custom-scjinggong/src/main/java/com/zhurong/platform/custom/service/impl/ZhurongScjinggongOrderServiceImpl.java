@@ -628,11 +628,11 @@ public class ZhurongScjinggongOrderServiceImpl
         part.setBomListId(requiredPartText(orderItem.getUdata15(), "BomList_id", cusRef));
         // NEST500 RecID 全局唯一，同时作为对方系统的套料唯一编号和本地幂等键。
         part.setPrdUData3(String.valueOf(nestPart.getRecID()));
-        part.setPrdUData4(requiredPartText(orderItem.getUdata16(), "Prd_UData4", cusRef));
-        part.setPrdUData5(requiredPartText(orderItem.getUdata17(), "Prd_UData5", cusRef));
-        part.setPrdUData6(requiredPartText(orderItem.getUdata18(), "Prd_UData6", cusRef));
-        part.setPrdUData7(requiredPartText(orderItem.getUdata19(), "Prd_UData7", cusRef));
-        part.setPrdUData8(requiredPartText(orderItem.getUdata20(), "Prd_UData8", cusRef));
+        part.setPrdUData4(orderItem.getUdata16());
+        part.setPrdUData5(orderItem.getUdata17());
+        part.setPrdUData6(orderItem.getUdata18());
+        part.setPrdUData7(orderItem.getUdata19());
+        part.setPrdUData8(orderItem.getUdata20());
         part.setPrdPerimeter(numberText(partMaster.getDIS_CutPerim()));
         return part;
     }
