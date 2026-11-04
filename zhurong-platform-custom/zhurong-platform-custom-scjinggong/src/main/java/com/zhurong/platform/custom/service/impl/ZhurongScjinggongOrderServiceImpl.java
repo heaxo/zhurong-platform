@@ -480,7 +480,7 @@ public class ZhurongScjinggongOrderServiceImpl
         }
 
         Map<Integer, MmnnMmoo00000300VO> partWorkOrders = new LinkedHashMap<>();
-        Set<String> cusRefs = new LinkedHashSet<>();
+        Set<String> cusNames = new LinkedHashSet<>();
         for (NestPartCandidate candidate : pendingParts) {
             DisNestNest00000500VO part = candidate.nestPart();
             if (!StringUtils.hasText(part.getMnORef()) || part.getOprID() == null) {
@@ -491,43 +491,43 @@ public class ZhurongScjinggongOrderServiceImpl
             if (workOrder == null) {
                 throw new BusinessException("NEST500零件%s未找到生产计划：%s".formatted(part.getRecID(), key.displayName()));
             }
-            if (!StringUtils.hasText(workOrder.getCusRef())) {
-                throw new BusinessException("生产计划%s缺少CusRef".formatted(key.displayName()));
+            if (!StringUtils.hasText(workOrder.getCusName())) {
+                throw new BusinessException("生产计划%s缺少CusName".formatted(key.displayName()));
             }
             partWorkOrders.put(part.getRecID(), workOrder);
-            cusRefs.add(workOrder.getCusRef());
+            cusNames.add(workOrder.getCusName());
         }
 
         Map<String, ZhurongScjinggongOrderitem> orderItems = zhurongScjinggongOrderitemService.list(
                         Wrappers.lambdaQuery(ZhurongScjinggongOrderitem.class)
-                                .in(ZhurongScjinggongOrderitem::getCusRef, cusRefs)
+                                .in(ZhurongScjinggongOrderitem::getUdata14, cusNames)
                 ).stream()
                 .collect(Collectors.toMap(
-                        ZhurongScjinggongOrderitem::getCusRef,
+                        ZhurongScjinggongOrderitem::getUdata14,
                         Function.identity(),
                         (left, right) -> {
-                            throw new BusinessException("MES工单号存在重复记录：" + left.getCusRef());
+                            throw new BusinessException("MES唯一序号存在重复记录：" + left.getUdata14());
                         },
                         LinkedHashMap::new
                 ));
 
-        List<String> missingCusRefs = cusRefs.stream()
-                .filter(cusRef -> !orderItems.containsKey(cusRef))
+        List<String> missingCusNames = cusNames.stream()
+                .filter(cusName -> !orderItems.containsKey(cusName))
                 .toList();
-        if (!missingCusRefs.isEmpty()) {
-            throw new BusinessException("未找到MES工单：" + String.join(",", missingCusRefs));
+        if (!missingCusNames.isEmpty()) {
+            throw new BusinessException("未找到MES工单：" + String.join(",", missingCusNames));
         }
 
         Set<Long> orderIds = orderItems.values().stream()
                 .map(ZhurongScjinggongOrderitem::getOrderId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-        List<String> orderlessCusRefs = orderItems.values().stream()
+        List<String> orderlessCusNames = orderItems.values().stream()
                 .filter(item -> item.getOrderId() == null)
-                .map(ZhurongScjinggongOrderitem::getCusRef)
+                .map(ZhurongScjinggongOrderitem::getUdata14)
                 .toList();
-        if (!orderlessCusRefs.isEmpty()) {
-            throw new BusinessException("MES工单缺少orderId：" + String.join(",", orderlessCusRefs));
+        if (!orderlessCusNames.isEmpty()) {
+            throw new BusinessException("MES工单缺少orderId：" + String.join(",", orderlessCusNames));
         }
 
         Map<Long, ZhurongScjinggongOrder> orders = listByIds(orderIds).stream()
@@ -539,7 +539,7 @@ public class ZhurongScjinggongOrderServiceImpl
 
         return pendingParts.stream().map(candidate -> {
             MmnnMmoo00000300VO workOrder = partWorkOrders.get(candidate.nestPart().getRecID());
-            ZhurongScjinggongOrderitem orderItem = orderItems.get(workOrder.getCusRef());
+            ZhurongScjinggongOrderitem orderItem = orderItems.get(workOrder.getCusName());
             ZhurongScjinggongOrder order = orders.get(orderItem.getOrderId());
             requireText(order.getOrderCode(), "生产批次号不能为空");
             requireText(order.getOrderName(), "生产批次名不能为空");
@@ -553,7 +553,7 @@ public class ZhurongScjinggongOrderServiceImpl
         }
         WorkOrderKey key = new WorkOrderKey(workOrder.getMnORef(), workOrder.getOprID());
         MmnnMmoo00000300VO previous = workOrders.putIfAbsent(key, workOrder);
-        if (previous != null && !Objects.equals(previous.getCusRef(), workOrder.getCusRef())) {
+        if (previous != null && !Objects.equals(previous.getCusName(), workOrder.getCusName())) {
             throw new BusinessException("生产计划关联到多个MES工单：" + key.displayName());
         }
     }
@@ -579,17 +579,17 @@ public class ZhurongScjinggongOrderServiceImpl
         DisNestNest00000100VO nest = context.nest();
         DisNestNest00000500VO nestPart = context.nestPart();
         ZhurongScjinggongOrderitem orderItem = context.orderItem();
-        String cusRef = orderItem.getCusRef();
+        String cusName = orderItem.getUdata14();
         PprrPprr00000100VO partMaster = nestPart.getItem();
 
         if (orderItem.getQuantity() == null) {
-            throw new BusinessException("MES工单%s的工单数量为空".formatted(cusRef));
+            throw new BusinessException("MES工单%s的工单数量为空".formatted(cusName));
         }
         if (orderItem.getRdate() == null) {
-            throw new BusinessException("MES工单%s的订单交货日期为空".formatted(cusRef));
+            throw new BusinessException("MES工单%s的订单交货日期为空".formatted(cusName));
         }
         if (orderItem.getThickness() == null) {
-            throw new BusinessException("MES工单%s的加工厚度为空".formatted(cusRef));
+            throw new BusinessException("MES工单%s的加工厚度为空".formatted(cusName));
         }
         if (nestPart.getQuantity() == null) {
             throw new BusinessException("NEST500零件%s的加工数量为空".formatted(nestPart.getRecID()));
@@ -600,32 +600,32 @@ public class ZhurongScjinggongOrderServiceImpl
 
         ScjinggongNestFeedbackPartDTO part = new ScjinggongNestFeedbackPartDTO();
         part.setPrdRef(orderItem.getPrdRef());
-        part.setMachine(requiredPartText(orderItem.getWrkRef(), "Machine", cusRef));
+        part.setMachine(requiredPartText(orderItem.getWrkRef(), "Machine", cusName));
         part.setMachineCode(orderItem.getUdata1());
         part.setQuantity(orderItem.getQuantity());
-        part.setOrdRef(requiredPartText(orderItem.getOrdRef(), "OrdRef", cusRef));
-        part.setCusRef(requiredPartText(cusRef, "Cusref", cusRef));
-        part.setMesProdOrdNo(requiredPartText(orderItem.getUdata2(), "mesProdOrdNo", cusRef));
-        part.setRcvWareCd(requiredPartText(orderItem.getUdata3(), "rcvWareCd", cusRef));
-        part.setRcvWareNm(requiredPartText(orderItem.getUdata4(), "rcvWareNm", cusRef));
-        part.setOpLineNo(requiredPartText(orderItem.getUdata5(), "opLineNo", cusRef));
-        part.setOpCd(requiredPartText(orderItem.getUdata6(), "opCd", cusRef));
-        part.setOpNm(requiredPartText(orderItem.getUdata7(), "opNm", cusRef));
-        part.setTmCd(requiredPartText(orderItem.getUdata8(), "tmCd", cusRef));
-        part.setTmNm(requiredPartText(orderItem.getUdata9(), "tmNm", cusRef));
+        part.setOrdRef(requiredPartText(orderItem.getOrdRef(), "OrdRef", cusName));
+        part.setCusRef(requiredPartText(orderItem.getCusRef(), "Cusref", cusName));
+        part.setMesProdOrdNo(requiredPartText(orderItem.getUdata2(), "mesProdOrdNo", cusName));
+        part.setRcvWareCd(requiredPartText(orderItem.getUdata3(), "rcvWareCd", cusName));
+        part.setRcvWareNm(requiredPartText(orderItem.getUdata4(), "rcvWareNm", cusName));
+        part.setOpLineNo(requiredPartText(orderItem.getUdata5(), "opLineNo", cusName));
+        part.setOpCd(requiredPartText(orderItem.getUdata6(), "opCd", cusName));
+        part.setOpNm(requiredPartText(orderItem.getUdata7(), "opNm", cusName));
+        part.setTmCd(requiredPartText(orderItem.getUdata8(), "tmCd", cusName));
+        part.setTmNm(requiredPartText(orderItem.getUdata9(), "tmNm", cusName));
         part.setOrdDlvDt(orderItem.getRdate().format(API_DATE_TIME_FORMATTER));
-        part.setPlanFinTm(requiredPartText(orderItem.getUdata10(), "planFinTm", cusRef));
-        part.setChgDlvDt(requiredPartText(orderItem.getUdata11(), "chgDlvDt", cusRef));
-        part.setWoStatus(requiredPartText(orderItem.getUdata12(), "woStatus", cusRef));
-        part.setItemNum(requiredPartText(orderItem.getUdata13(), "ItemNum", cusRef));
-        part.setGuId(requiredPartText(orderItem.getUdata14(), "GuID", cusRef));
-        part.setPrdName(requiredPartText(orderItem.getPrdName(), "PrdName", cusRef));
-        part.setMatRef(requiredPartText(orderItem.getMatRef(), "MatRef", cusRef));
+        part.setPlanFinTm(requiredPartText(orderItem.getUdata10(), "planFinTm", cusName));
+        part.setChgDlvDt(requiredPartText(orderItem.getUdata11(), "chgDlvDt", cusName));
+        part.setWoStatus(requiredPartText(orderItem.getUdata12(), "woStatus", cusName));
+        part.setItemNum(requiredPartText(orderItem.getUdata13(), "ItemNum", cusName));
+        part.setGuId(requiredPartText(orderItem.getUdata14(), "GuID", cusName));
+        part.setPrdName(requiredPartText(orderItem.getPrdName(), "PrdName", cusName));
+        part.setMatRef(requiredPartText(orderItem.getMatRef(), "MatRef", cusName));
         part.setThickness(numberText(orderItem.getThickness()));
         // Qty 是当前 NEST500 的实际排版数量，PartNo 是所属 NEST100 使用的板材料号。
         part.setQty(String.valueOf(nestPart.getQuantity()));
-        part.setPartNo(requiredPartText(nest.getShtRef(), "PartNo", cusRef));
-        part.setBomListId(requiredPartText(orderItem.getUdata15(), "BomList_id", cusRef));
+        part.setPartNo(requiredPartText(nest.getShtRef(), "PartNo", cusName));
+        part.setBomListId(requiredPartText(orderItem.getUdata15(), "BomList_id", cusName));
         // NEST500 RecID 全局唯一，同时作为对方系统的套料唯一编号和本地幂等键。
         part.setPrdUData3(String.valueOf(nestPart.getRecID()));
         part.setPrdUData4(orderItem.getUdata16());
@@ -828,9 +828,9 @@ public class ZhurongScjinggongOrderServiceImpl
         return compactText(value, 500);
     }
 
-    private String requiredPartText(String value, String field, String cusRef) {
+    private String requiredPartText(String value, String field, String cusName) {
         if (!StringUtils.hasText(value)) {
-            throw new BusinessException("MES工单%s的%s为空".formatted(cusRef, field));
+            throw new BusinessException("MES工单%s的%s为空".formatted(cusName, field));
         }
         return value;
     }
@@ -931,18 +931,18 @@ public class ZhurongScjinggongOrderServiceImpl
             throw new BusinessException(String.format("批次号已存在，无法重复保存：%s", orderCode));
         }
 
-        //MES工单号
-        List<String> cusRefs = data.stream().map(OrderItemRequestDTO::getCusRef).distinct().toList();
+        //唯一序列号
+        List<String> cusNames = data.stream().map(OrderItemRequestDTO::getUdata14).distinct().toList();
 
-        if (cusRefs.size() < data.size()) {
-            throw new BusinessException("MES工单号重复，请检查");
+        if (cusNames.size() < data.size()) {
+            throw new BusinessException("唯一序列号重复，请检查");
         }
 
         List<ZhurongScjinggongOrderitem> existings = zhurongScjinggongOrderitemService.list(Wrappers.lambdaQuery(ZhurongScjinggongOrderitem.class)
-                .in(ZhurongScjinggongOrderitem::getCusRef, cusRefs));
+                .in(ZhurongScjinggongOrderitem::getUdata14, cusNames));
 
         if (!existings.isEmpty()) {
-            List<String> keys = existings.stream().map(ZhurongScjinggongOrderitem::getCusRef).distinct().toList();
+            List<String> keys = existings.stream().map(ZhurongScjinggongOrderitem::getUdata14).distinct().toList();
             throw new BusinessException(String.format("MES工单已存在，无法重复下发：%s", String.join(",", keys)));
         }
 

@@ -107,10 +107,10 @@ public class ZhurongScjinggongOrderitemServiceImpl
             throw new BusinessException("未查询到相关数据1");
         }
 
-        List<String> cusRefs = list.stream().map(ZhurongScjinggongOrderitem::getCusRef).distinct().toList();
+        List<String> cusNames = list.stream().map(ZhurongScjinggongOrderitem::getUdata14).distinct().toList();
 
         int updateCount = 0;
-        if ((updateCount = importedState(cusRefs)) == cusRefs.size()) {
+        if ((updateCount = importedState(cusNames)) == cusNames.size()) {
             return true;
         }
 
@@ -234,7 +234,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
                 throw new IllegalStateException(automationError("LSTX自动化导入失败", result));
             }
 
-            return importedState(cusRefs) == cusRefs.size();
+            return importedState(cusNames) == cusNames.size();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -245,35 +245,35 @@ public class ZhurongScjinggongOrderitemServiceImpl
      * 校验MES工单是否全部导入
      * 将已导入且要重复导入的数据状态更新
      *
-     * @param cusRefs
+     * @param cusNames
      * @return
      */
-    private int importedState(List<String> cusRefs) {
+    private int importedState(List<String> cusNames) {
 
         List<MmnnMmoo00000300> mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
-                .in(MmnnMmoo00000300::getCusRef, cusRefs));
+                .in(MmnnMmoo00000300::getCusName, cusNames));
 
 
         if (mmnnMmoo00000300s.isEmpty()) {
             return 0;
         }
-        List<String> existingCusRefs = mmnnMmoo00000300s.stream().map(MmnnMmoo00000300::getCusRef)
+        List<String> existingCusNames = mmnnMmoo00000300s.stream().map(MmnnMmoo00000300::getCusName)
                 .distinct().toList();
-        if (existingCusRefs.size() == cusRefs.size()) {
+        if (existingCusNames.size() == cusNames.size()) {
             //更新所有要导入的MES工单状态
             update(Wrappers.lambdaUpdate(ZhurongScjinggongOrderitem.class)
                     .set(BaseEntity::getIsRead, true)
-                    .in(ZhurongScjinggongOrderitem::getCusRef, cusRefs));
+                    .in(ZhurongScjinggongOrderitem::getUdata14, cusNames));
 
             //不管上面的状态是否更新成功，这里返回成功，阻止用户重复导入
-            return existingCusRefs.size();
+            return existingCusNames.size();
         }
 
         update(Wrappers.lambdaUpdate(ZhurongScjinggongOrderitem.class)
                 .set(BaseEntity::getIsRead, true)
-                .in(ZhurongScjinggongOrderitem::getCusRef, existingCusRefs));
+                .in(ZhurongScjinggongOrderitem::getUdata14, existingCusNames));
 
-        return existingCusRefs.size();
+        return existingCusNames.size();
     }
 
     private ExpertProductXmlItem toProduct(ZhurongScjinggongOrderitemDTO request) {
@@ -286,7 +286,7 @@ public class ZhurongScjinggongOrderitemServiceImpl
                 .quantity(request.getQuantity())
                 .ordRef(request.getOrdRef())
                 .cusRef(request.getCusRef())
-                .cusName(request.getCusName())
+                .cusName(request.getUdata14())
                 .file(request.getDrawingPath())
                 .userData1(request.getUdata1())
                 .userData2(request.getUdata2())
