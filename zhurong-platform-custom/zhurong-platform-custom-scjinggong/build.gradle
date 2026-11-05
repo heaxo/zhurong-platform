@@ -41,6 +41,8 @@ dependencies {
 
     implementation 'com.baomidou:dynamic-datasource-spring-boot3-starter:4.3.1'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17'
+    // SXSSF 按行窗口写入 xlsx，避免把整张报表保存在堆内存中。
+    implementation 'org.apache.poi:poi-ooxml:5.5.1'
 
 
     runtimeOnly "com.microsoft.sqlserver:mssql-jdbc:${mssqlVersion}"
