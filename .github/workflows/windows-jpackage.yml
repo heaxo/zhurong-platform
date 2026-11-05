@@ -25,6 +25,7 @@ on:
           - but
           - xybaoyuan
           - scjinggong
+          - roneind
 
 permissions:
   contents: read
