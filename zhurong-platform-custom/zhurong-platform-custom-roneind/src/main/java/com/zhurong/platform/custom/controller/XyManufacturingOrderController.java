@@ -1,0 +1,153 @@
+package com.zhurong.platform.custom.controller;
+
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zhurong.platform.base.api.ApiResponse;
+import com.zhurong.platform.base.api.PageResponse;
+import com.zhurong.platform.custom.dto.RoneindInboundRequests;
+import com.zhurong.platform.custom.dto.RoneindRequests;
+import com.zhurong.platform.custom.entity.MmnnMmoo00000300;
+import com.zhurong.platform.custom.entity.RoneindImportTask;
+import com.zhurong.platform.custom.entity.RoneindManufacturingOrder;
+import com.zhurong.platform.custom.service.*;
+import com.zhurong.platform.custom.web.BaseController;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@Slf4j
+@RequiredArgsConstructor
+@RequestMapping("/roneind/manufacturing-orders")
+public class RoneindManufacturingOrderController extends BaseController {
+    private final ObjectMapper objectMapper;
+    private final RoneindDataService dataService;
+    private final RoneindImportTaskService importTaskService;
+    private final RoneindJobService jobService;
+    private final RoneindInboundService inboundService;
+    private final IMmnnMmoo00000300Service mmnnMmoo00000300Service;
+
+    @GetMapping
+    public ApiResponse<PageResponse<RoneindManufacturingOrder>> page(@ModelAttribute RoneindRequests.ManufacturingOrderPage query) {
+        return ApiResponse.success(dataService.pageManufacturingOrders(query));
+    }
+
+    @PostMapping("/creates")
+    public com.zhurong.platform.custom.api.ApiResponse<Boolean> creates(@Valid @RequestBody RoneindInboundRequests.ManufacturingOrders request) {
+        logDebugJson("生产订单请求: {}", request);
+        return com.zhurong.platform.custom.api.ApiResponse.success(inboundService.receiveManufacturingOrders(request));
+    }
+
+    @PostMapping("/delete")
+    public com.zhurong.platform.custom.api.ApiResponse<Boolean> delete(@Valid @RequestBody RoneindInboundRequests.ManufacturingOrderDeletes request) {
+
+        List<String> reqProductionOrderErpInternalCodes = request.getProductionOrderERPInternalCodes();
+        if (reqProductionOrderErpInternalCodes.isEmpty()) {
+            return com.zhurong.platform.custom.api.ApiResponse.fail("生产订单ERP内码不能为空");
+        }
+
+        List<MmnnMmoo00000300> mmnnMmoo00000300s = new ArrayList();
+
+        boolean single = reqProductionOrderErpInternalCodes.size() == 1;
+
+        if (single) {
+            mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                    .eq(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes.get(0)));
+        } else {
+            mmnnMmoo00000300s = mmnnMmoo00000300Service.list(Wrappers.lambdaQuery(MmnnMmoo00000300.class)
+                    .in(MmnnMmoo00000300::getMnORef, reqProductionOrderErpInternalCodes));
+        }
+
+        boolean expertNotExists = mmnnMmoo00000300s.isEmpty();
+
+
+        if (!expertNotExists) {
+            return com.zhurong.platform.custom.api.ApiResponse.fail(String.format("该生产订单ERP内码%s，已导入至LantekExpert中，删除失败", reqProductionOrderErpInternalCodes
+                    .stream()
+                    .collect(Collectors.joining(","))));
+        }
+
+        boolean deleteAsync = false;
+        if (single) {
+            deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCode(reqProductionOrderErpInternalCodes.get(0)) > 0;
+        } else {
+            deleteAsync = dataService.deleteOrderByProductionOrderERPInternalCodes(reqProductionOrderErpInternalCodes) == reqProductionOrderErpInternalCodes.size();
+        }
+
+        return deleteAsync ? com.zhurong.platform.custom.api.ApiResponse.success(true) : com.zhurong.platform.custom.api.ApiResponse.fail("删除失败");
+    }
+
+    @GetMapping("/job-exists")
+    public ApiResponse<Boolean> jobExists(
+            @RequestParam String jobName,
+            @RequestParam(required = false) String jobPath
+    ) {
+        return ApiResponse.success(jobPath == null
+                ? jobService.exists(jobName)
+                : jobService.exists(jobName, jobPath));
+    }
+
+    @PostMapping("/jobs")
+    public ApiResponse<String> createJob(@Valid @RequestBody RoneindRequests.JobCreate request) {
+        return ApiResponse.success(jobService.create(request.getJobName(), request.getJobPath()));
+    }
+
+    @PutMapping("/batch")
+    public ApiResponse<Void> batchUpdate(@RequestBody List<RoneindRequests.OrderUpdate> updates) {
+        dataService.batchUpdateOrders(updates);
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/import")
+    public ApiResponse<RoneindImportTask> importNow(@Valid @RequestBody RoneindRequests.Ids request) {
+        return ApiResponse.success(importTaskService.importSynchronously(
+                RoneindImportTaskService.ORDER,
+                request.getIds()
+        ));
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> export(@ModelAttribute RoneindRequests.ManufacturingOrderPage query) {
+        query.setSize(100_000L);
+        StringBuilder csv = new StringBuilder("\uFEFF生产订单号,ERP内码,车间,零件编号,零件名称,图号,材质,厚度,数量,计划跟踪号,设备,作业,导入状态,最近导入结果,零件档案\r\n");
+        dataService.pageManufacturingOrders(query)
+                .items()
+                .forEach(item -> csv.append(
+                                RoneindBasePartController.row(
+                                        item.getProductionOrderNumber(),
+                                        item.getProductionOrderErpInternalCode(),
+                                        item.getProductionWorkshopName(),
+                                        item.getPrdRef(),
+                                        item.getPrdName(),
+                                        item.getDrawingCode(),
+                                        item.getMatRef(),
+                                        item.getThickness(),
+                                        item.getQuantity(),
+                                        item.getCusRef(),
+                                        item.getWrkRef(),
+                                        item.getJobName(),
+                                        item.getTask() != null ? "SUCCESS".equalsIgnoreCase(item.getTask().getStatus()) ? "成功" :"失败" : "未导入",
+                                        item.getTask() != null ? item.getTask().getMessage() : "",
+                                        item.getPartMaintenance() == null ? "ERP未下发" : item.getPartMaintenance() ? "已维护" : "未维护"
+                                )
+                        )
+                );
+        return RoneindBasePartController.csv("roneind-manufacturing-orders.csv", csv);
+    }
+
+    private void logDebugJson(String message, Object request) {
+        if (!log.isDebugEnabled()) return;
+        try {
+            log.debug(message, objectMapper.writeValueAsString(request));
+        } catch (JsonProcessingException exception) {
+            log.debug(message, request);
+        }
+    }
+}
