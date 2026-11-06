@@ -1,4 +1,4 @@
--- 象屿宝元（0111）菜单及默认管理员角色权限。
+-- 朗恩超精（0111）菜单及默认管理员角色权限。
 -- 对应前端应用 apps/zhurong-platform-custom-roneind，支持 Flyway 执行，也可在 SQL Server 中手工执行。
 -- 脚本可重复执行：已有菜单会被校正并恢复为有效状态，已有角色菜单关系不会重复插入。
 
@@ -12,13 +12,13 @@ DECLARE @SteelPlateMenuId BIGINT;
 DECLARE @ManufacturingOrderMenuId BIGINT;
 DECLARE @NestMenuId BIGINT;
 
--- 根目录：象屿宝元
+-- 根目录：朗恩超精
 SELECT TOP (1) @RootMenuId = id FROM sys_menu WHERE path = N'/roneind';
 IF @RootMenuId IS NULL
 BEGIN
     SET @RootMenuId = 2081501110000000001;
     IF EXISTS (SELECT 1 FROM sys_menu WHERE id = @RootMenuId)
-        THROW 50001, N'象屿宝元根菜单预设ID已被其他菜单占用', 1;
+        THROW 50001, N'朗恩超精根菜单预设ID已被其他菜单占用', 1;
 
     INSERT INTO sys_menu (
         id, tenant_id, deleted, create_by, create_time, update_by, update_time, version,
@@ -29,17 +29,17 @@ BEGIN
     ) VALUES (
         @RootMenuId, 0, 0, NULL, @Now, NULL, NULL, 0,
         -1, N'Roneind', N'catalog', N'/roneind', N'/roneind/base-parts', NULL, NULL, 1, 10,
-        N'象屿宝元', N'mdi:factory', NULL, NULL, NULL, NULL,
-        NULL, NULL, 0, 0, 0, 0, 0, 0, N'象屿宝元客户业务菜单'
+        N'朗恩超精', N'mdi:factory', NULL, NULL, NULL, NULL,
+        NULL, NULL, 0, 0, 0, 0, 0, 0, N'朗恩超精客户业务菜单'
     );
 END;
 
 UPDATE sys_menu SET
     tenant_id = 0, deleted = 0, update_time = @Now, pid = -1, name = N'Roneind', type = N'catalog',
     path = N'/roneind', active_path = N'/roneind/base-parts', component = NULL, auth_code = NULL,
-    status = 1, sort_order = 10, meta_title = N'象屿宝元', meta_icon = N'mdi:factory',
+    status = 1, sort_order = 10, meta_title = N'朗恩超精', meta_icon = N'mdi:factory',
     meta_hide_in_menu = 0, meta_hide_children_in_menu = 0, meta_hide_in_breadcrumb = 0, meta_hide_in_tab = 0,
-    remark = N'象屿宝元客户业务菜单'
+    remark = N'朗恩超精客户业务菜单'
 WHERE id = @RootMenuId;
 
 -- 基础零件

@@ -62,7 +62,7 @@ public class RoneindImportTaskService {
             attachTask(task, distinctIds);
             execute(task, distinctIds);
         } catch (Exception exception) {
-            log.error("象屿宝元客户端本机导入失败, taskId={}, businessType={}",
+            log.error("朗恩超精客户端本机导入失败, taskId={}, businessType={}",
                     task.getId(), businessType, exception);
             task.setStatus("FAILED");
             task.setMessage(limit(safeMessage(exception), 1000));

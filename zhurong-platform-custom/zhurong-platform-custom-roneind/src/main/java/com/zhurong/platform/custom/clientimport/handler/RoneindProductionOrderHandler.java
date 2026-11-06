@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/** 在目标 Windows 客户端执行象屿宝元生产订单 LSTX 导入。 */
+/** 在目标 Windows 客户端执行朗恩超精生产订单 LSTX 导入。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -52,7 +52,7 @@ public class RoneindProductionOrderHandler implements ClientImportHandler<Produc
         try {
             return executionLock.execute(() -> executeLocked(context));
         } catch (Exception ex) {
-            log.error("象屿宝元生产订单客户端导入异常, taskId={}", context.getTask().getTaskId(), ex);
+            log.error("朗恩超精生产订单客户端导入异常, taskId={}", context.getTask().getTaskId(), ex);
             return ClientImportResult.failed("生产订单客户端导入失败: " + safeMessage(ex), List.of());
         }
     }

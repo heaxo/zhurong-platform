@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** 在目标 Windows 客户端执行象屿宝元钢板 PRC 导入。 */
+/** 在目标 Windows 客户端执行朗恩超精钢板 PRC 导入。 */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -47,7 +47,7 @@ public class RoneindRawMaterialHandler implements ClientImportHandler<RawMateria
         try {
             return executionLock.execute(() -> executeLocked(context));
         } catch (Exception ex) {
-            log.error("象屿宝元钢板客户端导入异常, taskId={}", context.getTask().getTaskId(), ex);
+            log.error("朗恩超精钢板客户端导入异常, taskId={}", context.getTask().getTaskId(), ex);
             return ClientImportResult.failed("钢板客户端导入失败: " + safeMessage(ex), List.of());
         }
     }

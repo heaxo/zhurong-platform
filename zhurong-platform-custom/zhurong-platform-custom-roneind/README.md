@@ -1,4 +1,4 @@
-# 象屿宝元（0111）客户模块
+# 朗恩超精（0111）客户模块
 
 本模块迁移 MesLink 0111 前端实际使用的客户功能，并保留金蝶实际调用的基础零件、生产订单入站接口；未照搬其余历史接口。
 
@@ -36,7 +36,7 @@ MasterLink 可以分别写入 `MnORef`、`OrderRef`、`CusRef`，LSTX 不能直�
 
 ## 运行配置
 
-象屿宝元现场配置集中在 `src/main/resources/application.yaml` 的 `roneind` 配置段，该文件随 jar 部署到每台 Windows 客户端，部署前应逐项核对本机数据库、地址、路径、密钥和 FTP 参数。
+朗恩超精现场配置集中在 `src/main/resources/application.yaml` 的 `roneind` 配置段，该文件随 jar 部署到每台 Windows 客户端，部署前应逐项核对本机数据库、地址、路径、密钥和 FTP 参数。
 
 基础零件入站使用 `roneind.inbound.base-part-excel-directory`、`drawing-root` 和 `drawing-extension`。Excel按日期追加、按ERP物料内码去重，并采用临时文件原子替换，避免写入中断损坏已有文件。
 
@@ -44,7 +44,7 @@ MasterLink 可以分别写入 `MnORef`、`OrderRef`、`CusRef`，LSTX 不能直�
 
 ## core 代理与 Windows 客户端部署
 
-服务器上不部署 `zhurong-platform-custom-roneind`。服务器只由 Gateway 将 `/core/client-proxy/**` 路由到通用 core，core 读取当前登录账号的 `sys_user.client_id`，检查该主机在线后，把 HTTP 方法、路径、查询参数、请求头和请求体封装成通用 MQ 命令，定向发送到该客户端。core 不包含象屿宝元业务路由、DTO 或导入逻辑。
+服务器上不部署 `zhurong-platform-custom-roneind`。服务器只由 Gateway 将 `/core/client-proxy/**` 路由到通用 core，core 读取当前登录账号的 `sys_user.client_id`，检查该主机在线后，把 HTTP 方法、路径、查询参数、请求头和请求体封装成通用 MQ 命令，定向发送到该客户端。core 不包含朗恩超精业务路由、DTO 或导入逻辑。
 
 `zhurong-platform-custom-roneind` 只作为 Windows 计划任务部署到每台套料客户端。它会读取 Windows 主机名、统一转为大写，以此作为 `client-id` 声明专属 MQ 队列；收到代理命令后，请求本机 `127.0.0.1:${server.port}` 上的 custom HTTP 接口。因此不能以 `web-application-type=none` 启动，否则本机没有 HTTP 端口可供代理执行。
 
@@ -56,7 +56,7 @@ java -jar zhurong-platform-custom-roneind.jar --server.address=127.0.0.1 --sprin
 
 `zhurong-platform-core` 必须启用 `zhurong.client-communication.enabled=true`，并与客户端连接同一个 RabbitMQ virtual host。core 收到客户端每 30 秒上报的心跳后才允许代理请求；默认 90 秒未收到心跳即视为离线。
 
-auth 的 `sys_user.client_id` 保存账号绑定的 Windows 主机名。用户管理页和个人设置页都可维护该字段；象屿宝元的查询、编辑、导入、新建作业及金蝶入站都只读取当前认证账号的绑定值，调用方不能在请求中自行指定目标客户端。
+auth 的 `sys_user.client_id` 保存账号绑定的 Windows 主机名。用户管理页和个人设置页都可维护该字段；朗恩超精的查询、编辑、导入、新建作业及金蝶入站都只读取当前认证账号的绑定值，调用方不能在请求中自行指定目标客户端。
 
 新建作业会在客户端直接读取本机 `DIS_MMNN_BWSR_00000100` 作业树完成目录及同目录重名校验，再生成 ANSI PRC 并启动 Expert。代理请求按命令号持久化执行结果，MQ 回执失败造成重复投递时不会再次执行同一个本机 HTTP 请求。
 

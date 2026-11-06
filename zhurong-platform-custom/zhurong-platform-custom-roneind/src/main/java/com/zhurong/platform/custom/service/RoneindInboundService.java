@@ -98,7 +98,7 @@ public class RoneindInboundService {
                     .filter(item -> !lantekRefs.contains(normalize(item.getPrdName())))
                     .toList();
             appendBasePartWorkbook(outputDirectory, drawingRoot, drawingExtension, excelItems);
-            log.info("象屿宝元接收基础零件完成, received={}, inserted={}, excelCandidates={}",
+            log.info("朗恩超精接收基础零件完成, received={}, inserted={}, excelCandidates={}",
                     items.size(), i, excelItems.size());
             return true;
         } finally {
@@ -116,7 +116,7 @@ public class RoneindInboundService {
             List<String> erpCodes = items.stream()
                     .map(RoneindInboundRequests.ManufacturingOrder::getProductionOrderErpInternalCode).map(String::trim).toList();
             if (manufacturingOrderErpCodeExists(erpCodes)) {
-                log.info("象屿宝元生产订单批次已存在，按0111幂等规则忽略整批, size={}", items.size());
+                log.info("朗恩超精生产订单批次已存在，按0111幂等规则忽略整批, size={}", items.size());
                 return true;
             }
 
@@ -126,7 +126,7 @@ public class RoneindInboundService {
                     throw new IllegalStateException("生产订单保存失败: " + item.getProductionOrderNumber());
                 }
             }
-            log.info("象屿宝元接收生产订单完成, inserted={}", items.size());
+            log.info("朗恩超精接收生产订单完成, inserted={}", items.size());
             return true;
         } finally {
             ORDER_LOCK.unlock();
