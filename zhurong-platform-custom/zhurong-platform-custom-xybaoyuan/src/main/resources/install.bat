@@ -13,8 +13,8 @@ set "APP_NAME=zhurong-custom-xybaoyuan"
 set "APP_VERSION=0.0.1"
 set "MAIN_JAR=zhurong-platform-custom-xybaoyuan-%APP_VERSION%.jar"
 set "APPIMG_DIR=%APPIMG_OUT%\%APP_NAME%"
-rem 可选外部配置目录：存在配置文件时覆盖 JAR/Nacos 配置，不存在时仍使用默认配置。
-set "EXTERNAL_CONFIG=optional:file:$APPDIR/../config/"
+rem 与现场安装包一致：仅加载安装目录下的外部配置，不读取 JAR 内的 application.yaml。
+set "EXTERNAL_CONFIG=file:$APPDIR/../config/"
 
 if exist "%APPIMG_OUT%" rmdir /s /q "%APPIMG_OUT%"
 if exist "%OUTPUT%" rmdir /s /q "%OUTPUT%"
@@ -29,7 +29,7 @@ echo ===== Step 1: build app-image =====
   --main-class org.springframework.boot.loader.launch.JarLauncher ^
   --dest "%APPIMG_OUT%" ^
   --java-options "-Dspring.profiles.active=prod" ^
-  --java-options "-Dspring.config.additional-location=%EXTERNAL_CONFIG%"
+  --java-options "-Dspring.config.location=%EXTERNAL_CONFIG%"
 
 
 if errorlevel 1 (
@@ -62,4 +62,4 @@ echo.
 echo Build finished.
 echo App image: %APPIMG_DIR%
 echo Installer output: %OUTPUT%
-echo Optional external config after install: ^<install directory^>\config\
+echo External config after install: ^<install directory^>\config\
