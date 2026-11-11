@@ -8,7 +8,7 @@ spring:
   application:
     name: zhurong-platform-custom
   rabbitmq:
-    host: 192.168.20.27
+    host: 192.168.110.200
     port: 5672
     username: admin
     password: admin
@@ -34,7 +34,7 @@ spring:
       strict: false
       datasource:
         lantek: # SQL Server（主库）
-          url: jdbc:sqlserver://192.168.20.27\Lantek;databaseName=LSystemDB;encrypt=false
+          url: jdbc:sqlserver://192.168.110.200\Lantek;databaseName=test;encrypt=false
           username: sa
           password:
           driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -43,10 +43,13 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: 192.168.20.27:8848
-        register-enabled: false
+        server-addr: 192.168.110.200:8848
+        register-enabled: true
       config:
         enabled: true
+        server-addr: 192.168.110.200:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
         import-check:
           enabled: false
 
@@ -59,27 +62,27 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
 
-roneind:
+xybaoyuan:
   inbound:
     # 金蝶下发基础零件后，按日期生成/追加“零件基础信息yyyy-MM-dd.xlsx”的目录；该目录必须预先存在
-    base-part-excel-directory: '\\192.168.20.27\下料图Excel'
+    base-part-excel-directory: '\\192.168.110.200\下料图Excel'
     # DXF图纸共享目录，用于拼接Excel中的“图纸路径”
-    drawing-root: '\\192.168.20.27\图纸库\'
+    drawing-root: '\\192.168.110.200\图纸库\'
     # DXF图纸文件后缀，用于拼接Excel中的“图纸路径”
     drawing-extension: '.dxf'
   lantek:
     install: D:\Lantek
   erp:
-    steel-plate-url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
+    steel-plate-url: http://127.0.0.1:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
     secret-key: by12345678
   feedback:
-    url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
-    withdraw-url: http://36.163.79.74:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
+    url: http://127.0.0.1:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
+    withdraw-url: http://127.0.0.1:10010/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
     secret-key: by12345678
     ftp:
-      host: 192.168.20.27
+      host: 192.168.110.200
       port: 21
-      username: roneind
+      username: RONEIND
       password: 123
       cnc-virtual-root: CNC
       pdf-virtual-root: Nestings

@@ -44,11 +44,11 @@ spring:
       username: nacos
       password: nacos
       discovery:
-        server-addr: 192.168.20.27:8848
+        server-addr: 192.168.110.200:8848
         # 客户端需要发现 core/auth，但不能注册成可被 Gateway 负载均衡的 HTTP 服务。
         register-enabled: false
       config:
-        server-addr: 192.168.20.27:8848
+        server-addr: 192.168.110.200:8848
         file-extension: yaml
         group: DEFAULT_GROUP
   config:
@@ -71,20 +71,20 @@ roneind:
     # 金蝶下发基础零件后，按日期生成/追加“零件基础信息yyyy-MM-dd.xlsx”的目录；该目录必须预先存在
     base-part-excel-directory: 'D:\Zhurong'
     # DXF图纸共享目录，用于拼接Excel中的“图纸路径”
-    drawing-root: '\\192.168.2.57\图纸库\'
+    drawing-root: '\\192.168.110.200\图纸库\'
     # DXF图纸文件后缀，用于拼接Excel中的“图纸路径”
     drawing-extension: '.dxf'
   lantek:
     install: C:\Lantek
   erp:
-    steel-plate-url: http://223.105.87.10:8089/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
+    steel-plate-url: http://127.0.0.1:8089/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.QueryStock.common.kdsvc
     secret-key: grmm12345678
   feedback:
-    url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
-    withdraw-url: http://222.187.33.220:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
+    url: http://127.0.0.1:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultSave.common.kdsvc
+    withdraw-url: http://127.0.0.1:60088/k3cloud/Kingdee.K3Cloud.GRMM.WebApi.ServicesStub.LantekLinkService.NstResultDel.common.kdsvc
     secret-key: grmm12345678
     ftp:
-      host: 192.168.20.27
+      host: 192.168.110.200
       port: 21
       username: roneind
       password: 123
