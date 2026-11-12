@@ -62,7 +62,7 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
 
-xybaoyuan:
+roneind:
   inbound:
     # 金蝶下发基础零件后，按日期生成/追加“零件基础信息yyyy-MM-dd.xlsx”的目录；该目录必须预先存在
     base-part-excel-directory: '\\192.168.110.200\下料图Excel'
