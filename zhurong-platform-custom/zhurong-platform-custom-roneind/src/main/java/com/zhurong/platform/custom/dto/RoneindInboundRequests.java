@@ -86,7 +86,7 @@ public final class RoneindInboundRequests {
         private String rouRef;
         @NotBlank(message = "跟踪号不能为空")
         private String cusRef;
-        private String cusName;
+        private String batchNo;
         @NotBlank(message = "工序次数不能为空")
         private String udata1;
         @NotBlank(message = "加工时长不能为空")

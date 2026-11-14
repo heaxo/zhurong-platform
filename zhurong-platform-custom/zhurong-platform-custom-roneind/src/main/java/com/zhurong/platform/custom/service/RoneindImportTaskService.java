@@ -171,6 +171,7 @@ public class RoneindImportTaskService {
         request.setWrkRef(order.getWrkRef());
         request.setMnORef(order.getProductionOrderErpInternalCode());
         request.setOrdRef(order.getProductionOrderNumber());
+        request.setCusRef(order.getCusName());
         request.setCusName(combineErpIdentity(order.getProductionOrderErpInternalCode(), order.getCusRef()));
         request.setQuantity(integerQuantity(order.getQuantity(), "生产订单数量必须为正整数"));
         request.setSuppRef(order.getCusRef());

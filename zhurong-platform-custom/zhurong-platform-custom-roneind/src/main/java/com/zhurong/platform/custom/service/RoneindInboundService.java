@@ -190,7 +190,7 @@ public class RoneindInboundService {
         entity.setDeliveryDate(item.getDeliveryDate());
         entity.setRouRef(truncateRoute(item.getRouRef()));
         entity.setCusRef(item.getCusRef().trim());
-        entity.setCusName(trimToNull(item.getCusName()));
+        entity.setCusName(trimToNull(item.getBatchNo()));
         entity.setUdata1(item.getUdata1().trim());
         entity.setUdata2(item.getUdata2().trim());
         entity.setWorkCenter(trimToNull(item.getWorkCenter()));
